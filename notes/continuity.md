@@ -5,6 +5,12 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Status
 
+- **2026-07-18 (evening)** Screen-time item IDENTIFIED by David: **E4 in the ENDLINE
+  survey** — device-assisted ("Skärmtid"/iOS, "Digitalt välmående"/Android), average
+  DAILY screen time in hours:minutes for the previous week. Confirmed the endline
+  survey is NOT in the local mock RData (survey object = baseline only, no E* cols).
+  No endline codebook found either. => For local development, generate a synthetic
+  endline E4; real validity check runs in the TRE.
 - **2026-07-18 (later)** First validity run DONE — with a twist. The q15_* battery is
   almost certainly NOT time use: medians 1,000–7,000, maxima up to 200,000, ~60–90%
   of answers above 16 h/day if read as minutes. Signature = **SEK/month spending
@@ -30,11 +36,15 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Open questions / blockers
 
-1. **CODEBOOK NEEDED — now the hard blocker.** Empirical identification failed:
-   q15_* = spending estimates (SEK/month), q12b = % follow-up. The screen-time anchor,
-   the digital-activity frequency items (candidates: q11/q11b Likert 1–6), and the
-   out-of-home leisure item must come from the LimeSurvey questionnaire /
-   pre-registration. David to supply.
+1. **Endline survey data + codebook.** E4 (screen time) identified, but the endline
+   survey is absent from the local mock and no endline codebook exists locally.
+   Needed: (a) endline data extract in the TRE (or a mock thereof), (b) codebook for
+   the remaining endline items (device-use / digital-activity frequencies for the
+   index; out-of-home leisure frequency for the mechanism). Also unclear how E4 is
+   stored (single minutes field vs separate hours+minutes fields) — loader must parse
+   h:mm robustly.
+2. Endline timing caveat for the paper: screen time measured at ENDLINE, consumption
+   observed 2019–2024 — note reverse-causality/stability argument in design section.
 2. Swedish screen-time benchmarks in `10_screen_time_validity.R` are heuristic bands;
    verify against Internetstiftelsen *Svenskarna och internet* (latest edition) and any
    device-measured Swedish studies before using in the paper.
@@ -46,12 +56,15 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Next steps
 
-1. Run `00_load_data.R` + `10_screen_time_validity.R`; review `output/`.
-2. Obtain codebook; fix the q15 mapping; update `00_constants.R` (`SCREEN_TIME_ITEM`).
-3. Build digital intensity index (`20_digital_index.R`): device-use + digital-activity
+1. Generate synthetic endline (`gen_mock_endline.R`): E4 minutes/day with realistic
+   age gradient + h:mm heaping, so the validity + index pipeline can be developed.
+2. Locate the real endline data in the TRE (object/file name unknown) and its codebook.
+3. Re-point `10_screen_time_validity.R` at endline E4; verify benchmark bands against
+   Internetstiftelsen *Svenskarna och internet*.
+4. Build digital intensity index (`20_digital_index.R`): device-use + digital-activity
    frequencies, anchored cardinally by screen time; report reliability (alpha).
-4. Net gradient models, then decomposition, then mechanism (see README pipeline table).
-5. Set up TRE export checklist (mirror `Konsumtionskollen/RUN_TRE` pattern).
+5. Net gradient models, then decomposition, then mechanism (see README pipeline table).
+6. Set up TRE export checklist (mirror `Konsumtionskollen/RUN_TRE` pattern).
 
 ## Session log
 

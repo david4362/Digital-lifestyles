@@ -22,9 +22,16 @@ Q11_ITEMS   <- paste0("q11_", 1:7)             # 1-6 Likert frequencies
 Q11B_ITEMS  <- paste0("q11b_", 1:8)            # 1-6 Likert frequencies
 DIGITAL_CANDIDATES <- c(Q15_ITEMS, Q11_ITEMS, Q11B_ITEMS, "q12", "q12b", "q13", "q14")
 
-# The device-assisted screen-time anchor. NA until confirmed by the codebook;
-# 10_screen_time_validity.R nominates candidates empirically.
-SCREEN_TIME_ITEM <- NA_character_
+# The device-assisted screen-time anchor: item E4 in the ENDLINE survey.
+# Question (Swedish): "Hur mycket tid spenderar du framför mobilen? ... öppna
+# inställningarna för 'Skärmtid' (iOS) eller 'Digitalt välmående' (Android)
+# ... notera den genomsnittliga dagliga skärmtiden i timmar och minuter för
+# föregående vecka (mån-sön)." => AVERAGE DAILY screen time (hours:minutes),
+# device-assisted, previous week. NOT in the local mock RData (baseline survey
+# only); available in the TRE endline data. Expected object/column names TBD —
+# the loader accepts an `endline` data frame with columns aid + E4-derived
+# minutes (see 00_load_data.R).
+SCREEN_TIME_ITEM <- "E4"   # endline survey; minutes/day after parsing h:mm
 
 # Out-of-home leisure frequency (mechanism variable). Unconfirmed.
 LEISURE_ITEM <- NA_character_

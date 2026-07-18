@@ -25,16 +25,18 @@ Because the RData is 5.2 GB, `00_load_data.R` extracts only what this project ne
 
 ### Key variables (survey)
 
-**IMPORTANT — codebook not yet confirmed.** The survey columns are unlabeled. Working hypotheses (to be verified against the LimeSurvey questionnaire):
+**Screen-time anchor = item E4 in the *endline* survey** (confirmed by DA 2026-07-18): device-assisted average *daily* screen time in hours:minutes for the previous week, read from iOS "Skärmtid" / Android "Digitalt välmående". **The endline survey is not in the local mock RData** (baseline only); it exists in the TRE. No endline codebook located yet.
 
-| Block | Format | Hypothesis |
+Baseline survey blocks (unlabeled; empirically profiled in `output/screen_time_item_profile.csv`):
+
+| Block | Format | Empirical read |
 |---|---|---|
-| `q15_1`–`q15_12` | minutes/day (0–400+) | Time-use battery; one item is the device-assisted **screen-time anchor** |
-| `q11_1`–`q11_7`, `q11b_1`–`q11b_8` | 1–6 Likert | Activity-frequency items (digital activities among them?) |
-| `q12`, `q12b` | 1–4 / 0–10 | Possibly screen-time category + follow-up |
-| `q13`, `q14` | 0–7 | Frequency counts; `q14` candidate for **out-of-home leisure** |
+| `q15_1`–`q15_12` | large values (medians 1,000–7,000) | Spending estimates (SEK/month), *not* time use |
+| `q11_1`–`q11_7`, `q11b_1`–`q11b_8` | 1–6 Likert | Activity-frequency items (digital activities plausibly among them) |
+| `q12` + `q12b` | 1–4 + 0–100 | `q12b` = percentage follow-up answered when `q12` ∈ {2,4} |
+| `q13`, `q14` | 0–7 | Counts; `q13` = trust in people (per archived Rmd) |
 
-`10_screen_time_validity.R` profiles all candidates empirically (distribution, heaping, age gradient) to narrow this down; final mapping requires the questionnaire. **Get the codebook before building the pre-registered index.**
+Until the endline data/codebook is available locally, development proceeds with a synthetic endline E4 (see `notes/continuity.md`).
 
 ## Pipeline
 
