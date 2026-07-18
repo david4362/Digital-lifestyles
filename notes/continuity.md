@@ -5,6 +5,15 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Status
 
+- **2026-07-18 (later)** First validity run DONE — with a twist. The q15_* battery is
+  almost certainly NOT time use: medians 1,000–7,000, maxima up to 200,000, ~60–90%
+  of answers above 16 h/day if read as minutes. Signature = **SEK/month spending
+  estimates** (consistent with archived Rmd deriving `health_spending`/`saving_exp`
+  from the survey). `q12b` also ruled out: 0–100 with heaping at 25/50/75 and answered
+  only when q12 ∈ {2,4} ⇒ a percentage follow-up. `q13`/`q14` are 0–7 counts with ~no
+  age gradient. **Conclusion: the screen-time anchor cannot be identified from the mock
+  data empirically — blocked on the questionnaire/codebook.** Also note: mock values may
+  be scrambled/synthetic, so distributional signatures are suggestive, not proof.
 - **2026-07-18** Project scaffolded. First analysis = screen-time validity check
   (`10_screen_time_validity.R`). Data source confirmed: the *local mock*
   `../Konsumtionskollen/default_filter.RData` (5.2 GB) has the full 114-column survey
@@ -21,12 +30,11 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Open questions / blockers
 
-1. **CODEBOOK NEEDED.** Survey columns are unlabeled. Which `q15_*` item is the
-   device-assisted screen-time report? Which items form the pre-registered digital
-   intensity index? Which item is out-of-home leisure frequency? David to supply the
-   LimeSurvey questionnaire / pre-registration. Until then `10_screen_time_validity.R`
-   identifies candidates empirically (units, heaping, age gradient) — treat any mapping
-   as provisional.
+1. **CODEBOOK NEEDED — now the hard blocker.** Empirical identification failed:
+   q15_* = spending estimates (SEK/month), q12b = % follow-up. The screen-time anchor,
+   the digital-activity frequency items (candidates: q11/q11b Likert 1–6), and the
+   out-of-home leisure item must come from the LimeSurvey questionnaire /
+   pre-registration. David to supply.
 2. Swedish screen-time benchmarks in `10_screen_time_validity.R` are heuristic bands;
    verify against Internetstiftelsen *Svenskarna och internet* (latest edition) and any
    device-measured Swedish studies before using in the paper.
