@@ -1,0 +1,28 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Data & caches — never commit data
+cache/
+*.RData
+*.rds
+*.dta
+
+# Generated outputs (keep small final figures by exception if needed)
+output/
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
