@@ -65,6 +65,23 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 - Light extract cached to `cache/digital_cache.RData` so sessions don't pay the 5-GB load.
 - Follow Konsumtionskollen conventions (numbered scripts, P99 winsorization, HC3 SEs).
 
+## Parked ideas
+
+- **2026-08-21 — COVID-recovery event study (digital use × re-socialization).**
+  Candidate second paper (do NOT fold into the carbon paper): does digital
+  intensity predict slower recovery of out-of-home social spending
+  (café/restaurant/bar transactions) after the pandemic shock? Design: person
+  fixed effects absorb stable traits (incl. "sad people end up alone with their
+  phone" selection); shared shock forces re-optimization; identifying variation
+  is within-person recovery speed 2022–2024. Validity check: gradient in
+  *pre-COVID* social spending should be ~flat. Triangulate transaction-based
+  social spending against endline E1 self-reported social activities and
+  wellbeing items (kills common-method-variance critique). Caveat: café spend
+  conflates social and solo consumption — bound with E1. Pre-registrable as a
+  separate exploratory analysis. Open thought (DA): use the event study to
+  "understand something relevant" beyond the gradient — e.g., whether digital
+  substitution is a persistent lifestyle shift vs. transitory habit.
+
 ## Open questions / blockers
 
 1. **Endline survey data + codebook.** E4 (screen time) identified, but the endline
