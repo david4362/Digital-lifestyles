@@ -1,0 +1,126 @@
+% Manuscript skeleton — Digital lifestyles and consumption-based carbon emissions
+% Compile with pdflatex (Overleaf-compatible). Venue undecided; plain article for now.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{../output/}}
+
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{Digital lifestyles and consumption-based carbon emissions:\\
+individual-level evidence from linked bank-transaction, survey, and register data}
+\author{David Andersson \and Mathias Lehner% \and G\"oran Finnveden \and Anna Furberg
+}
+\date{Draft --- \today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\todo{Condense the extended abstract (latex/extended\_abstract.tex) to
+$\sim$150--250 words once the venue is decided.}
+\end{abstract}
+
+\onehalfspacing
+
+\section{Introduction}
+
+\todo{Framing: optimists (dematerialization, decarbonization, demobilization) vs.\
+skeptics (rebound, e-commerce-induced demand). Gap: no study observes digital
+behavior and measured consumption-based emissions in the same individuals.}
+
+\section{Data}
+
+\subsection{Sample}
+\todo{$\sim$6{,}000 Swedish adults (Konsumtionskollen sample); surveys 2024;
+bank-account linkage retrieving transactions back to 2019.}
+
+\subsection{Consumption-based carbon footprints}
+\todo{Bank transactions categorized to COICOP and converted to
+CO\textsubscript{2}e; person-level annual aggregation; P99 winsorization.}
+
+\subsection{Digital lifestyle intensity}
+\todo{Pre-registered index: device-use frequencies (baseline q11\_1--q11\_5+)
+and digital-activity frequencies (q11b\_1--q11b\_8), anchored cardinally by
+the device-assisted screen-time report (endline E4: iOS Sk\"armtid / Android
+Digitalt v\"alm\aa ende, average daily h:min previous week). Report reliability
+(Cronbach's $\alpha$). Note E4 opt-outs and missingness.}
+
+\subsection{Register variables}
+\todo{Income, education, household composition, DeSO-level urbanity.}
+
+\section{Empirical strategy}
+
+\subsection{Net gradient}
+\todo{Total CO\textsubscript{2}e $\sim$ screen-time hours + sociodemographic
+controls; HC3 robust SEs.}
+
+\subsection{Decomposition}
+\todo{Category-level gradients: transport (demobilization), goods and
+e-commerce-intensive categories, digital services (rebound/direct), with
+no-channel categories (rent, insurance) as placebos. Category mapping
+justification (see 00\_constants.R).}
+
+\subsection{Mechanism}
+\todo{Out-of-home leisure frequency (endline E1) mediating the transport
+gradient.}
+
+\subsection{Heterogeneity}
+\todo{Pre-specified: age, gender, urbanity.}
+
+\subsection{Design caveats}
+\todo{Timing: screen time measured at endline, consumption observed 2019--2024;
+reverse-causality/stability argument.}
+
+\section{Results}
+
+\subsection{Screen-time validity}
+\todo{Device-assisted screen time vs.\ Swedish benchmarks (Internetstiftelsen,
+Svenskarna och internet). See output/screen\_time\_validity.csv.}
+
+\subsection{The net gradient}
+\todo{}
+
+\subsection{Decomposition across consumption categories}
+\todo{}
+
+\subsection{Mechanism: out-of-home leisure}
+\todo{}
+
+\subsection{Heterogeneity}
+\todo{}
+
+\section{Discussion}
+
+\todo{Implications for scenario and policy work on low-carbon digitalization;
+parameters for prospective life-cycle scenarios; methodological template for
+linking financial-transaction and survey data.}
+
+\section*{Pre-registration}
+\todo{Link to OSF pre-registration (required before touching real data in the
+TRE).}
+
+% \bibliographystyle{plainnat}
+% \bibliography{references}
+
+\appendix
+
+\section{Survey instruments}
+\todo{Baseline q11/q11b batteries; endline E1, E4 wording.}
+
+\section{Robustness}
+\todo{}
+
+\end{document}

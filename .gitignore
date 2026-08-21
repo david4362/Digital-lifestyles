@@ -26,3 +26,4 @@ output/
 *.log
 *.out
 *.synctex.gz
+latex/*.pdf

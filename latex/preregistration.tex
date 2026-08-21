@@ -1,0 +1,120 @@
+% OSF pre-registration draft — must be finalized and registered BEFORE
+% touching real data in the SCB TRE (see notes/continuity.md).
+% Compile with pdflatex (Overleaf-compatible).
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{Pre-registration: Digital lifestyles and consumption-based carbon
+emissions}
+\author{David Andersson \and Mathias Lehner}
+\date{Draft --- \today}
+
+\begin{document}
+
+\maketitle
+
+\section{Study information}
+
+\subsection{Research questions}
+\begin{enumerate}
+  \item \textbf{Net gradient.} What is the association between digital lifestyle
+    intensity and total consumption-based CO\textsubscript{2}e, expressed per
+    additional daily hour of screen time, controlling for sociodemographic
+    factors?
+  \item \textbf{Decomposition.} Is the gradient negative in transport
+    (demobilization) and positive in goods, e-commerce-intensive categories,
+    and digital services (rebound and direct effects), with no-channel
+    categories (rent, insurance) as placebos?
+  \item \textbf{Mechanism.} Does lower out-of-home leisure frequency among the
+    digitally intensive account for part of the transport gradient?
+\end{enumerate}
+
+\subsection{Hypotheses}
+\todo{State directional hypotheses per research question, incl.\ the placebo
+prediction (null gradient in rent and insurance).}
+
+\section{Data description}
+
+This study reuses existing data (the Konsumtionskollen sample): approximately
+6{,}000 Swedish adults who completed surveys in 2024 and connected their bank
+accounts to a research app that retrieved transactions back to 2019, categorized
+them to COICOP, and converted them to CO\textsubscript{2}e. Register linkage
+provides income, education, household composition, and DeSO-level urbanity.
+Analyses of real data take place in the SCB Trusted Research Environment (TRE).
+
+\paragraph{Prior data access.} \todo{Disclose: analysis code developed against a
+synthetic/mock version of the data; the endline survey and real values have not
+been analyzed. State precisely what has and has not been seen.}
+
+\section{Variables}
+
+\subsection{Exposure: digital lifestyle intensity index}
+A pre-registered index combining:
+\begin{itemize}
+  \item \textbf{Device-use frequencies} (baseline q11\_1--q11\_5+; 1--6 scale):
+    computer, smartphone, TV, game console, tablet.
+  \item \textbf{Digital-activity frequencies} (baseline q11b\_1--q11b\_8; 1--6
+    scale): streaming, calls, social media, information search, gaming, digital
+    reading, e-commerce, online selling.
+\end{itemize}
+The index is anchored cardinally by the device-assisted screen-time report
+(endline E4: average daily screen time in hours:minutes for the previous week,
+read from iOS Sk\"armtid / Android Digitalt v\"alm\aa ende).
+\todo{Specify the aggregation rule (e.g., standardized mean), the anchoring
+regression, reliability reporting ($\alpha$), and handling of E4 opt-outs.}
+
+\subsection{Outcomes}
+Person-level annual consumption-based CO\textsubscript{2}e: total, and by
+category group (transport; goods; e-commerce-intensive; digital services;
+placebo: rent, insurance). \todo{Finalize and justify the COICOP leaf-category
+mapping (draft in 00\_constants.R).}
+
+\subsection{Mediator}
+Out-of-home leisure frequency (endline E1, 7-point, 12-month recall).
+
+\subsection{Covariates}
+Age, gender, income, education, household composition, DeSO-level urbanity
+(register-based).
+
+\subsection{Moderators (pre-specified heterogeneity)}
+Age, gender, urbanity.
+
+\section{Analysis plan}
+
+\subsection{Models}
+\todo{OLS with HC3 robust standard errors; outcome winsorized at P99;
+specification per research question, incl.\ the mediation approach for the
+mechanism analysis.}
+
+\subsection{Inference criteria}
+\todo{Two-sided tests, $\alpha = 0.05$; multiple-comparison handling for the
+category decomposition.}
+
+\subsection{Data exclusions}
+\todo{E4 opt-outs / missing screen time; transaction-coverage thresholds;
+attention check (endline C11)?}
+
+\subsection{Missing data}
+\todo{Handling of item non-response in index components and covariates.}
+
+\subsection{Robustness}
+\todo{Alternative index weightings; unanchored (ordinal) index; alternative
+winsorization; timing sensitivity (screen time measured at endline vs.\
+consumption 2019--2024).}
+
+\section{Timeline and data access}
+
+Pre-registration on OSF precedes any analysis of real data in the TRE.
+\todo{Dates; TRE export checklist (mirror Konsumtionskollen RUN\_TRE pattern).}
+
+\end{document}
