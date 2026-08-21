@@ -27,14 +27,16 @@ Because the RData is 5.2 GB, `00_load_data.R` extracts only what this project ne
 
 **Screen-time anchor = item E4 in the *endline* survey** (confirmed by DA 2026-07-18): device-assisted average *daily* screen time in hours:minutes for the previous week, read from iOS "Skärmtid" / Android "Digitalt välmående". **The endline survey is not in the local mock RData** (baseline only); it exists in the TRE. No endline codebook located yet.
 
-Baseline survey blocks (unlabeled; empirically profiled in `output/screen_time_item_profile.csv`):
+Baseline survey blocks (CONFIRMED against the official codebook, 2026-08-21 — see
+`docs/Pre-treatment_survey_codebook.csv` and `notes/continuity.md`):
 
-| Block | Format | Empirical read |
+| Block | Content (codebook) | Role |
 |---|---|---|
-| `q15_1`–`q15_12` | large values (medians 1,000–7,000) | Spending estimates (SEK/month), *not* time use |
-| `q11_1`–`q11_7`, `q11b_1`–`q11b_8` | 1–6 Likert | Activity-frequency items (digital activities plausibly among them) |
-| `q12` + `q12b` | 1–4 + 0–100 | `q12b` = percentage follow-up answered when `q12` ∈ {2,4} |
-| `q13`, `q14` | 0–7 | Counts; `q13` = trust in people (per archived Rmd) |
+| `q11_1`–`q11_5+` | Device-use frequency, 1–6 scale (computer, smartphone, TV, console, tablet) | Digital index: device half |
+| `q11b_1`–`q11b_8` | Digital-activity frequency, 1–6 scale (streaming, calls, social media, search, gaming, digital reading, e-commerce, online selling) | Digital index: activity half; `q11b_7` = e-commerce channel |
+| `q15_1`–`q15_12` | Typical prices paid (SEK) for reference goods | Not in index (quality-of-consumption control at most) |
+| Endline `E4` | Device-assisted daily screen time (h:min), with opt-outs | Cardinal anchor |
+| Endline `E1` | 12-month activity frequencies incl. out-of-home leisure | Mechanism (result 3) |
 
 Until the endline data/codebook is available locally, development proceeds with a synthetic endline E4 (see `notes/continuity.md`).
 

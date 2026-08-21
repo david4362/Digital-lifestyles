@@ -5,6 +5,37 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Status
 
+- **2026-08-21 — MAJOR UNBLOCK.** David supplied the questionnaires + baseline
+  codebook (now in `docs/`): `Pre-treatment_survey.pdf` + `_codebook.csv`
+  (baseline), `Endline_survey.pdf`, `WP1_digital_lifestyles_plan_abstract_OSF.docx`
+  (extended abstract; canonical text in `notes/extended_abstract.md`).
+  All July mysteries resolved:
+  - **q11_1–q11_5+** = device-use frequency battery, 1–6 scale ("Ej använt" …
+    "Flera gånger i timmen"): stationär/bärbar dator, mobiltelefon/smartphone,
+    TV, spelkonsol, surfplatta. → the *device-use* half of the digital index.
+  - **q11b_1–q11b_8** = digital-activity frequency battery, same scale:
+    film/serier/YouTube, telefon-/videosamtal, sociala medier, informationssökning,
+    dataspel/tv-spel, digital läsning, **e-handel (q11b_7)**, sålt online (q11b_8).
+    → the *digital-activity* half of the index; q11b_7 also feeds the
+    e-commerce decomposition channel.
+  - **q15_1–q15_12** = typical-price battery (SEK for haircut, sneakers, wine,
+    hotel night, phone, sofa, …) — confirms July's inference: spending estimates,
+    NOT time use. Not part of the digital index (candidate quality-of-consumption
+    control at most).
+  - **Endline E4** = screen-time anchor exactly as remembered: device-assisted
+    (iOS Skärmtid / Android Digitalt välmående), average daily h:min previous
+    week, with "not activated" and "skip" opt-outs (expect missingness; the
+    mock endline generator's opt-out share should be calibrated).
+  - **Endline E1** = 12-month activity-frequency battery (7-point) incl.
+    out-of-home leisure (bibliotek, idrottsevenemang, kulturevenemang, middag,
+    dansat, motionerat, naturen) and at-home digital leisure (ljudbok, musik,
+    bok, film, tv-serie) → the *mechanism* variables for result 3, plus BNPL item.
+  - Endline also has: policy-attitude batteries (B1–B6), WTP for CO2 reduction
+    (K1–K2), app-experience battery (L1–L3), attention check (C11).
+- **Team/venue (2026-08-21):** Mathias Lehner (decided), Göran Finnveden (maybe),
+  Anna Furberg (possibly). Venue undecided, aim high. **Pre-registration on OSF
+  required before touching real data in the TRE** — the abstract already commits
+  to a "pre-registered index".
 - **2026-07-18 (evening)** Screen-time item IDENTIFIED by David: **E4 in the ENDLINE
   survey** — device-assisted ("Skärmtid"/iOS, "Digitalt välmående"/Android), average
   DAILY screen time in hours:minutes for the previous week. Confirmed the endline
