@@ -96,8 +96,11 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 2. Swedish screen-time benchmarks in `10_screen_time_validity.R` are heuristic bands;
    verify against Internetstiftelsen *Svenskarna och internet* (latest edition) and any
    device-measured Swedish studies before using in the paper.
-3. Mock data caveat: values in `default_filter.RData` are synthetic — validity *checks
-   logic* here; substantive conclusions wait for the TRE run.
+3. Mock data caveat: values in `default_filter.RData` are **partly scrambled real
+   values** (confirmed by DA 2026-08-24, resolving the July uncertainty) — validity
+   *checks logic* here; substantive conclusions wait for the TRE run. Prereg
+   disclosure worded accordingly ("de-identified development extract, partly
+   scrambled").
 4. Category mapping for the decomposition (which leaf categories count as
    e-commerce-intensive / digital services / placebo) — draft lives in `00_constants.R`,
    needs a documented justification for the paper.

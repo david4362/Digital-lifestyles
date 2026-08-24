@@ -37,8 +37,51 @@ emissions}
 \end{enumerate}
 
 \subsection{Hypotheses}
-\todo{State directional hypotheses per research question, incl.\ the placebo
-prediction (null gradient in rent and insurance).}
+
+\paragraph{RQ1: Net gradient.} We register \emph{no} directional hypothesis for
+the association between digital lifestyle intensity and total consumption-based
+CO\textsubscript{2}e. The two competing accounts in the literature
+(dematerialization/demobilization vs.\ rebound and digitally induced demand)
+predict opposite signs, and adjudicating between them is the purpose of the
+study. The test is two-sided.
+
+\paragraph{RQ2: Decomposition.} The composition of the gradient, rather than its
+net sign, carries the directional predictions:
+\begin{itemize}
+  \item[H2a.] The gradient in \emph{transport} CO\textsubscript{2}e is
+    \emph{negative} (demobilization: digital time use substitutes for physical
+    mobility).
+  \item[H2b.] The gradients in \emph{goods}, \emph{e-commerce-intensive
+    categories}, and \emph{digital services} are \emph{positive} (rebound of
+    freed time and money into consumption; direct demand generation through
+    digital channels; direct spending on digital services).
+  \item[H2c.] \emph{Placebo:} the gradients in \emph{rent} and \emph{insurance}
+    are \emph{null}. These categories have no plausible digital substitution or
+    demand channel; a non-null gradient here would indicate residual confounding
+    (e.g., by income or household composition) rather than a digital-lifestyle
+    effect, and would qualify the causal interpretation of H2a--H2b. H2c is
+    tested by equivalence (TOST), not by absence of significance: support for
+    H2c requires rejecting both one-sided tests against the equivalence bounds
+    specified in Section~\ref{sec:inference}.
+\end{itemize}
+Jointly, the signature pattern H2a--H2c (negative transport, positive
+goods/e-commerce/digital services, null placebos) is the pre-registered evidence
+that both substitution and rebound channels operate; observing only one side
+would favor the corresponding account.
+
+\paragraph{RQ3: Mechanism.} Two linked predictions:
+\begin{itemize}
+  \item[H3a.] Digital lifestyle intensity is \emph{negatively} associated with
+    out-of-home leisure frequency (endline E1).
+  \item[H3b.] Adjusting for out-of-home leisure frequency \emph{attenuates} the
+    transport gradient (H2a); we report the share of the gradient accounted for,
+    without claiming a causal mediation estimate.
+\end{itemize}
+
+\paragraph{Heterogeneity (pre-specified, non-directional).} Moderation of the
+net gradient and the transport gradient by age, gender, and urbanity is
+pre-specified but registered without directional priors; these analyses are
+labeled exploratory in the paper.
 
 \section{Data description}
 
@@ -49,9 +92,40 @@ them to COICOP, and converted them to CO\textsubscript{2}e. Register linkage
 provides income, education, household composition, and DeSO-level urbanity.
 Analyses of real data take place in the SCB Trusted Research Environment (TRE).
 
-\paragraph{Prior data access.} \todo{Disclose: analysis code developed against a
-synthetic/mock version of the data; the endline survey and real values have not
-been analyzed. State precisely what has and has not been seen.}
+\paragraph{Prior data access.} This is a secondary analysis of existing data,
+and members of the team have worked with the dataset before; we disclose the
+full extent of prior access.
+\begin{itemize}
+  \item \emph{Previous publication.} The team has previously analyzed the
+    Konsumtionskollen data for a separate study \todo{cite the first paper +
+    link to its analysis repository}. That work used the consumption-based
+    CO\textsubscript{2}e outcomes, spending data, register covariates, and
+    baseline survey items on environmental self-identity. \textbf{It did not
+    analyze the exposure variables of the present study}: the device-use and
+    digital-activity frequency batteries (baseline q11/q11b) and the
+    device-assisted screen-time report (endline E4) have not been related to
+    emissions or spending in any prior analysis by the team.
+  \item \emph{Prior descriptive knowledge.} From the previous work, the team
+    knows the distributions of total and category-level CO\textsubscript{2}e,
+    spending patterns, and covariate distributions in this sample. The
+    hypotheses in this document concern gradients with respect to digital
+    lifestyle intensity, which cannot be derived from that knowledge.
+  \item \emph{Code development.} All analysis code for the present study was
+    developed against a de-identified development extract of the data in which
+    values are partly scrambled. Descriptive distributions of baseline survey
+    items (including the q11/q11b batteries) were examined in this extract to
+    identify and validate variable definitions, but no digital-lifestyle
+    variable was related to emissions or spending. The endline survey,
+    including E4, is absent from the extract and has not been accessed by the
+    team in any form beyond the questionnaire document; development of the
+    E4-dependent code used fully synthetic endline data generated by the team.
+  \item \emph{Real-data access.} No analysis relating digital-lifestyle
+    variables to consumption or emissions has been run on real data. Real-data
+    analysis in the SCB Trusted Research Environment begins only after this
+    pre-registration is registered.
+\end{itemize}
+\todo{Verify each claim with all coauthors before registering --- in
+particular that no prior exploration touched q11/q11b or E4.}
 
 \section{Variables}
 
@@ -67,8 +141,43 @@ A pre-registered index combining:
 The index is anchored cardinally by the device-assisted screen-time report
 (endline E4: average daily screen time in hours:minutes for the previous week,
 read from iOS Sk\"armtid / Android Digitalt v\"alm\aa ende).
-\todo{Specify the aggregation rule (e.g., standardized mean), the anchoring
-regression, reliability reporting ($\alpha$), and handling of E4 opt-outs.}
+
+\paragraph{Aggregation.} Each of the 13 items (5 device-use + 8
+digital-activity) is standardized to a z-score using the analysis-sample mean
+and SD. The raw index is the unweighted mean of non-missing standardized items,
+computed for respondents answering at least 10 of 13 items; it is then
+re-standardized (mean 0, SD 1). Equal weighting is the primary specification;
+alternative weightings (first principal component; device-use and
+digital-activity halves separately) are registered as robustness checks.
+
+\paragraph{Cardinal anchoring.} Among respondents with a valid E4 report, we
+estimate the OLS anchoring regression
+\begin{equation*}
+  \text{E4}_i \;(\text{hours/day}) = a + b \, z_i + u_i,
+\end{equation*}
+where $z_i$ is the standardized index. The anchored index is the fitted value
+$\hat{a} + \hat{b} z_i$, defined for \emph{all} respondents with a valid index
+(including E4 opt-outs), expressed in daily screen-time hours. All gradients are
+reported per additional daily hour on this scale; per-SD estimates on the
+unanchored index are reported alongside, so the anchoring affects
+interpretability, not inference. E4 responses are parsed from hours:minutes to
+decimal hours; values above 18 hours/day are set to missing as implausible.
+We report $\hat{b}$, its confidence interval, and the $R^2$ of the anchoring
+regression; a weak anchor (low $R^2$) is a registered caveat against the
+cardinal interpretation, not a gate on the analysis.
+
+\paragraph{Reliability.} We report Cronbach's $\alpha$ for the full 13-item
+index and for each half (device-use, digital-activity), plus item--rest
+correlations. No $\alpha$ threshold gates the analysis; low reliability is
+addressed by the registered robustness checks (halves separately, principal
+component).
+
+\paragraph{E4 opt-outs.} E4 offers ``function not activated'' and ``prefer not
+to answer'' options; missingness is expected. Opt-outs are excluded from the
+anchoring regression only --- they retain their anchored index value and remain
+in all main analyses. We report the opt-out share and compare opt-outs to
+reporters on the index and covariates as a selection check. As robustness, main
+models are re-estimated on the E4-reporting subsample.
 
 \subsection{Outcomes}
 Person-level annual consumption-based CO\textsubscript{2}e: total, and by
@@ -94,8 +203,25 @@ specification per research question, incl.\ the mediation approach for the
 mechanism analysis.}
 
 \subsection{Inference criteria}
-\todo{Two-sided tests, $\alpha = 0.05$; multiple-comparison handling for the
-category decomposition.}
+\label{sec:inference}
+All directional and non-directional hypotheses (RQ1, H2a--H2b, H3a--H3b) are
+tested two-sided at $\alpha = 0.05$ with HC3 robust standard errors.
+
+\paragraph{Equivalence testing for the placebo hypothesis (H2c).} The null
+gradients in rent and insurance are assessed with two one-sided tests (TOST) at
+$\alpha = 0.05$ per one-sided test. The smallest effect size of interest is set
+\emph{relative to the category mean}: equivalence bounds of
+$\pm 1\%$ of the sample-mean annual CO\textsubscript{2}e in the placebo
+category per additional daily hour of screen time. H2c is supported for a
+category if the 90\% confidence interval for the gradient lies entirely within
+the bounds; a gradient outside the bounds (conventional test significant at
+$\alpha = 0.05$) counts as placebo failure; an inconclusive TOST (CI straddling
+a bound) is reported as such. \todo{Confirm the $\pm 1\%$ SESOI --- benchmark
+it against the expected magnitude of H2a/H2b gradients so the bound is
+meaningfully smaller than the effects of interest; state the implied absolute
+bounds in kg CO\textsubscript{2}e once category means are computed in the TRE.}
+
+\todo{Multiple-comparison handling for the category decomposition.}
 
 \subsection{Data exclusions}
 \todo{E4 opt-outs / missing screen time; transaction-coverage thresholds;
