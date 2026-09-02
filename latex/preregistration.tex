@@ -216,10 +216,22 @@ category per additional daily hour of screen time. H2c is supported for a
 category if the 90\% confidence interval for the gradient lies entirely within
 the bounds; a gradient outside the bounds (conventional test significant at
 $\alpha = 0.05$) counts as placebo failure; an inconclusive TOST (CI straddling
-a bound) is reported as such. \todo{Confirm the $\pm 1\%$ SESOI --- benchmark
-it against the expected magnitude of H2a/H2b gradients so the bound is
-meaningfully smaller than the effects of interest; state the implied absolute
-bounds in kg CO\textsubscript{2}e once category means are computed in the TRE.}
+a bound) is reported as such. The final equivalence bound is calibrated
+below.
+
+\paragraph{SESOI calibration.} The equivalence bound is
+$\Delta = \min(\Delta_1, \Delta_2)$: $\Delta_1$ is the $\pm 1\%$
+category-mean bound above; $\Delta_2$ is 10\% of the expected
+everyday-transport gradient per screen-hour, anchored to the car-free
+contrast from the team's previous study in the combined car and public
+transport domain
+($-1.26$~tCO\textsubscript{2}e/yr, i.e.\ $|D| = 1{,}260$~kg/yr) via
+$\Delta_2 = 0.10 \cdot D / (k \cdot \hat{b})$, where $k$ is the car-free
+vs.\ car-owner index-SD gap (pre-registered range 1.5--2) and $\hat{b}$
+the anchoring slope (h/day per index-SD) from the E4 anchoring
+regression. The absolute kg CO\textsubscript{2}e bounds are inserted in
+the TRE after the anchoring step and category-mean computation, before
+gradient estimation.
 
 \todo{Multiple-comparison handling for the category decomposition.}
 

@@ -13,6 +13,9 @@ cache/
 # Generated outputs (keep small final figures by exception if needed)
 output/
 
+# Advisor feedback (private)
+advisor/
+
 # OS / editor
 .DS_Store
 .vscode/
