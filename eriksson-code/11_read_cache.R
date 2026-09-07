@@ -1,0 +1,11 @@
+library(arrow)
+cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "eriksson-code", "cache")
+
+monthly_kr <- read_parquet(file.path(cache_dir, "monthly_kr.parquet"))
+monthly_co2e <- read_parquet(file.path(cache_dir, "monthly_co2e.parquet"))
+demographics <- read_parquet(file.path(cache_dir, "demographics.parquet"))
+survey <- read_parquet(file.path(cache_dir, "survey.parquet"))
+survey_endline <- read_parquet(file.path(cache_dir, "survey_endline.parquet"))
+users <- read_parquet(file.path(cache_dir, "users.parquet"))
+scb <- read_parquet(file.path(cache_dir, "scb.parquet"))
+transactions <- read_parquet(file.path(cache_dir, "transactions.parquet"))
