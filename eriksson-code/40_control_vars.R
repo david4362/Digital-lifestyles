@@ -17,16 +17,20 @@ control_data <- (keep
             [, hh_size := profile.field_profile_household_adults + profile.field_profile_household_children]
             [, children := factor(profile.field_profile_household_children > 0)]
             [, income := log1p(`income-level`) - mean(log1p(`income-level`), na.rm = T)]
+            [, income_q := cut(`income-level`,
+              quantile(`income-level`, probs = seq(0, 1, 0.2), na.rm = T),
+              labels = paste0("Q", 1:5), include.lowest = T)]
             [answered_survey, on = "aid", nomatch = 0]
             [, (q11_cols) := lapply(.SD, function(x) 
               as.vector(scale(x))), .SDcols = q11_cols]
             [, index := rowMeans(.SD), .SDcols = q11_cols]
             [, hours_est := dt_coefs[1] + dt_coefs[2] * index]
-            [, .(aid, age, gender, income, density, hours_est, index, hh_size, children, education, major_city)]) |>
+            [, .(aid, age, gender, income, income_q, density, hours_est, index, hh_size, children, education, major_city)]) |>
   unique()
 
 lm_data <- control_data[emissions, on = "aid", nomatch = 0]
 
-# index kept only for SD scaling, not in headline formula (collinear with hours_est)
-lm_formula <- paste("co2e", paste(setdiff(names(control_data)[names(control_data) != "aid"], "index"), collapse = "+"), sep = "~")
+# index kept only for SD scaling, income_q only for robustness (49);
+# neither in headline formula (collinear with hours_est / income)
+lm_formula <- paste("co2e", paste(setdiff(names(control_data)[names(control_data) != "aid"], c("index", "income_q")), collapse = "+"), sep = "~")
 digital_lifestyle_model <- lm(lm_formula, lm_data)

@@ -17,7 +17,8 @@ if (all(file.exists(file.path(cache_dir, cache_files)))) {
 
 for (f in c("20_filter_participants.R", "30_time_estimate.R", "40_control_vars.R",
     "41_model_check.R", "42_stepwise.R", "43_decomposition.R", "44_presentation_figures.R",
-    "45_sample_desc.R", "46_heterogeneity.R", "47_sek.R", "48_equivalence.R")) {
+    "45_sample_desc.R", "46_heterogeneity.R", "47_sek.R", "48_equivalence.R",
+    "50_ecommerce.R")) {
   message("--- ", f, " ---")
   source(f)
 }

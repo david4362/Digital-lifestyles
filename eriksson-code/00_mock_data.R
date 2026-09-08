@@ -41,7 +41,8 @@ survey_endline = survey_endline[status != "nocontact"][, status := NULL][]
 demographics = data.table(aid = aid, age = age, gender = gender, postort = postort)
 scb = data.table(aid = aid, density = rlnorm(n, 7),
   Sun2020Niva = sample(c(100, 200, 310, 410, 520, 620), n, replace = TRUE))
-income_level = round(exp(rnorm(n, 12.6, 0.5)))
+# Income mildly correlated with digital intensity (confounding like real data)
+income_level = round(exp(rnorm(n, 12.6 + 0.15 * z, 0.5)))
 users = data.table(aid = aid, `income-level` = income_level,
   profile.field_profile_household_adults = sample(1:2, n, replace = TRUE),
   profile.field_profile_household_children = sample(0:3, n, replace = TRUE, prob = c(0.5, 0.25, 0.15, 0.1)))
