@@ -1,4 +1,5 @@
 library(data.table)
+source("05_labels.R")
 
 # Equivalence bounds per advisor doc D8: delta = min(1% of category mean,
 # 10% of expected transport gradient). D = no-car everyday-transport
@@ -31,7 +32,7 @@ lim = range(c(-pl$delta, pl$delta, pl$lo90, pl$hi90))
 plot(pl$per_hour, y, xlim = lim, yaxt = "n", pch = 19, cex = 1.4, col = "#1f4e79",
   xlab = "kg CO2e per extra hour/day (90% CI, shaded = equivalence bounds)", ylab = "",
   main = "Placebo equivalence (TOST)")
-axis(2, y, pl$cat, las = 1)
+axis(2, y, fulllab(pl$cat), las = 1)
 segments(pl$lo90, y, pl$hi90, y, lwd = 2, col = "#1f4e79")
 segments(-pl$delta, y - 0.15, pl$delta, y - 0.15, col = "grey40", lty = 2)
 abline(v = 0, lty = 1, col = "grey")

@@ -76,7 +76,18 @@ deso <- fread(file.path(scb_dir, "JE_Lev_Valdelt_EU_2024.txt"))[, .(LopNr, DeSO)
 names(deso)[2] <- "deso"
 deso_density <- fread(file.path(scb_dir, "deso_2018_density.csv"))
 edu_level <- fread(file.path(scb_dir, 'JE_Lev_LISA_2024.txt'))
-scb <- scb[deso, on = "LopNr"][deso_density, on = "deso"][edu_level, on = "LopNr"]
+inc_2023 <- fread(file.path(scb_dir, 'JE_Lev_LISA_2023.txt'), select = c("LopNr", "DispInk04"))
+stopifnot("DispInk04" %in% names(inc_2023))
+scb <- scb[deso, on = "LopNr"][deso_density, on = "deso"][edu_level, on = "LopNr"][inc_2023, on = "LopNr"]
 write_parquet(scb, file.path(cache_dir, "scb.parquet"))
 
-rm(data_dir, kr_cols, scb_dir, co2e_cols, deso, deso_density, edu_level)
+## Load bank-registered income (raw incoming transactions -> general income level,
+## no month-matching with expenses: mean monthly inflow per aid)
+kk_income <- fread(file.path(data_dir, "konsumtionskollen", "handels-export-2025-01-13",
+  "handels-export-2025-01-13", "kk-handels-income-data-2025-01-10.csv"))
+kk_income[, month := trunc.Date(as.Date(date), "months")]
+monthly_bank <- kk_income[, .(income = sum(income, na.rm = T)), by = .(aid, month)]
+person_bank <- monthly_bank[, .(income_bank_raw = mean(income, na.rm = T), n_bank_months = .N), by = aid]
+write_parquet(person_bank, file.path(cache_dir, "bank_income.parquet"))
+
+rm(data_dir, kr_cols, scb_dir, co2e_cols, deso, deso_density, edu_level, inc_2023, kk_income, monthly_bank)

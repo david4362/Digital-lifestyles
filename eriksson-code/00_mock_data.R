@@ -39,10 +39,11 @@ survey_endline = data.table(aid = aid, status = status,
 survey_endline = survey_endline[status != "nocontact"][, status := NULL][]
 
 demographics = data.table(aid = aid, age = age, gender = gender, postort = postort)
-scb = data.table(aid = aid, density = rlnorm(n, 7),
-  Sun2020Niva = sample(c(100, 200, 310, 410, 520, 620), n, replace = TRUE))
 # Income mildly correlated with digital intensity (confounding like real data)
 income_level = round(exp(rnorm(n, 12.6 + 0.15 * z, 0.5)))
+scb = data.table(aid = aid, density = rlnorm(n, 7),
+  Sun2020Niva = sample(c(100, 200, 310, 410, 520, 620), n, replace = TRUE),
+  DispInk04 = round(income_level * exp(rnorm(n, 0, 0.2))))
 users = data.table(aid = aid, `income-level` = income_level,
   profile.field_profile_household_adults = sample(1:2, n, replace = TRUE),
   profile.field_profile_household_children = sample(0:3, n, replace = TRUE, prob = c(0.5, 0.25, 0.15, 0.1)))
@@ -71,9 +72,16 @@ grid[, monthly := y / 12 * (1 + rnorm(.N, sd = 0.1))]
 monthly_co2e = grid[, .(aid, month, category, co2e = pmax(0, monthly))]
 monthly_kr = grid[, .(aid, month, category = sub("_co2e$", "_kr", category), kr = pmax(50, monthly * 15 + rnorm(.N, sd = 50)))]
 
+# Bank-registered income (mirrors kk-handels-income CSV: aid, date, category, income)
+bank_cat = c("salary", "benefits", "other")
+kk_income = CJ(aid = aid, month = months, category = bank_cat)
+kk_income[, income := income_level[aid]/12/length(bank_cat) * exp(rnorm(.N, 0, 0.3))]
+monthly_bank = kk_income[, .(income = sum(income)), by = .(aid, month)]
+person_bank = monthly_bank[, .(income_bank_raw = mean(income), n_bank_months = .N), by = aid]
+
 # Low-spend subgroup (5%) fails the spending filter, exercises keep
 low = sample(aid, 40)
 monthly_co2e[aid %in% low, co2e := co2e * 0.1]
 monthly_kr[aid %in% low, kr := kr * 0.1]
 
-rm(grid, q, base, grad, inc_eff, major, p, status, h, mnt, ov, low, time, z, income_level, age, gender, postort, months, n, aid, q11_names)
+rm(grid, q, base, grad, inc_eff, major, p, status, h, mnt, ov, low, time, z, income_level, age, gender, postort, months, n, aid, q11_names, bank_cat, kk_income, monthly_bank)

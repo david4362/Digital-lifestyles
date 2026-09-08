@@ -5,6 +5,8 @@ library(lmtest)
 out_dir = file.path(dirname(cache_dir), "output")
 dir.create(out_dir, showWarnings = FALSE)
 
+source("05_labels.R")
+
 # Person x category, annualized + P99 per category (same as 20_filter)
 cat_annual <- (monthly_co2e[keep, on = .(aid, month), nomatch = 0]
   [, .(s = sum(co2e), n_months = uniqueN(month)), by = .(aid, category)]
@@ -32,7 +34,7 @@ targets <- c(
   sapply(top10, function(x) x, simplify = FALSE))
 names(targets)[8:(7 + length(top10))] <- paste0("top_", top10)
 
-base <- unique(control_data[, .(aid, age, gender, income, density, hours_est, index, hh_size, children, education, major_city)])
+base <- unique(control_data[, .(aid, age, gender, income, income_scb, income_bank, density, hours_est, index, hh_size, children, education, major_city)])
 sd_index <- sd(base$index, na.rm = T)
 h_per_sd <- dt_coefs[["index"]] * sd_index
 form0 <- sub("^co2e", "y", lm_formula)
@@ -60,7 +62,7 @@ plot(res$per_hour, y, xlim = range(c(res$lo, res$hi)),
   yaxt = "n", pch = 16, col = ifelse(res$p < 0.05, "steelblue", "grey50"),
   xlab = "kg CO2e per extra hour/day (HC3 95% CI, M5 controls)", ylab = "",
   main = "Decomposition: groups + top-10 (annual CO2e)")
-axis(2, y, res$cat, las = 1, cex.axis = 0.8)
+axis(2, y, fulllab(res$cat), las = 1, cex.axis = 0.8)
 segments(res$lo, y, res$hi, y, col = "grey40")
 abline(v = 0, lty = 2, col = "grey")
 dev.off()
@@ -69,7 +71,7 @@ dev.off()
 wf <- res[cat %in% c("transport", "ecom", "digital", "placebo_rent", "placebo_insurance", "vehicles")]
 png(file.path(out_dir, "waterfall.png"), width = 900, height = 600, res = 120)
 par(mar = c(5, 10, 4, 2))
-barplot(setNames(wf$per_hour, wf$cat), horiz = TRUE, las = 1, col = "steelblue",
+barplot(setNames(wf$per_hour, fulllab(wf$cat)), horiz = TRUE, las = 1, col = "steelblue",
   xlab = "kg CO2e per extra hour/day", main = "Contribution per group (M5)")
 abline(v = 0, col = "black")
 dev.off()

@@ -5,6 +5,8 @@ library(lmtest)
 out_dir = file.path(dirname(cache_dir), "output")
 dir.create(out_dir, showWarnings = FALSE)
 
+source("05_labels.R")
+
 # Person x category SEK, annualized + P99 (mirrors 43; drops non-consumption flows)
 kr_annual <- (monthly_kr[category %notin% excluded_kr][keep, on = .(aid, month), nomatch = 0]
   [, .(s = sum(kr), n_months = uniqueN(month)), by = .(aid, category)]
@@ -31,7 +33,7 @@ targets <- c(
   sapply(top10, function(x) x, simplify = FALSE))
 names(targets)[8:(7 + length(top10))] <- paste0("top_", top10)
 
-base <- unique(control_data[, .(aid, age, gender, income, density, hours_est, index, hh_size, children, education, major_city)])
+base <- unique(control_data[, .(aid, age, gender, income, income_scb, income_bank, density, hours_est, index, hh_size, children, education, major_city)])
 sd_index <- sd(base$index, na.rm = T)
 h_per_sd <- dt_coefs[["index"]] * sd_index
 form0 <- sub("^co2e", "y", lm_formula)
@@ -58,7 +60,7 @@ plot(res$per_hour, y, xlim = range(c(res$lo, res$hi)),
   yaxt = "n", pch = 16, col = ifelse(res$p < 0.05, "steelblue", "grey50"),
   xlab = "SEK per extra hour/day (HC3 95% CI, M5 controls)", ylab = "",
   main = "Decomposition in SEK: groups + top-10 (annual spending)")
-axis(2, y, res$cat, las = 1, cex.axis = 0.8)
+axis(2, y, fulllab(res$cat), las = 1, cex.axis = 0.8)
 segments(res$lo, y, res$hi, y, col = "grey40")
 abline(v = 0, lty = 2, col = "grey")
 dev.off()

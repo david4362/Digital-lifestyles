@@ -10,9 +10,12 @@ flow = data.table(
     uniqueN(control_data$aid), uniqueN(lm_data$aid), uniqueN(device_time$aid)))
 fwrite(flow, file.path(out_dir, "sample_flow.csv"))
 
+stagelab <- c(survey = "Survey respondents", complete_q11 = "Complete device battery (q11)",
+  valid_months = "Valid spending months", analysis = "Analysis sample",
+  with_emissions = "With emissions data", e4_reporters = "E4 screen-time reporters")
 png(file.path(out_dir, "sample_flow.png"), width = 900, height = 500, res = 120)
-par(mar = c(5, 10, 4, 2))
-barplot(rev(flow$n), names.arg = rev(flow$stage), horiz = TRUE, las = 1,
+par(mar = c(5, 13, 4, 2))
+barplot(rev(flow$n), names.arg = rev(stagelab[flow$stage]), horiz = TRUE, las = 1,
   col = "steelblue", xlab = "N", main = "Sample flow")
 dev.off()
 

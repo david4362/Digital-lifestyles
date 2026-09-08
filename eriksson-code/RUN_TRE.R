@@ -5,7 +5,7 @@
 cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "eriksson-code", "cache")
 cache_files = c("monthly_kr.parquet", "monthly_co2e.parquet", "demographics.parquet",
   "survey.parquet", "survey_endline.parquet", "users.parquet", "scb.parquet",
-  "transactions.parquet")
+  "transactions.parquet", "bank_income.parquet")
 
 if (all(file.exists(file.path(cache_dir, cache_files)))) {
   message("Cache complete — reading parquet")
