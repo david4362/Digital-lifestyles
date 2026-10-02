@@ -22,7 +22,9 @@ anchor_check <- rbind(
 
 fwrite(anchor_check, file.path(out_dir, "anchor_check.csv"))
 
-# Per-hour vs per-SD: 1 SD(index) = b_hat*sd_index hours
+# Per-hour vs per-SD: 1 SD(index) = b_hat*sd_index hours. The SD is from the
+# anchor (E4 reporter) sample here — this is the anchor's own diagnostic;
+# the analysis-sample conversion h_per_sd in 40 uses the M5 sample instead.
 sd_index <- sd(device_time$index, na.rm = T)
 b_hat <- coef(dt_lm)[["index"]]
 cat(sprintf("R2 bivariate=%.3f controlled=%.3f +city=%.3f | b=%.3f h/index SD=%.3f => %.2f h/SD\n",

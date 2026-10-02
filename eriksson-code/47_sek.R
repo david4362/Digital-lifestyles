@@ -7,35 +7,22 @@ dir.create(out_dir, showWarnings = FALSE)
 
 source("05_labels.R")
 
-# Person x category SEK, annualized + P99 (mirrors 43; drops non-consumption flows)
-kr_annual <- (monthly_kr[category %notin% excluded_kr][keep, on = .(aid, month), nomatch = 0]
-  [, .(s = sum(kr), n_months = uniqueN(month)), by = .(aid, category)]
-  [n_months > min_months]
-  [, y := (s / n_months) * 12]
-  [, .(q99 = quantile(y, .99, na.rm = T), y = y, aid = aid), by = .(category)]
-  [, y := pmin(y, q99)]
-  [, .(aid, category, y)])
+# Person x category SEK, canonical recipe from 20 (mirrors 43; drops
+# non-consumption flows). Rent is the housing-tenure outcome, not a
+# placebo (see 20); insurance is the spending placebo.
+kr_annual <- annualise(monthly_kr[category %notin% excluded_kr], "kr")
 
-transport <- sub("_co2e$", "_kr", c("fuel_co2e", "car_maint_co2e", "car_rent_co2e", "public_trans_co2e",
-  "bus_co2e", "taxi_co2e", "train_bus_co2e", "aviation_co2e", "ferry_co2e",
-  "escooter_co2e", "transport_other_co2e"))
-ecom <- sub("_co2e$", "_kr", c("clothing_co2e", "electronics_co2e", "books_co2e", "toys_co2e",
-  "sports_co2e", "shopping_other_co2e", "home_garden_other_co2e"))
-digital <- "internet_tele_kr"
-vehicles <- "vehicles_kr"
-
-top10 <- kr_annual[, .(m = mean(y, na.rm = T)), by = category][order(-m)][1:10, category]
+top10 <- kr_annual[, .(m = mean(y, na.rm = TRUE)), by = category][order(-m)][1:10, category]
 
 targets <- c(
-  list(transport = transport, ecom = ecom, digital = digital,
-    placebo_rent = "rent_kr", placebo_insurance = "insurance_kr",
-    vehicles = vehicles, total = unique(kr_annual$category)),
+  list(transport = transport_kr, ecom = ecom_kr, digital = digital_kr,
+    rent = "rent_kr", placebo_insurance = "insurance_kr",
+    vehicles = vehicles_kr, total = unique(kr_annual$category)),
   sapply(top10, function(x) x, simplify = FALSE))
 names(targets)[8:(7 + length(top10))] <- paste0("top_", top10)
 
-base <- unique(control_data[, .(aid, age, gender, income, income_scb, income_bank, density, hours_est, index, hh_size, children, education, major_city)])
-sd_index <- sd(base$index, na.rm = T)
-h_per_sd <- dt_coefs[["index"]] * sd_index
+base <- control_data[, .(aid, age, gender, income, income_scb, income_bank, density,
+  hours_est, hh_size, children, education, major_city)]
 form0 <- sub("^co2e", "y", lm_formula)
 
 res <- rbindlist(lapply(names(targets), function(nm) {

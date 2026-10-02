@@ -17,7 +17,7 @@ abline(v = 0, lty = 2)
 dev.off()
 
 # Pres 2: decomp, groups + total only
-show <- c("total", "transport", "ecom", "digital", "placebo_rent", "placebo_insurance", "vehicles")
+show <- c("total", "transport", "ecom", "digital", "placebo_insurance", "vehicles")
 d <- res[cat %in% show]
 png(file.path(out_dir, "pres_decomp.png"), width = 1200, height = 700, res = 150)
 par(mar = c(5, 14, 4, 2), cex.axis = 1.1, cex.lab = 1.2)

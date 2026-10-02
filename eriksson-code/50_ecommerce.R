@@ -5,24 +5,12 @@ library(lmtest)
 out_dir = file.path(dirname(cache_dir), "output")
 dir.create(out_dir, showWarnings = FALSE)
 
-# Person x category annual tables (same recipe as 43/47)
-ann <- function(df, val) {
-  (df[keep, on = .(aid, month), nomatch = 0]
-   [, .(s = sum(get(val)), n_months = uniqueN(month)), by = .(aid, category)]
-   [n_months > min_months]
-   [, y := (s / n_months) * 12]
-   [, .(q99 = quantile(y, .99, na.rm = T), y = y, aid = aid), by = .(category)]
-   [, y := pmin(y, q99)]
-   [, .(aid, category, y)])
-}
-ca <- ann(monthly_co2e, "co2e")
-ka <- ann(monthly_kr[category %notin% excluded_kr], "kr")
+# Person x category annual tables: canonical recipe from 20
+ca <- annualise(monthly_co2e, "co2e")
+ka <- annualise(monthly_kr[category %notin% excluded_kr], "kr")
 
-ecom_co2e <- c("clothing_co2e", "electronics_co2e", "books_co2e", "toys_co2e", "sports_co2e",
-  "shopping_other_co2e", "home_garden_other_co2e")
-ecom_kr <- sub("_co2e$", "_kr", ecom_co2e)
-
-# Wide person table: ecom level, rest (= total - ecom), ecom share
+# Wide person table: ecom level, rest (= total - ecom), ecom share.
+# E-commerce groups (ecom_co2e / ecom_kr) are defined in 20.
 wide <- function(dt, cats, prefix) {
   out <- dt[category %in% cats, .(e = sum(y)), by = aid][dt[, .(t = sum(y)), by = aid], on = "aid"]
   setnames(out, c("e", "t"), paste0(c("ecom_", "tot_"), prefix))
@@ -32,10 +20,10 @@ wide <- function(dt, cats, prefix) {
 }
 pers <- wide(ca, ecom_co2e, "co2e")[wide(ka, ecom_kr, "kr"), on = "aid"]
 
-base <- unique(control_data[, .(aid, age, gender, income, income_q, income_scb, income_bank, density,
-  hours_est, index, hh_size, children, education, major_city)])
-sd_index <- sd(base$index, na.rm = T)
-h_per_sd <- dt_coefs[["index"]] * sd_index
+# income_q for the quintile stratification below, index for the digital
+# quintile descriptives; neither enters the model formulas
+base <- control_data[, .(aid, age, gender, income, income_q, income_scb, income_bank, density,
+  hours_est, index, hh_size, children, education, major_city)]
 form0 <- sub("^co2e", "y", lm_formula)
 d <- base[pers, on = "aid", nomatch = 0]
 
@@ -83,16 +71,17 @@ panel(chk[grepl("^sh_", outcome)], "share", "E-com share of total")
 dev.off()
 
 # Within income quintile (stratified, M5 minus income): survives if not just income
-f_noinc <- sub("+income+income_scb+income_bank", "", form0, fixed = TRUE)
+f_noinc <- update(as.formula(form0), . ~ . - income - income_scb - income_bank)
 qr <- rbindlist(lapply(levels(d$income_q), function(q) {
   rbindlist(lapply(c("ecom_co2e", "ecom_kr"), function(yc) {
     dd <- d[income_q == q]
     dd[, y := get(yc)]
-    m <- lm(as.formula(f_noinc), dd)
+    m <- lm(f_noinc, dd)
     ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))
     e <- ct["hours_est", ]
     data.table(income_q = q, outcome = yc, n = nobs(m), mean = mean(dd$y),
-      per_hour = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]])
+      per_hour = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
+      per_sd = e[["Estimate"]] * h_per_sd)
   }))
 }))
 qr[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
@@ -118,7 +107,8 @@ dev.off()
 # Descriptives: do high-digital households just earn and spend more?
 d[, dig_q := cut(index, quantile(index, probs = seq(0, 1, 0.2), na.rm = T),
   labels = paste0("D", 1:5), include.lowest = T)]
-inc0 <- unique(users[, .(aid, `income-level`)])
+# Latest user record per aid (as in 40), not every historical record
+inc0 <- users_latest[, .(aid, `income-level`)]
 desc <- d[inc0, on = "aid", nomatch = 0][, .(n = .N, income = mean(`income-level`),
   tot_kr = mean(tot_kr), tot_co2e = mean(tot_co2e),
   sh_kr = mean(sh_kr), sh_co2e = mean(sh_co2e)), by = dig_q]

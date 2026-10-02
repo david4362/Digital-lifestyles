@@ -1,0 +1,2 @@
+specification,n,n_deso,n_deso_used,median_people_per_deso,people_in_singleton_deso,per_hour,se,p,per_sd,lo,hi
+M5 + DeSO fixed effects (desos with >= 2 people),3206,1620,631,1,989,921.456493067828,151.007362094183,1.20578649046286e-09,291.918076652781,625.482063363228,1217.43092277243

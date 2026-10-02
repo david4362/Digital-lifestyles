@@ -9,8 +9,8 @@
 #     or hours entered in the minutes field)
 #   - partial response (endline attrition)
 #
-# Output: cache/mock_endline.rds  (data frame: aid, E4_hours, E4_minutes,
-#         screen_min = parsed minutes/day)
+# Output: cache/mock_endline.rds  (data frame: aid, E4_hours, E4_minutes —
+#         screen_min is derived by the validity script)
 
 suppressMessages(library(dplyr))
 source("00_constants.R")
@@ -19,7 +19,6 @@ set.seed(20260718)
 message("Generating mock endline survey ...")
 
 # Use baseline respondents; ~65% answer the endline.
-if (!file.exists(CACHE_FILE)) stop("Run 00_load_data.R first (cache missing).")
 load(CACHE_FILE)  # dsurvey etc.
 
 base <- dsurvey |> select(aid, age, sex) |> filter(!is.na(age))
@@ -46,8 +45,7 @@ screen_min[hours_err] <- round(screen_min[hours_err] / 60)
 endline <- end |>
   transmute(aid,
             E4_hours   = screen_min %/% 60,
-            E4_minutes = screen_min %% 60,
-            screen_min = E4_hours * 60 + E4_minutes)
+            E4_minutes = screen_min %% 60)
 
 saveRDS(endline, file.path(CACHE_DIR, "mock_endline.rds"))
 message(sprintf("Wrote cache/mock_endline.rds: %d respondents (%.0f%% of baseline)",

@@ -34,8 +34,7 @@ is_mock <- grepl("mock", basename(ENDLINE_FILE))
 if (is_mock) message(">>> USING MOCK ENDLINE - results validate the pipeline, not the data. <<<")
 
 d <- endline |>
-  { \(x) if ("screen_min" %in% names(x)) x
-         else mutate(x, screen_min = E4_hours * 60 + E4_minutes) }() |>
+  mutate(screen_min = E4_hours * 60 + E4_minutes) |>
   left_join(dsurvey |> select(aid, age, sex), by = "aid") |>
   filter(!is.na(screen_min))
 

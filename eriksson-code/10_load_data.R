@@ -76,9 +76,14 @@ deso <- fread(file.path(scb_dir, "JE_Lev_Valdelt_EU_2024.txt"))[, .(LopNr, DeSO)
 names(deso)[2] <- "deso"
 deso_density <- fread(file.path(scb_dir, "deso_2018_density.csv"))
 edu_level <- fread(file.path(scb_dir, 'JE_Lev_LISA_2024.txt'))
-inc_2023 <- fread(file.path(scb_dir, 'JE_Lev_LISA_2023.txt'), select = c("LopNr", "DispInk04"))
-stopifnot("DispInk04" %in% names(inc_2023))
+inc_2023 <- fread(file.path(scb_dir, 'JE_Lev_LISA_2023.txt'), select = c("LopNr", "DispInk04",
+  "HuvInkKallaAlt", "StudDelt", "StudDeltTyp", "BostBidrFam", "ArbSokNov", "ArbLos", "ALosDag"))
 scb <- scb[deso, on = "LopNr"][deso_density, on = "deso"][edu_level, on = "LopNr"][inc_2023, on = "LopNr"]
+# The register joins above keep every register row, so records for people
+# outside the study linkage get aid = NA; drop them so the cached table is
+# participants only (downstream joins are on aid, so this changes nothing
+# analytically).
+scb <- scb[!is.na(aid)]
 write_parquet(scb, file.path(cache_dir, "scb.parquet"))
 
 ## Load bank-registered income (raw incoming transactions -> general income level,

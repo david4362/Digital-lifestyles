@@ -6,7 +6,7 @@ modellab <- c(M0_bivariate = "Bivariate", M1_sex_age = "+ Sex & age",
   M4_density = "+ Log density", M5_city = "+ Major city (full)")
 
 grouplab <- c(total = "Total", transport = "Transport", ecom = "E-commerce intensive",
-  digital = "Digital services", placebo_rent = "Rent (placebo)",
+  digital = "Digital services", rent = "Rent (housing tenure)",
   placebo_insurance = "Insurance (placebo)", vehicles = "Vehicles")
 
 # Leaf stems (without top_ prefix / _co2e|_kr suffix) -> labels

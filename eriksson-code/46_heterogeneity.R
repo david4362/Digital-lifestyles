@@ -5,10 +5,14 @@ library(lmtest)
 out_dir = file.path(dirname(cache_dir), "output")
 dir.create(out_dir, showWarnings = FALSE)
 
-# Age bands need raw age (control_data$age is centered)
-bands = demographics[, .(aid, band = cut(age, c(18, 30, 45, 65, Inf),
+# Heterogeneity on the fixed M5 complete-case sample (same principle as the
+# stepwise ladder in 42). Age bands need raw age (analysis_data$age is
+# centered); demographics_unique is the one-row-per-aid table from 20 — the
+# raw demographics table has duplicate rows for some aids, which would
+# double-count those people here.
+bands = demographics_unique[, .(aid, band = cut(age, c(18, 30, 45, 65, Inf),
   labels = c("18-29", "30-44", "45-64", "65+"), right = FALSE))]
-d = lm_data[bands, on = "aid", nomatch = 0]
+d = analysis_data[bands, on = "aid", nomatch = 0]
 
 margins = rbindlist(lapply(c("band", "gender", "major_city"), function(v) {
   m = lm(update(as.formula(lm_formula), paste(". ~ . + hours_est:", v)), d)
@@ -27,8 +31,8 @@ margins = rbindlist(lapply(c("band", "gender", "major_city"), function(v) {
       e = cf[["hours_est"]] + cf[[nm]]
       s = sqrt(V["hours_est", "hours_est"] + V[nm, nm] + 2 * V["hours_est", nm])
     }
-    data.table(mod = v, level = as.character(lv[i]), est = e, se = s,
-      p = 2 * pnorm(abs(e / s), lower.tail = FALSE))
+    data.table(mod = v, level = as.character(lv[i]), n = nobs(m), est = e, se = s,
+      p = 2 * pt(-abs(e / s), df = df.residual(m)), per_sd = e * h_per_sd)
   }))
 }))
 margins[, `:=`(lo = est - 1.96 * se, hi = est + 1.96 * se)]

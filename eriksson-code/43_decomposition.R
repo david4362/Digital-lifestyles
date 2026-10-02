@@ -7,36 +7,22 @@ dir.create(out_dir, showWarnings = FALSE)
 
 source("05_labels.R")
 
-# Person x category, annualized + P99 per category (same as 20_filter)
-cat_annual <- (monthly_co2e[keep, on = .(aid, month), nomatch = 0]
-  [, .(s = sum(co2e), n_months = uniqueN(month)), by = .(aid, category)]
-  [n_months > min_months]
-  [, y := (s / n_months) * 12]
-  [, .(q99 = quantile(y, .99, na.rm = T), y = y, aid = aid), by = .(category)]
-  [, y := pmin(y, q99)]
-  [, .(aid, category, y)])
+# Person x category annual CO2e: the canonical recipe from 20
+# (>= min_months, annualized, P99 winsor) — same rule as the headline total
+cat_annual <- annualise(monthly_co2e, "co2e")
 
-# Hypothesis groups (leaf names from metadata.md)
-transport <- c("fuel_co2e", "car_maint_co2e", "car_rent_co2e", "public_trans_co2e", "bus_co2e",
-  "taxi_co2e", "train_bus_co2e", "aviation_co2e", "ferry_co2e", "escooter_co2e", "transport_other_co2e")
-ecom <- c("clothing_co2e", "electronics_co2e", "books_co2e", "toys_co2e", "sports_co2e",
-  "shopping_other_co2e", "home_garden_other_co2e")
-digital <- c("internet_tele_co2e")
-placebo <- c("rent_co2e", "insurance_co2e")
-vehicles <- c("vehicles_co2e")
-
-top10 <- cat_annual[, .(m = mean(y, na.rm = T)), by = category][order(-m)][1:10, category]
+# Hypothesis groups: category vectors defined in 20
+top10 <- cat_annual[, .(m = mean(y, na.rm = TRUE)), by = category][order(-m)][1:10, category]
 
 targets <- c(
-  list(transport = transport, ecom = ecom, digital = digital,
-    placebo_rent = "rent_co2e", placebo_insurance = "insurance_co2e",
-    vehicles = vehicles, total = unique(cat_annual$category)),
+  list(transport = transport_co2e, ecom = ecom_co2e, digital = digital_co2e,
+    placebo_insurance = placebo_co2e,
+    vehicles = vehicles_co2e, total = unique(cat_annual$category)),
   sapply(top10, function(x) x, simplify = FALSE))
-names(targets)[8:(7 + length(top10))] <- paste0("top_", top10)
+names(targets)[7:(6 + length(top10))] <- paste0("top_", top10)
 
-base <- unique(control_data[, .(aid, age, gender, income, income_scb, income_bank, density, hours_est, index, hh_size, children, education, major_city)])
-sd_index <- sd(base$index, na.rm = T)
-h_per_sd <- dt_coefs[["index"]] * sd_index
+base <- control_data[, .(aid, age, gender, income, income_scb, income_bank, density,
+  hours_est, hh_size, children, education, major_city)]
 form0 <- sub("^co2e", "y", lm_formula)
 
 res <- rbindlist(lapply(names(targets), function(nm) {
@@ -68,7 +54,7 @@ abline(v = 0, lty = 2, col = "grey")
 dev.off()
 
 # Waterfall: group contributions vs total (not exact sum, top-10 overlap)
-wf <- res[cat %in% c("transport", "ecom", "digital", "placebo_rent", "placebo_insurance", "vehicles")]
+wf <- res[cat %in% c("transport", "ecom", "digital", "placebo_insurance", "vehicles")]
 png(file.path(out_dir, "waterfall.png"), width = 900, height = 600, res = 120)
 par(mar = c(5, 10, 4, 2))
 barplot(setNames(wf$per_hour, fulllab(wf$cat)), horiz = TRUE, las = 1, col = "steelblue",

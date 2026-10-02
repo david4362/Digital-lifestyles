@@ -21,7 +21,7 @@ This project **reuses the Konsumtionskollen data** (bank transactions categorize
 - **Local mock data** (realistic structure, partly scrambled real values — treat as non-substantive): `../Konsumtionskollen/default_filter.RData` (5.2 GB, git-ignored there). Contains `survey` (4,353 × 114 — full questionnaire incl. the `q15_*` time-use battery), `users` (225 cols incl. age, sex, education, pop density), `transactions` (3.5M × 166), `monthly_emissions`, `monthly_spending`, `monthly_incomes`.
 - **Real data**: in the SCB TRE (Trusted Research Environment). Scripts must run unchanged there; follow the loader pattern from `Konsumtionskollen/10_load_data.R`.
 
-Because the RData is 5.2 GB, `00_load_data.R` extracts only what this project needs and caches it in `cache/digital_cache.RData` (git-ignored). Delete the cache to force a re-extract.
+The 5.2 GB local mock RData was only used by the archived exploratory scripts. The analysis pipeline reads the parquet cache built from the raw TRE data by `eriksson-code/10_load_data.R`; for local pipeline testing without real data, use `eriksson-code/RUN_MOCK.R` (synthetic data from `eriksson-code/00_mock_data.R`).
 
 ### Key variables (survey)
 
@@ -42,24 +42,25 @@ Until the endline data/codebook is available locally, development proceeds with 
 
 ## Pipeline
 
+The analysis pipeline lives in **`eriksson-code/`** (real data in the SCB TRE;
+run with `Rscript RUN_TRE.R` from that directory). Scripts are numbered and
+sourced in order:
+
 | Script | Purpose |
 |---|---|
-| `00_constants.R` | Paths, category groupings (transport / e-commerce-intensive / digital services / placebo), plot theme |
-| `00_load_data.R` | Loads Konsumtionskollen RData (or cache), extracts survey + users + person-level annual CO2e/SEK by category |
-| `10_screen_time_validity.R` | **Step 1 (current):** validity check of self-reported/device-assisted screen time vs. Swedish benchmarks |
-| *(planned)* `20_digital_index.R` | Digital lifestyle intensity index, anchored by screen time |
-| *(planned)* `30_gradient.R` | Net gradient models (total CO2e ~ screen-time hours + controls) |
-| *(planned)* `40_decomposition.R` | Category-level gradients incl. placebos |
-| *(planned)* `50_mechanism.R` | Out-of-home leisure mediation of the transport gradient |
+| `RUN_TRE.R` | Entry point: reads the parquet cache (or builds it via `10_load_data.R`), then sources 20–63 in order |
+| `RUN_MOCK.R` | Local end-to-end pipeline test on `00_mock_data.R` (no real data, throwaway output dir) |
+| `00_mock_data.R` | Synthetic dataset for local pipeline testing |
+| `10_load_data.R` / `11_read_cache.R` | Raw TRE data → parquet cache / cache reader |
+| `20_filter_participants.R` | Sample filters; the shared `annualise()` outcome recipe and the category groups used by all decomposition scripts |
+| `30_time_estimate.R` | E4 screen-time anchor; the (single) z-scaled device-use index and `endline_latest` |
+| `40_control_vars.R` | Controls, anchored `hours_est`, the fixed M5 complete-case sample, `h_per_sd` |
+| `41`–`64` | Model checks, stepwise ladder, decompositions (CO2e/SEK), heterogeneity, equivalence, coverage, e-commerce, E4/item-level robustness, E1 mechanisms, DeSO FE, index variants/weightings, rent among stable renters, short/long transport split, tenure/life-stage confound |
 
-Run scripts in numeric order from the project root:
+Outputs go to `output/` next to the TRE cache.
 
-```r
-source("00_load_data.R")      # slow first time (~minutes), fast after cache exists
-source("10_screen_time_validity.R")
-```
-
-Outputs go to `output/` (figures, CSV tables).
+The old exploratory scripts (pre-codebook screen-time search against the local
+mock RData) are archived in `archive/` — do not run them.
 
 ## Conventions
 

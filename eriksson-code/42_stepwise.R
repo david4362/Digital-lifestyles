@@ -7,11 +7,16 @@ dir.create(out_dir, showWarnings = FALSE)
 
 source("05_labels.R")
 
-# Both scales equally: hours_est and index_sd are linear rescalings
-sd_index <- sd(lm_data$index, na.rm = T)
-b_hat <- dt_coefs[["index"]]
-h_per_sd <- b_hat * sd_index
-lm_data[, index_sd := index / sd_index]
+# All specifications use the fixed M5 complete-case sample created in 40.
+# This prevents the coefficient ladder from changing its participants as
+# controls are added. The per-SD conversion h_per_sd (hours per SD of the
+# index in this same sample) is defined in 40.
+stepwise_n <- data.table(
+  sample = "M0-M5 common complete-case sample",
+  n_rows = nrow(analysis_data),
+  n_aid = uniqueN(analysis_data$aid)
+)
+fwrite(stepwise_n, file.path(out_dir, "stepwise_sample.csv"))
 
 specs <- list(
   M0_bivariate = "co2e ~ hours_est",
@@ -22,7 +27,7 @@ specs <- list(
   M5_city = lm_formula)
 
 rows <- lapply(names(specs), function(nm) {
-  m <- lm(as.formula(specs[[nm]]), lm_data)
+  m <- lm(as.formula(specs[[nm]]), data = analysis_data)
   ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))
   e <- ct["hours_est", ]
   data.table(model = nm, n = nobs(m), r2 = summary(m)$r.squared,

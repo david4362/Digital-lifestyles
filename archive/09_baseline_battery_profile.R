@@ -1,5 +1,8 @@
-# 10_screen_time_validity.R — Step 1: is the self-reported (device-assisted)
-# screen-time item legit?
+# 09_baseline_battery_profile.R — Step 0 (pre-codebook, SUPERSEDED by the
+# eriksson-code pipeline): profile the q15_* candidate battery to nominate a
+# screen-time anchor item from empirical signatures. The 2026-08-21 codebook
+# later showed q15_* are SEK price estimates, not time use — kept only as a
+# record of the nomination logic.
 #
 # The codebook is pending, so this script does two jobs:
 #   A. Nominate which q15_* item is the screen-time anchor, from empirical

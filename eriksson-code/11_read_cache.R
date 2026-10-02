@@ -8,5 +8,6 @@ survey <- read_parquet(file.path(cache_dir, "survey.parquet"))
 survey_endline <- read_parquet(file.path(cache_dir, "survey_endline.parquet"))
 users <- read_parquet(file.path(cache_dir, "users.parquet"))
 scb <- read_parquet(file.path(cache_dir, "scb.parquet"))
-transactions <- read_parquet(file.path(cache_dir, "transactions.parquet"))
 person_bank <- read_parquet(file.path(cache_dir, "bank_income.parquet"))
+# transactions.parquet is deliberately not loaded: no analysis script uses
+# it, and it is by far the largest table in the cache.
