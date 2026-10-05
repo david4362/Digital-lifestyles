@@ -2,9 +2,6 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-out_dir = file.path(dirname(cache_dir), "output")
-dir.create(out_dir, showWarnings = FALSE)
-
 # Short- vs long-distance transport. The transport composite tested in C3
 # mixes daily ground mobility (the margin work-from-home should act on)
 # with long-distance leisure travel (aviation, ferry — which it should
@@ -26,14 +23,14 @@ bucket = function(cats) {
 
 form0 = sub("^co2e", "y", lm_formula)
 base = control_data[, .(aid, age, gender, income, income_scb, income_bank, density,
-  hours_est, hh_size, children, education, major_city)]
+  index, hh_size, children, education, major_city)]
 
 fit_row = function(d, outcome, spec) {
   m = lm(as.formula(form0), d)
-  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["hours_est", ]
+  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
   data.table(outcome = outcome, spec = spec, n = nobs(m), mean = mean(d$y),
-    per_hour = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
-    per_sd = ct[["Estimate"]] * h_per_sd)
+    per_sd = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
+    per_hour = ct[["Estimate"]] / h_per_sd)
 }
 
 # The three buckets on the full M5 sample (44/47-style: lm drops the
@@ -53,21 +50,21 @@ fit_wfh = function(cats, outcome) {
   d = e1[bucket(cats), on = "aid", nomatch = 0]
   m0 = lm(as.formula(form0), d)
   m1 = lm(update(as.formula(form0), . ~ . + work_home), d)
-  ct0 = coeftest(m0, vcov. = vcovHC(m0, type = "HC3"))["hours_est", ]
-  ct1 = coeftest(m1, vcov. = vcovHC(m1, type = "HC3"))["hours_est", ]
+  ct0 = coeftest(m0, vcov. = vcovHC(m0, type = "HC3"))["index", ]
+  ct1 = coeftest(m1, vcov. = vcovHC(m1, type = "HC3"))["index", ]
   rbind(
     data.table(outcome = outcome, spec = "M5 endline, without WFH", n = nobs(m0),
-      mean = mean(d$y), per_hour = ct0[["Estimate"]], se = ct0[["Std. Error"]],
-      p = ct0[["Pr(>|t|)"]], per_sd = ct0[["Estimate"]] * h_per_sd),
+      mean = mean(d$y), per_sd = ct0[["Estimate"]], se = ct0[["Std. Error"]],
+      p = ct0[["Pr(>|t|)"]], per_hour = ct0[["Estimate"]] / h_per_sd),
     data.table(outcome = outcome, spec = "M5 endline, with WFH", n = nobs(m1),
-      mean = mean(d$y), per_hour = ct1[["Estimate"]], se = ct1[["Std. Error"]],
-      p = ct1[["Pr(>|t|)"]], per_sd = ct1[["Estimate"]] * h_per_sd))
+      mean = mean(d$y), per_sd = ct1[["Estimate"]], se = ct1[["Std. Error"]],
+      p = ct1[["Pr(>|t|)"]], per_hour = ct1[["Estimate"]] / h_per_sd))
 }
 
 split_wfh = rbind(fit_wfh(short_co2e, "short"), fit_wfh(long_co2e, "long"))
 
 transport_split = rbind(split_m5, split_wfh)
-transport_split[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
+transport_split[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(transport_split, file.path(out_dir, "transport_split.csv"))
 
 # Commute-field usability diagnostic (users-table profile fields,

@@ -119,6 +119,92 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-10-05 — v2: preregistered index (minus e-commerce/online selling) as
+  the main analysis; supervisor email implemented.** Full restructure of the
+  exposure line after the supervisor's email (pre-registration mistakenly
+  included e-commerce/online-selling in the index — they measure the
+  purchase channel itself, so part of the outcome was built into the
+  exposure). Six tasks, all implemented and mock-verified (full RUN_MOCK
+  20–66 clean; 12 post-run invariant checks pass):
+  - **Main index (v2) = preregistration construction minus q11b_7/q11b_8**
+    (11 items): items z-scaled with ANALYSIS-sample mean/SD, unweighted mean
+    of answered items, re-standardized (SD 1 in the analysis sample → equal
+    effective item weights in-sample). Item sets defined once in 20
+    (`index_main_items`, `index_nocalls_items`, halves). Battery gate = ≥ 8
+    of 11 answered (prereg tolerance of ≤ 3 missing kept as the set
+    shrank; v1 required the complete 13-item battery). Calls (q11b_2) kept
+    in the main index; 10-item no-calls variant runs as the SECOND M0–M5
+    ladder in stepwise_table (plus variants rows in 59). Supervisor's
+    normalization question answered: items were always z-scaled first;
+    what moved v1's numbers was the SCALING POPULATION (battery sample vs
+    analysis sample → unequal in-sample item SDs) — quantified in
+    index_variants (v1: 243 vs 185 kg/SD).
+  - **Per index SD is the headline scale everywhere.** Models run on
+    `index` (z); every `per_hour` column is derived (per_sd / h_per_sd) and
+    secondary — the anchor is weak (v1 bivariate R² = 0.016) and E4 carries
+    no gradient of its own (v1: +29 kg/h, p=.11 vs index +243 kg/SD;
+    difference p=.0026 in 60). hours_est stays for 52's like-for-like
+    E4-vs-index comparison in hours only.
+  - **Hour calibration audited (task 2).** The v1 "inconsistency"
+    (0.943·0.391 = 0.369 vs the tables' 0.317) was a readability gap, not
+    arithmetic: the pipeline always used the BIVARIATE anchor (b = 0.8109
+    h per raw index unit; 0.8109 × 0.39065 = 0.3168 = the tables' ratio
+    exactly) but anchor_check.csv listed three models without marking which
+    one feeds the pipeline. Now: anchor_check has `used_in_pipeline` (only
+    bivariate), and 41 writes **calibration_check.csv** — anchor b per
+    index SD, index SDs (analysis = 1 by construction, anchor sample, raw
+    composite), per-raw-unit slopes, derived AND directly-fit per-hour
+    slopes, plus three internal consistency checks (all TRUE).
+  - **New 66_account_coverage.R (task 3):** M5 + bank accounts (linear) /
+    account FE; M5 within exactly 1/2/3/4+ accounts (strata n<30 skipped,
+    64 convention); spending/income and CO2e/income ratio outcomes; M5
+    restricted to observed spending 50–150% (and 25–200%) of register
+    income; every row exports per_sd, SE, CI, p, n, per_hour and
+    pct_change_vs_reference vs the same-outcome-family reference.
+    account_groups_desc.csv adds per-group descriptives. Motivated by v1
+    coverage_check (index → +0.29 accounts/h, p=.0004).
+  - **Item-level forest fixed (task 4).** v1 bug: axis labels were built
+    from `rev()`ed factor levels while points were plotted in table order,
+    so every label sat on another item's estimate ("Social media" showed
+    Streaming's −86; CSV said +206). Now the figure is built directly from
+    the final table rows (`fig <- item_level[match(rev(item_names), item)]`),
+    labels come from those same rows, stopifnot asserts the
+    label↔estimate↔CI mapping, and **item_figure_check.csv** exports the
+    audit (y position ↔ item ↔ estimate/lo/hi). item_level gained
+    `in_main_index`.
+  - **New 65_e4_diagnostics.R (task 5):** distribution + h:mm heaping + 18h
+    rule drops; anchor b/SE/R²/p per index SD; Pearson r E4-vs-index and
+    E4-vs-age; **e4_item_correlations.csv** (E4 vs each of the 13 items,
+    smartphone closest); E4-vs-total-CO2e M5 row. **No iOS/Android platform
+    variable exists** (checked the endline questionnaire — E4 instructs
+    both OS paths but records only h:mm — and all cached tables' field
+    lists); a split needs app-side data. No second (non-device-assisted)
+    self-reported screen-time item exists in either wave — the battery IS
+    the self-report side.
+  - **Reproducibility (task 6):** all outputs go to a fresh versioned dir
+    **`output_v2/`** (defined once in 20; per-script out_dir definitions
+    removed) so old (v1) and new results cannot mix; RUN_TRE/RUN_MOCK copy
+    **EXPORT_README.md** (index definitions + samples + scales) and
+    **export_data_dictionary.csv** (every reported column of all 50 CSVs
+    documented) into the export and write **run_info.csv** (date, R
+    version, item lists, battery rule, thresholds). Repo: TRE_output/ stays
+    as the archived v1 export; next TRE run copies out output_v2 →
+    TRE_output_v2.
+  - **Mock fixes found by the v2 RUN_MOCK:** 40's formula paste needed a
+    VECTOR + collapse (scalar args ignore collapse — 42 crashed on
+    "co2e~age gender"); 54's item_level must model `co2e` (no `y` in
+    analysis_data); 66/49/57 joins had participants on the wrong side
+    (X[i] keeps i's rows — non-analysis users leaked in); mock
+    recalibrated to the real spec (SEK ≈ 75 per kg CO2e → observed spending
+    ≈ 330k/yr; DispInk04 planted in 100-SEK units) so the coverage/band
+    analyses are exercised; band strata n<30 skipped.
+  - NEXT TRE RUN: expect the headline per_sd on the 11-item index to be the
+    new main number (v1 full-prereg 13-item was +180 kg/SD; the 11-item
+    value will differ — watch index_variants for the ecom-item
+    contribution), anchor b (h/index SD) to stay weak, all calibration
+    checks TRUE, and the account-coverage rows to show how much of the
+    gradient survives.
+
 - **2026-09-25 — New 64_tenure_lifestage.R (tenure/life-stage confound).**
   Student/apartment/carless composition as alternative explanation for the
   headline: descriptives by digital quintile (tenure_desc.csv, long format

@@ -6,12 +6,12 @@ source("05_labels.R")
 # contrast (kg/yr); VERIFY against published TRE numbers before citing.
 # K_GAP is the contrast's implied gap in SDs of the digital index, so the
 # expected per-hour transport gradient is D / (K_GAP * h_per_sd) and
-# delta2 below is 10% of it. h_per_sd is defined in 40.
+# delta2 below is 10% of it. h_per_sd (hours per index SD, the anchor slope
+# from 40; audited in calibration_check.csv) is defined in 40. The bounds
+# are per hour per the pre-registration, so the TOST runs on the per-hour
+# columns of the decomposition table.
 D_NOCAR = 90.5
 K_GAP = 2
-
-out_dir = file.path(dirname(cache_dir), "output")
-dir.create(out_dir, showWarnings = FALSE)
 
 dec = fread(file.path(out_dir, "decomp_table.csv"))
 pl = dec[cat %in% c("placebo_insurance")]

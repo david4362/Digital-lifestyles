@@ -57,10 +57,12 @@ demographics = rbind(demographics,
     gender = gender[match(dup_aid, aid)], postort = postort[match(dup_aid, aid)]))
 # Income mildly correlated with digital intensity (confounding like real data)
 income_level = round(exp(rnorm(n, 12.6 + 0.15 * z, 0.5)))
+# DispInk04 is in 100-SEK units in the real SCB register (see 49): planted
+# on the same scale so register_income = DispInk04 * 100 lands in SEK/yr.
 scb = data.table(aid = aid, density = rlnorm(n, 7),
   deso = paste0("d", sample(1:100, n, replace = TRUE)),
   Sun2020Niva = sample(c(100, 200, 310, 410, 520, 620), n, replace = TRUE),
-  DispInk04 = round(income_level * exp(rnorm(n, 0, 0.2))),
+  DispInk04 = round(income_level / 100 * exp(rnorm(n, 0, 0.2))),
   FoDelt = as.integer(runif(n) < 0.06),
   HSDelt = as.integer(runif(n) < 0.10 + 0.25 * (age < 30)),
   StudDelt = as.integer(runif(n) < 0.08 + 0.20 * (age < 30)),
@@ -107,7 +109,10 @@ grid[, y := base[category] + grad[category] * h + inc_eff[aid] * (category != "r
 grid[, y := pmax(1, y + rnorm(.N, sd = 15))]
 grid[, monthly := y / 12 * (1 + rnorm(.N, sd = 0.1))]
 monthly_co2e = grid[, .(aid, month, category, co2e = pmax(0, monthly))]
-monthly_kr = grid[, .(aid, month, category = sub("_co2e$", "_kr", category), kr = pmax(50, monthly * 15 + rnorm(.N, sd = 50)))]
+# SEK at ~40-45 SEK per kg CO2e (real sample: ~333k SEK observed spending
+# against ~8t CO2e), so observed spending and register income land on the
+# same scale and the spending/income ratio bands in 66 are exercised
+monthly_kr = grid[, .(aid, month, category = sub("_co2e$", "_kr", category), kr = pmax(50, monthly * 75 + rnorm(.N, sd = 50)))]
 
 # Bank-registered income (mirrors kk-handels-income CSV: aid, date, category, income)
 bank_cat = c("salary", "benefits", "other")
@@ -144,4 +149,6 @@ monthly_kr[category == "rent_kr" & aid %in% sample(aid, 10) &
 monthly_kr[category == "rent_kr" & aid %in% sample(aid, 10) &
   month %in% months[c(1, 12)], kr := 0]
 
-rm(grid, q, base, grad, inc_eff, major, p, status, h, mnt, ov, low, time, z, income_level, age, gender, postort, months, n, aid, q11_names, bank_cat, kk_income, monthly_bank, dup_aid, cd, u, v)
+rm(grid, q, base, grad, inc_eff, major, p, status, h, mnt, ov, low, time, z, income_level,
+  age, gender, postort, months, n, aid, q11_names, bank_cat, kk_income, monthly_bank,
+  dup_aid, cd, u, v)

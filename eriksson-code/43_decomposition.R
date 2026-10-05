@@ -2,9 +2,6 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-out_dir = file.path(dirname(cache_dir), "output")
-dir.create(out_dir, showWarnings = FALSE)
-
 source("05_labels.R")
 
 # Person x category annual CO2e: the canonical recipe from 20
@@ -22,7 +19,7 @@ targets <- c(
 names(targets)[7:(6 + length(top10))] <- paste0("top_", top10)
 
 base <- control_data[, .(aid, age, gender, income, income_scb, income_bank, density,
-  hours_est, hh_size, children, education, major_city)]
+  index, hh_size, children, education, major_city)]
 form0 <- sub("^co2e", "y", lm_formula)
 
 res <- rbindlist(lapply(names(targets), function(nm) {
@@ -31,22 +28,23 @@ res <- rbindlist(lapply(names(targets), function(nm) {
   d <- base[yy, on = "aid", nomatch = 0]
   m <- lm(as.formula(form0), d)
   ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))
-  e <- ct["hours_est", ]
+  e <- ct["index", ]
   data.table(cat = nm, n = nobs(m), df = df.residual(m), mean = mean(d$y),
-    per_hour = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
-    per_sd = e[["Estimate"]] * h_per_sd)
+    per_sd = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
+    per_hour = e[["Estimate"]] / h_per_sd, se_hour = e[["Std. Error"]] / h_per_sd)
 }))
-res[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
-setorder(res, per_hour)
+res[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se,
+  lo_hour = per_hour - 1.96 * se_hour, hi_hour = per_hour + 1.96 * se_hour)]
+setorder(res, per_sd)
 fwrite(res, file.path(out_dir, "decomp_table.csv"))
 
 # Forest: sorted, hypothesis groups on top
 png(file.path(out_dir, "decomp_forest.png"), width = 1000, height = 700, res = 120)
 par(mar = c(5, 12, 4, 2))
 y <- seq_len(nrow(res))
-plot(res$per_hour, y, xlim = range(c(res$lo, res$hi)),
+plot(res$per_sd, y, xlim = range(c(res$lo, res$hi)),
   yaxt = "n", pch = 16, col = ifelse(res$p < 0.05, "steelblue", "grey50"),
-  xlab = "kg CO2e per extra hour/day (HC3 95% CI, M5 controls)", ylab = "",
+  xlab = "kg CO2e per index SD (HC3 95% CI, M5 controls)", ylab = "",
   main = "Decomposition: groups + top-10 (annual CO2e)")
 axis(2, y, fulllab(res$cat), las = 1, cex.axis = 0.8)
 segments(res$lo, y, res$hi, y, col = "grey40")
@@ -57,7 +55,7 @@ dev.off()
 wf <- res[cat %in% c("transport", "ecom", "digital", "placebo_insurance", "vehicles")]
 png(file.path(out_dir, "waterfall.png"), width = 900, height = 600, res = 120)
 par(mar = c(5, 10, 4, 2))
-barplot(setNames(wf$per_hour, fulllab(wf$cat)), horiz = TRUE, las = 1, col = "steelblue",
-  xlab = "kg CO2e per extra hour/day", main = "Contribution per group (M5)")
+barplot(setNames(wf$per_sd, fulllab(wf$cat)), horiz = TRUE, las = 1, col = "steelblue",
+  xlab = "kg CO2e per index SD", main = "Contribution per group (M5)")
 abline(v = 0, col = "black")
 dev.off()

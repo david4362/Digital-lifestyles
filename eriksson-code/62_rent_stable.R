@@ -2,9 +2,6 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-out_dir = file.path(dirname(cache_dir), "output")
-dir.create(out_dir, showWarnings = FALSE)
-
 # Rent as a housing outcome, restricted to participants with reliable rent
 # data. Rent is a fixed monthly payment: every normal participant should
 # pay roughly the same rent every valid month. Rent appearing only in
@@ -58,12 +55,12 @@ rent = kr_annual[category == "rent_kr", .(aid, rent = y)]
 d = rent[obs[stable == TRUE], on = "aid"]
 
 m = lm(as.formula(sub("^co2e", "rent", lm_formula)), data = d)
-ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["hours_est", ]
+ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
 
 rent_stable = data.table(
   outcome = "Rent among stable renters (SEK/yr)",
   n = nobs(m), mean = mean(d$rent),
-  per_hour = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
-  per_sd = ct[["Estimate"]] * h_per_sd)
-rent_stable[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
+  per_sd = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
+  per_hour = ct[["Estimate"]] / h_per_sd)
+rent_stable[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(rent_stable, file.path(out_dir, "rent_stable.csv"))

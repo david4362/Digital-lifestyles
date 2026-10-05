@@ -5,6 +5,11 @@ modellab <- c(M0_bivariate = "Bivariate", M1_sex_age = "+ Sex & age",
   M2_income_educ = "+ Incomes & education", M3_household = "+ Household/children",
   M4_density = "+ Log density", M5_city = "+ Major city (full)")
 
+# Index-variant labels (42's second ladder, 59's variants table)
+variantlab <- c(
+  main = "Main: prereg index minus e-commerce & online selling (11 items)",
+  nocalls = "Also minus calls (10 items)")
+
 grouplab <- c(total = "Total", transport = "Transport", ecom = "E-commerce intensive",
   digital = "Digital services", rent = "Rent (housing tenure)",
   placebo_insurance = "Insurance (placebo)", vehicles = "Vehicles")

@@ -2,9 +2,6 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-out_dir = file.path(dirname(cache_dir), "output")
-dir.create(out_dir, showWarnings = FALSE)
-
 # Person x category annual tables: canonical recipe from 20
 ca <- annualise(monthly_co2e, "co2e")
 ka <- annualise(monthly_kr[category %notin% excluded_kr], "kr")
@@ -23,7 +20,7 @@ pers <- wide(ca, ecom_co2e, "co2e")[wide(ka, ecom_kr, "kr"), on = "aid"]
 # income_q for the quintile stratification below, index for the digital
 # quintile descriptives; neither enters the model formulas
 base <- control_data[, .(aid, age, gender, income, income_q, income_scb, income_bank, density,
-  hours_est, index, hh_size, children, education, major_city)]
+  index, hh_size, children, education, major_city)]
 form0 <- sub("^co2e", "y", lm_formula)
 d <- base[pers, on = "aid", nomatch = 0]
 
@@ -32,11 +29,11 @@ fit <- function(ycol, extra = NULL) {
   f <- if (is.null(extra)) form0 else paste(form0, "+", extra)
   m <- lm(as.formula(f), d)
   ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))
-  e <- ct["hours_est", ]
+  e <- ct["index", ]
   data.table(outcome = ycol, spec = ifelse(is.null(extra), "M5", paste0("M5+", extra)),
     n = nobs(m), mean = mean(d$y),
-    per_hour = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
-    per_sd = e[["Estimate"]] * h_per_sd)
+    per_sd = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
+    per_hour = e[["Estimate"]] / h_per_sd, se_hour = e[["Std. Error"]] / h_per_sd)
 }
 
 # Level vs rest vs share; then holding rest fixed (descriptive: attenuates if pure level effect)
@@ -44,8 +41,8 @@ chk <- rbindlist(list(
   fit("ecom_co2e"), fit("rest_co2e"), fit("sh_co2e"),
   fit("ecom_kr"), fit("rest_kr"), fit("sh_kr"),
   fit("ecom_co2e", "rest_co2e"), fit("ecom_kr", "rest_kr")))
-chk[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
-chk[, `:=`(pct_mean = 100 * per_hour / mean, pct_se = 100 * se / mean)]
+chk[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
+chk[, `:=`(pct_mean = 100 * per_sd / mean, pct_se = 100 * se / mean)]
 fwrite(chk, file.path(out_dir, "ecommerce_check.csv"))
 
 # Separate panels: kg and SEK levels have different scales, shares are proportions
@@ -56,9 +53,9 @@ speclab <- c(M5 = "Full controls", "M5+rest_co2e" = "+ Rest of consumption",
   "M5+rest_kr" = "+ Rest of consumption")
 panel <- function(s, unit, ttl) {
   y <- seq_len(nrow(s))
-  plot(s$per_hour, y, xlim = range(c(s$lo, s$hi)),
+  plot(s$per_sd, y, xlim = range(c(s$lo, s$hi)),
     yaxt = "n", pch = 16, col = ifelse(s$p < 0.05, "steelblue", "grey50"),
-    xlab = paste(unit, "per extra hour/day (HC3 95% CI)"), ylab = "", main = ttl)
+    xlab = paste(unit, "per index SD (HC3 95% CI)"), ylab = "", main = ttl)
   axis(2, y, paste0(outlab[s$outcome], " [", speclab[s$spec], "]"), las = 1, cex.axis = 0.7)
   segments(s$lo, y, s$hi, y, col = "grey40")
   abline(v = 0, lty = 2, col = "grey")
@@ -78,13 +75,13 @@ qr <- rbindlist(lapply(levels(d$income_q), function(q) {
     dd[, y := get(yc)]
     m <- lm(f_noinc, dd)
     ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))
-    e <- ct["hours_est", ]
+    e <- ct["index", ]
     data.table(income_q = q, outcome = yc, n = nobs(m), mean = mean(dd$y),
-      per_hour = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
-      per_sd = e[["Estimate"]] * h_per_sd)
+      per_sd = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
+      per_hour = e[["Estimate"]] / h_per_sd, se_hour = e[["Std. Error"]] / h_per_sd)
   }))
 }))
-qr[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
+qr[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(qr, file.path(out_dir, "ecommerce_quintile.csv"))
 
 png(file.path(out_dir, "ecommerce_quintile.png"), width = 1400, height = 500, res = 120)
@@ -94,9 +91,9 @@ for (yc in c("ecom_co2e", "ecom_kr")) {
   yy <- seq_len(nrow(s))
   unit <- ifelse(yc == "ecom_co2e", "kg CO2e", "SEK")
   ttl <- ifelse(yc == "ecom_co2e", "E-commerce CO2e by income", "E-commerce SEK by income")
-  plot(s$per_hour, yy, xlim = range(c(s$lo, s$hi)),
+  plot(s$per_sd, yy, xlim = range(c(s$lo, s$hi)),
     yaxt = "n", pch = 16, col = ifelse(s$p < 0.05, "steelblue", "grey50"),
-    xlab = paste(unit, "per extra hour/day (HC3 95% CI)"), ylab = "",
+    xlab = paste(unit, "per index SD (HC3 95% CI)"), ylab = "",
     main = ttl)
   axis(2, yy, paste("Income quintile", sub("^Q", "", s$income_q)), las = 1)
   segments(s$lo, yy, s$hi, yy, col = "grey40")

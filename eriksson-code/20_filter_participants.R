@@ -3,12 +3,38 @@ library(data.table)
 # Use the latest pre-treatment response when an aid occurs more than once.
 survey_latest <- survey[order(aid, submitdate), .SD[.N], by = aid]
 
-# Device-use battery: q11_1-q11_5 (devices) + q11b_1-q11b_8 (digital activities).
-# Shared by 30 (index + anchor), 40 (analysis data) and 54 (item analyses).
+# Device-use battery: q11_1-q11_5 (devices) + q11b_1-q11b_8 (digital
+# activities). All 13 items are carried through the pipeline: the index
+# item sets below pick which ones build the exposure, 54 tests each item
+# separately, and 59's 13-item variant shows what the two e-commerce items
+# add back.
 q11_cols <- grep("^q11(b_[1-8]|_[1-5])$", names(survey_latest), value = TRUE)
 
-# Has answered q11.
-answered_survey <- survey_latest[complete.cases(survey_latest[, ..q11_cols])]
+# Index item sets (single source of truth for 40/42/45/59/61/65). The main
+# index is the pre-registered construction WITHOUT the two e-commerce items
+# (q11b_7 e-commerce, q11b_8 online selling): they measure the purchase
+# channel itself, so keeping them in the exposure while the outcomes are
+# transaction-observed consumption would build part of the outcome into the
+# exposure. Calls (q11b_2) stay in the main index and are dropped in a
+# second ladder variant (42) and in the variants table (59).
+index_main_items <- setdiff(q11_cols, c("q11b_7", "q11b_8"))
+index_nocalls_items <- setdiff(index_main_items, "q11b_2")
+index_device_items <- index_main_items[startsWith(index_main_items, "q11_")]
+index_activity_items <- index_main_items[startsWith(index_main_items, "q11b")]
+
+# Battery tolerance from the pre-registration: at least 10 of 13 items
+# answered, i.e. at most 3 missing. The same tolerance of 3 missing items is
+# kept when the item set shrinks: at least 8 of 11 for the main index, at
+# least 7 of 10 without calls.
+battery_tol <- 3
+battery_min_main <- length(index_main_items) - battery_tol
+battery_min_nocalls <- length(index_nocalls_items) - battery_tol
+
+# Battery gate: answered at least battery_min_main of the main index items.
+# Replaces the v1 complete-13-item rule (the pre-registration allows up to
+# 3 missing).
+n_answered_main <- rowSums(!is.na(survey_latest[, ..index_main_items]))
+answered_survey <- survey_latest[n_answered_main >= battery_min_main]
 
 # min valid months from the X months before the survey
 min_months <- 3
@@ -32,10 +58,19 @@ spending <- (monthly_kr[category %notin% excluded_kr]
 
 # Demographics contains duplicate rows for some aids (flagged aid_dup in the
 # real data, sequenced by `order`). Keep the first record per aid so every
-# join downstream is one row per person. 30/40/45 use this table.
+# join downstream is one row per person. 30/40/45/65 use this table.
 demographics_unique <- demographics[order(aid, order), .SD[1], by = aid]
 
 keep <- unique(spending[, .(aid, month)])
+
+# Person-level coverage of the transaction window: observed valid months
+# and the annualised observed spending they imply. Single source for 49
+# (coverage check), 57 (month restriction) and 66 (account analyses).
+person_coverage <- monthly_kr[category %notin% excluded_kr][
+  keep, on = .(aid, month), nomatch = 0][
+  , .(n_months = uniqueN(month), kr_sum = sum(kr, na.rm = TRUE)), by = aid][
+  , observed_annual_spending := (kr_sum / n_months) * 12][
+  , .(aid, n_months, observed_annual_spending)]
 
 # Person x category annual outcome. This is the canonical recipe: every
 # outcome construction downstream (43/47/50/52/54/55) calls it, so the
@@ -83,3 +118,11 @@ transport_kr <- sub("_co2e$", "_kr", transport_co2e)
 ecom_kr <- sub("_co2e$", "_kr", ecom_co2e)
 digital_kr <- "internet_tele_kr"
 vehicles_kr <- "vehicles_kr"
+
+# All pipeline outputs go to ONE versioned directory, defined once here:
+# v2 = the pre-registered index construction (minus e-commerce and online
+# selling) as the main analysis. The v1 export (13-item pipeline index on
+# the complete-battery rule) is superseded; a fresh directory keeps old and
+# new results from being mixed.
+out_dir <- file.path(dirname(cache_dir), "output_v2")
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)

@@ -2,9 +2,6 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-out_dir = file.path(dirname(cache_dir), "output")
-dir.create(out_dir, showWarnings = FALSE)
-
 # E1 outcomes: latest endline response per aid (endline_latest from 30)
 e1_data <- analysis_data[endline_latest[, .(
   aid,
@@ -21,7 +18,7 @@ e1_data[, `:=`(
   bnpl_ever = as.integer(bnpl > 1)
 )]
 
-# E1 outcomes against the anchored digital measure, using the M5 covariates.
+# E1 outcomes against the digital index, using the M5 covariates.
 e1_outcomes <- c(
   "work_home", "overtime", "unaffordable", "bnpl",
   "work_home_ever", "overtime_ever", "unaffordable_ever", "bnpl_ever"
@@ -29,17 +26,17 @@ e1_outcomes <- c(
 
 e1_index <- rbindlist(lapply(e1_outcomes, function(outcome) {
   m <- lm(as.formula(sub("^co2e", outcome, lm_formula)), data = e1_data)
-  ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))["hours_est", ]
+  ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
   data.table(
     outcome = outcome,
     n = nobs(m),
-    estimate = ct[["Estimate"]],
+    per_sd = ct[["Estimate"]],
     se = ct[["Std. Error"]],
     p = ct[["Pr(>|t|)"]],
-    per_sd = ct[["Estimate"]] * h_per_sd
+    per_hour = ct[["Estimate"]] / h_per_sd
   )
 }))
-e1_index[, `:=`(lo = estimate - 1.96 * se, hi = estimate + 1.96 * se)]
+e1_index[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(e1_index, file.path(out_dir, "e1_index_outcomes.csv"))
 
 # Category annual emissions, canonical recipe from 20
@@ -56,29 +53,29 @@ transport_formula <- as.formula(sub("^co2e", "transport_co2e", lm_formula))
 transport_without_work <- lm(transport_formula, data = transport_data)
 transport_with_work <- lm(update(transport_formula, . ~ . + work_home), data = transport_data)
 
-# HC3 hours_est estimate for each specification (coeftest computed once)
-ct_without <- coeftest(transport_without_work, vcov. = vcovHC(transport_without_work, type = "HC3"))["hours_est", ]
-ct_with <- coeftest(transport_with_work, vcov. = vcovHC(transport_with_work, type = "HC3"))["hours_est", ]
+# HC3 index estimate for each specification (coeftest computed once)
+ct_without <- coeftest(transport_without_work, vcov. = vcovHC(transport_without_work, type = "HC3"))["index", ]
+ct_with <- coeftest(transport_with_work, vcov. = vcovHC(transport_with_work, type = "HC3"))["index", ]
 
 transport_results <- rbind(
   data.table(
     specification = "Without work from home",
     n = nobs(transport_without_work),
-    estimate = ct_without[["Estimate"]],
+    per_sd = ct_without[["Estimate"]],
     se = ct_without[["Std. Error"]],
     p = ct_without[["Pr(>|t|)"]],
-    per_sd = ct_without[["Estimate"]] * h_per_sd
+    per_hour = ct_without[["Estimate"]] / h_per_sd
   ),
   data.table(
     specification = "With work from home",
     n = nobs(transport_with_work),
-    estimate = ct_with[["Estimate"]],
+    per_sd = ct_with[["Estimate"]],
     se = ct_with[["Std. Error"]],
     p = ct_with[["Pr(>|t|)"]],
-    per_sd = ct_with[["Estimate"]] * h_per_sd
+    per_hour = ct_with[["Estimate"]] / h_per_sd
   )
 )
-transport_results[, `:=`(lo = estimate - 1.96 * se, hi = estimate + 1.96 * se)]
+transport_results[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(transport_results, file.path(out_dir, "e1_transport_work_home.csv"))
 
 # E-commerce shares in CO2e and SEK, with and without affordability/BNPL
@@ -104,29 +101,29 @@ share_results <- rbindlist(lapply(c("share_co2e", "share_kr"), function(outcome)
   formula_with <- update(formula_without, . ~ . + unaffordable + bnpl)
   model_without <- lm(formula_without, data = share_data)
   model_with <- lm(formula_with, data = share_data)
-  ct_without <- coeftest(model_without, vcov. = vcovHC(model_without, type = "HC3"))["hours_est", ]
-  ct_with <- coeftest(model_with, vcov. = vcovHC(model_with, type = "HC3"))["hours_est", ]
+  ct_without <- coeftest(model_without, vcov. = vcovHC(model_without, type = "HC3"))["index", ]
+  ct_with <- coeftest(model_with, vcov. = vcovHC(model_with, type = "HC3"))["index", ]
 
   rbind(
     data.table(
       outcome = outcome,
       specification = "Without affordability/BNPL controls",
       n = nobs(model_without),
-      estimate = ct_without[["Estimate"]],
+      per_sd = ct_without[["Estimate"]],
       se = ct_without[["Std. Error"]],
       p = ct_without[["Pr(>|t|)"]],
-      per_sd = ct_without[["Estimate"]] * h_per_sd
+      per_hour = ct_without[["Estimate"]] / h_per_sd
     ),
     data.table(
       outcome = outcome,
       specification = "With affordability/BNPL controls",
       n = nobs(model_with),
-      estimate = ct_with[["Estimate"]],
+      per_sd = ct_with[["Estimate"]],
       se = ct_with[["Std. Error"]],
       p = ct_with[["Pr(>|t|)"]],
-      per_sd = ct_with[["Estimate"]] * h_per_sd
+      per_hour = ct_with[["Estimate"]] / h_per_sd
     )
   )
 }))
-share_results[, `:=`(lo = estimate - 1.96 * se, hi = estimate + 1.96 * se)]
+share_results[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(share_results, file.path(out_dir, "e1_ecommerce_share_controls.csv"))

@@ -2,9 +2,6 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-out_dir = file.path(dirname(cache_dir), "output")
-dir.create(out_dir, showWarnings = FALSE)
-
 # Housing-tenure / life-stage confound. The digitally intensive may be
 # disproportionately students, singles, apartment-dwellers, and carless —
 # each with its own consumption footprint — so part of the headline
@@ -68,15 +65,15 @@ form_plus = update(form_m5, . ~ . + student + FamTypF + hometype + ncars + bostb
 
 fit_row = function(d, outcome, spec, form) {
   m = lm(form, d)
-  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["hours_est", ]
+  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
   data.table(outcome = outcome, spec = spec, n = nobs(m), mean = mean(d$y),
-    per_hour = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
-    per_sd = ct[["Estimate"]] * h_per_sd)
+    per_sd = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
+    per_hour = ct[["Estimate"]] / h_per_sd)
 }
 
 tenure_sens = rbindlist(lapply(names(outcomes), function(outcome) {
   d = tenure_data[, .(aid, age, gender, income, income_scb, income_bank, density,
-    hours_est, hh_size, children, education, major_city,
+    index, hh_size, children, education, major_city,
     student, FamTypF, hometype, ncars, bostbidr)]
   if (is.null(outcomes[[outcome]])) {
     d = d[emissions, on = "aid", nomatch = 0][, y := co2e]
@@ -86,7 +83,7 @@ tenure_sens = rbindlist(lapply(names(outcomes), function(outcome) {
   rbind(fit_row(d, outcome, "M5", form_m5),
     fit_row(d, outcome, "M5+tenure", form_plus))
 }))
-tenure_sens[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
+tenure_sens[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(tenure_sens, file.path(out_dir, "tenure_sensitivity.csv"))
 
 # Stratification (the falsification): the gradient within students vs
@@ -108,20 +105,20 @@ tenure_strat = rbindlist(lapply(names(strata), function(s) {
         return(NULL)
       }
       d = d[, .(aid, age, gender, income, income_scb, income_bank, density,
-        hours_est, hh_size, children, education, major_city)]
+        index, hh_size, children, education, major_city)]
       if (is.null(strat_outcomes[[outcome]])) {
         d = d[emissions, on = "aid", nomatch = 0][, y := co2e]
       } else {
         d = d[bucket(strat_outcomes[[outcome]]), on = "aid", nomatch = 0]
       }
       m = lm(as.formula(sub("^co2e", "y", lm_formula)), d)
-      ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["hours_est", ]
+      ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
       data.table(group = s, level = strata[[s]][v + 1], outcome = outcome,
         n = nobs(m), mean = mean(d$y),
-        per_hour = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
-        per_sd = ct[["Estimate"]] * h_per_sd)
+        per_sd = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
+        per_hour = ct[["Estimate"]] / h_per_sd)
     }))
   }))
 }))
-tenure_strat[, `:=`(lo = per_hour - 1.96 * se, hi = per_hour + 1.96 * se)]
+tenure_strat[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(tenure_strat, file.path(out_dir, "tenure_strat.csv"))
