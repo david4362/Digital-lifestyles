@@ -107,17 +107,73 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Next steps
 
-1. Generate synthetic endline (`gen_mock_endline.R`): E4 minutes/day with realistic
-   age gradient + h:mm heaping, so the validity + index pipeline can be developed.
-2. Locate the real endline data in the TRE (object/file name unknown) and its codebook.
-3. Re-point `10_screen_time_validity.R` at endline E4; verify benchmark bands against
-   Internetstiftelsen *Svenskarna och internet*.
-4. Build digital intensity index (`20_digital_index.R`): device-use + digital-activity
-   frequencies, anchored cardinally by screen time; report reliability (alpha).
-5. Net gradient models, then decomposition, then mechanism (see README pipeline table).
-6. Set up TRE export checklist (mirror `Konsumtionskollen/RUN_TRE` pattern).
+1. Report the v2 real-data results to the supervisor (headline +203.9 kg/SD;
+   e-commerce-item removal does NOT explain the relation — calls account for
+   part of it; the coverage gradient concentrates among 3+ accounts).
+2. Decide the manuscript treatment of calls (q11b_2): main 11-item estimate
+   with the 10-item no-calls ladder as the registered sensitivity (both in
+   `stepwise_table.csv`).
+3. Start paper-side work on the real numbers (figures from `TRE_output_v2/`).
+4. Push the local commits (v2 code, real export, verify script) when ready.
 
 ## Session log
+
+- **2026-10-05 (afternoon) — v2 real-data TRE run landed and verified
+  (`TRE_output_v2/`). All 14 post-run invariant checks pass** — now saved as
+  `eriksson-code/verify_export.R` (flat checks in pipeline conventions: fread,
+  abs-diff tolerances like 41, stopifnot like 54; run from eriksson-code/,
+  reads `../TRE_output_v2`). run_info confirms the v2 spec on the real run
+  (R 4.3.3, 11-item list, ≥ 8/11 gate, bivariate anchor, per-SD headline).
+  Dictionary matches the export's 46 CSVs exactly; EXPORT_README + dictionary
+  re-copied into the repo folder (the copy-out had dropped them — RUN_TRE
+  does place them in the TRE-side output_v2); Windows Thumbs.db deleted.
+  - **HEADLINE: main 11-item index M5 = +203.9 kg CO2e/SD** (CI 140.7–267.2,
+    p = 2.9e-10, R² = .366, N = 4,250 constant across M0–M5). Ladder:
+    M0 +179.7, M1 +274.2, M2 +197.8, M3 +197.0, M4 +202.3.
+  - **Supervisor's guess refuted**: the 13-item variant (incl. q11b_7/q11b_8)
+    = +214.3 vs main +203.9 — the two purchase-channel items add only ~10
+    kg/SD (~5%). The item that matters is CALLS: no-calls variant +140.8
+    (CI 77.4–204.2, p = 1.4e-05, −31%) and item-level calls +385 kg/item-SD
+    (largest of all 13).
+  - Calibration: anchor b = 0.3384 h/SD (n = 2,082, R² = .018, r = .134,
+    p = 5.2e-9); derived per-hour M5 = 602.6 kg/h = direct fit; all three
+    calibration_check internals TRUE.
+  - E4: mean 4.39 h/day (n = 2,200 valid reports; 51 dropped by the >18 h
+    rule; 585 endline opt-outs); heaping 5.1% at :00, 10.3% at :00/:30;
+    E4-vs-total M5 +27.0 kg/h (p = .148) vs index +732 kg/h on the same
+    sample (n = 1,969); joint difference +204.3 (p = .0039); item r with E4
+    ≤ .176 (social media highest; calls .067 — the biggest-emissions item is
+    nearly invisible in self-reported screen time); holds per category in
+    e4_rq2. No platform variable — iOS/Android split needs app-side data.
+  - Item level (BH): calls +385***, online selling +330*** (excl), e-commerce
+    +222** (excl), smartphone +216***, info search +181***, social media
+    +175***, TV +107***, computer +51*, streaming −87**, gaming −54
+    (BH p = .061), console/tablet/reading ns. Figure audit ≡ table
+    (stopifnot + item_figure_check).
+  - Coverage (66): M5 + accounts linear −10.7% (182.1, p = 1.0e-08), account
+    FE −10.8%; strata: 1 acct +113.2 (p = .032), 2 +104.8 (p = .062),
+    3 +234.2 (p = .0004), 4+ +298.9 (p = .00014) — gradient concentrated
+    among the better-covered (3+ accounts); spending-plausible 50–150%:
+    +154.7 (−24.1%); 25–200%: +164.1; spending/income +0.140 (p = .050);
+    CO2e/income +221.6 kg per 100k SEK (p = .014). coverage_check: spending
+    +12,855 SEK/SD (p = 3.3e-05), register income +6,650 (p = .0006),
+    accounts +0.098 (p = .00014).
+  - Robustness: DeSO FE +254.6 (n = 3,258); M5+tenure +187.6; age spline
+    +205.5 ≈ linear; ≥ 12 months +191.6; halves device +145.3 / activity
+    +174.1 / PC1 +223.1; α = .559 (device half .206, activity half .463 —
+    formative, not reflective); rent placebo −1,259 SEK (p = .11); all het
+    margins positive, interactions ns (gender p = .13, city p = .32);
+    e-commerce CO2e share flat ~12% across digital quintiles; E1: WFH days
+    +0.44/SD (p = 6e-19), transport gradient survives the WFH control
+    (+62.5 without vs +58.9 with, p ≈ .02).
+  - Sample: 12,153 → battery 11,172 → months 4,392 → controls 4,251 → M5
+    4,250; anchor sample 2,082; model missingness ≈ 0 (income_bank 1);
+    attrition reporters vs non similar (age 31.4 vs 31.7; tertiary 69% vs 61%).
+  - COSMETIC (fix at next TRE re-run): `descriptives.csv` labels the E4 row
+    "Valid E4 reporters" but its n = 2,082 is the anchor sample (E4 ∩ valid
+    index); e4_diagnostics documents both n's correctly.
+  - Committed locally (not pushed): TRE_output_v2/ + verify_export.R +
+    README/continuity updates.
 
 - **2026-10-05 — v2: preregistered index (minus e-commerce/online selling) as
   the main analysis; supervisor email implemented.** Full restructure of the
