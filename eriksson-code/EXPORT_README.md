@@ -1,8 +1,8 @@
-# Export v2 — Digital lifestyles and consumption-based carbon emissions
+# Export — Digital lifestyles and consumption-based carbon emissions
 
 This directory is a complete, self-contained export of the analysis pipeline run
-(`RUN_TRE.R` from `eriksson-code/`, SCB TRE). It supersedes the v1 export; old
-and new results are not mixed. `run_info.csv` records the run date, R version,
+(`RUN_TRE.R` from `eriksson-code/`, SCB TRE). Every run rewrites it wholesale
+(exploratory phase — no export versioning). `run_info.csv` records the run date, R version,
 item lists, battery rule, filter thresholds and scales; the per-column
 documentation of every table is in `export_data_dictionary.csv`.
 
@@ -34,7 +34,7 @@ M0–M5 ladder in `stepwise_table.csv`); the device-use half (5 items) and the
 digital-activity half (6 items); the first principal component; all 13 items
 incl. e-commerce & online selling (≥ 10 of 13; what the e-commerce items add
 back); items z-scaled on the battery sample instead of the analysis sample
-(v1's scaling choice — equalizes item SDs on a different population, so the
+(the earlier scaling choice — equalizes item SDs on a different population, so the
 effective item weights differ within the analysis sample).
 
 **Cardinal anchor (interpretive only).** E4 (endline `q21`, self-transcribed
@@ -46,11 +46,11 @@ valid E4 reporters with a valid index (`anchor_check.csv`, row
 
 **Scales.** Headline scale is **kg CO₂e per year per 1 SD of the index**
 (`per_sd`). Every `per_hour` column is *derived* (`per_sd / h_per_sd`) and
-secondary, because the anchor is weak (bivariate R² ≈ 0.016 in v1; device
+secondary, because the anchor is weak (bivariate R² ≈ 0.02 on the real data; device
 screen time correlates only weakly with the self-reported battery —
 `e4_diagnostics.csv`, `e4_item_correlations.csv`). All per-SD↔per-hour
 conversion ingredients and their consistency checks are in
-`calibration_check.csv` (the v1 files did not state which anchor model fed
+`calibration_check.csv` (the earlier files did not state which anchor model fed
 the conversion — that gap is what made the old per-hour/per-SD ratios look
 inconsistent).
 
@@ -67,6 +67,8 @@ inconsistent).
   `model_missingness.csv`).
 - **E4 subsample:** valid E4 reporters with a valid index (anchor,
   `e4_rq1_robustness.csv`, `e4_index_test.csv`).
+- **E1 mechanism subsample:** M5 sample ∩ endline respondents with both
+  leisure composites non-missing (`e1_leisure_*` tables; n per row).
 
 ## Reading the tables
 
@@ -80,11 +82,19 @@ coverage explain the gradient), `e4_diagnostics.csv` +
 `e4_item_correlations.csv` (E4 credibility; no iOS/Android platform variable
 exists in the data — see the script headers of `65_e4_diagnostics.R`),
 `item_level.csv` + `item_figure_check.csv` (item-level gradients; the figure
-audit asserts every axis label sits on its own item's estimate and CI).
+audit asserts every axis label sits on its own item's estimate and CI),
+`volume_margins.csv` + `volume_composition.csv` + `budget_shares.csv` +
+`quintile_desc.csv` + `quintile_contrast.csv` (volume vs. composition of the
+headline gradient: how much of it is "buys more" spending vs. a carbon-heavier
+basket per SEK, the Engel/budget-share margins per category, and the adjusted
+D5–D1 quintile contrasts), and
+`mech_diag.csv` + `e1_leisure_index.csv` + `e1_leisure_mechanism.csv`
+(the pre-registered leisure mechanism, result 3: `mech_diag.csv` validates
+the E1 item-code mapping on the data before the models are interpreted).
 
 ## Reproducing
 
 `Rscript RUN_TRE.R` from `eriksson-code/` in the TRE regenerates this whole
-directory into `output_v2/` next to the cache (scripts 20–66, sourced in
+directory into `output/` next to the cache (scripts 20–68, sourced in
 order; the run copies this README and the data dictionary in and writes
 `run_info.csv`).

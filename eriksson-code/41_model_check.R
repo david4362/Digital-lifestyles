@@ -4,7 +4,7 @@ library(lmtest)
 
 # Anchor regressions. Which one feeds the pipeline is explicit now: the
 # bivariate model (used_in_pipeline = TRUE) provides dt_coefs and h_per_sd
-# in 40; the controlled rows are diagnostics only. (v1 printed three anchor
+# in 40; the controlled rows are diagnostics only. (The earlier pipeline printed three anchor
 # rows without marking the used one, which read as an inconsistency: the
 # +major_city slope 0.94 h per raw index unit does not reproduce the
 # per-hour/per-SD ratios in the tables — the bivariate one does.)
@@ -30,7 +30,7 @@ fwrite(anchor_check, file.path(out_dir, "anchor_check.csv"))
 # raw-composite chain (slope per raw unit x raw SD) is reported alongside and
 # must reproduce it. per_hour_direct fits the M5 on the anchored hours scale;
 # per_hour_derived divides the per-SD slope by h_per_sd — the two must agree,
-# which is exactly the arithmetic that failed to add up across v1 files.
+# which is exactly the arithmetic that failed to add up across the earlier files.
 m5 <- lm(as.formula(lm_formula), data = analysis_data)
 ct5 <- coeftest(m5, vcov. = vcovHC(m5, type = "HC3"))["index", ]
 m5_hours <- lm(as.formula(sub("index", "hours_est", lm_formula, fixed = TRUE)),

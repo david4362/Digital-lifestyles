@@ -1,12 +1,12 @@
 # RUN_TRE.R — full pipeline in the TRE. Run from eriksson-code/:
 #   Rscript RUN_TRE.R
 # Reads the parquet cache when complete, else builds it from raw data (slow,
-# writes cache). Outputs go to output_v2/ next to cache/ (defined in
-# 20_filter_participants.R; v2 = the pre-registered index construction minus
-# e-commerce and online selling as the main analysis — the old output/ holds
-# the superseded v1 export and is not written to). The run copies the export
+# writes cache). Outputs go to output/ next to cache/ (defined in
+# 20_filter_participants.R) and are rewritten wholesale by every run
+# (exploratory phase — no export versioning). The run copies the export
 # README and the column-level data dictionary into the export directory and
 # writes a run manifest (run_info.csv) so the export documents itself.
+# Scripts 20-68, sourced in order.
 cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "eriksson-code", "cache")
 cache_files = c("monthly_kr.parquet", "monthly_co2e.parquet", "demographics.parquet",
   "survey.parquet", "survey_endline.parquet", "users.parquet", "scb.parquet",
@@ -30,7 +30,8 @@ for (f in c("20_filter_participants.R", "30_time_estimate.R", "40_control_vars.R
     "55_e1_analyses.R", "56_deso_fe.R", "57_coverage_robustness.R",
     "58_het_interactions.R", "59_index_variants.R", "60_e4_vs_index.R",
     "61_index_weightings.R", "62_rent_stable.R", "63_transport_split.R",
-    "64_tenure_lifestage.R", "65_e4_diagnostics.R", "66_account_coverage.R")) {
+    "64_tenure_lifestage.R", "65_e4_diagnostics.R", "66_account_coverage.R",
+    "67_mechanism.R", "68_volume_composition.R")) {
   message("--- ", f, " ---")
   source(f)
 }
@@ -40,7 +41,6 @@ for (f in c("20_filter_participants.R", "30_time_estimate.R", "40_control_vars.R
 # scales) so the export never has to be interpreted from the scripts alone.
 file.copy(c("EXPORT_README.md", "export_data_dictionary.csv"), out_dir, overwrite = TRUE)
 run_info <- data.table(
-  export_version = "v2",
   run_date = format(Sys.Date()),
   r_version = R.version.string,
   out_dir = out_dir,

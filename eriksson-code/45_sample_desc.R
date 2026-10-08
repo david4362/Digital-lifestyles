@@ -4,7 +4,7 @@ library(data.table)
 # regression sample is the fixed M5 complete-case sample from 40, not merely
 # the set of IDs with emissions data. The battery stage is the >= 8 of 11
 # main-items gate from 20 (the pre-registration tolerance of up to 3 missing
-# items; v1 required the complete 13-item battery).
+# items; the earlier rule required the complete 13-item battery).
 flow = data.table(
   stage = c("survey", "battery_gate", "valid_months", "controls", "with_emissions",
     "m5_complete_case", "e4_reporters"),

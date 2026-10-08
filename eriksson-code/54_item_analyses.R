@@ -90,7 +90,7 @@ fwrite(item_level, file.path(out_dir, "item_level.csv"))
 
 # Forest figure, built directly from the final table: one row per item in
 # reversed battery order (Computer at the top of the plot), and the label
-# vector comes from those same rows. v1 had the axis labels built from
+# vector comes from those same rows. Earlier runs had the axis labels built from
 # reversed factor levels while the points were plotted in table order, so
 # every label sat on another item's estimate (e.g. "Social media" showed
 # Streaming's negative value while the CSV said +206 kg). The audit below

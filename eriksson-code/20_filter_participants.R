@@ -31,8 +31,8 @@ battery_min_main <- length(index_main_items) - battery_tol
 battery_min_nocalls <- length(index_nocalls_items) - battery_tol
 
 # Battery gate: answered at least battery_min_main of the main index items.
-# Replaces the v1 complete-13-item rule (the pre-registration allows up to
-# 3 missing).
+# Replaces the earlier complete-13-item rule (the pre-registration allows up
+# to 3 missing).
 n_answered_main <- rowSums(!is.na(survey_latest[, ..index_main_items]))
 answered_survey <- survey_latest[n_answered_main >= battery_min_main]
 
@@ -119,10 +119,8 @@ ecom_kr <- sub("_co2e$", "_kr", ecom_co2e)
 digital_kr <- "internet_tele_kr"
 vehicles_kr <- "vehicles_kr"
 
-# All pipeline outputs go to ONE versioned directory, defined once here:
-# v2 = the pre-registered index construction (minus e-commerce and online
-# selling) as the main analysis. The v1 export (13-item pipeline index on
-# the complete-battery rule) is superseded; a fresh directory keeps old and
-# new results from being mixed.
-out_dir <- file.path(dirname(cache_dir), "output_v2")
+# All pipeline outputs go to ONE directory, defined once here. Every run
+# rewrites it wholesale (exploratory phase — no export versioning); the run
+# manifest run_info.csv records when the run happened and with which spec.
+out_dir <- file.path(dirname(cache_dir), "output")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)

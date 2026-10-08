@@ -1,7 +1,8 @@
 library(data.table)
 
 # Mock data for pipeline test. Planted gradients (kg/yr per h/day):
-# transport negative, ecom/digital positive, placebos zero.
+# transport negative, ecom/digital positive, placebos zero; the SEK-per-kg
+# ratio falls with hours (planted basket-composition margin for 68).
 set.seed(42)
 n = 800
 aid = 1:n
@@ -36,6 +37,12 @@ h[ov] = h[ov] + 1
 mnt[ov] = 0
 p = runif(n)
 status = fcase(p < 0.72, "reporter", p < 0.82, "not_activated", p < 0.88, "skip", default = "nocontact")
+# E1 leisure battery (67): the pre-registered mechanism — out-of-home items
+# (F88_4/5/6/7/8/18/21) decline with digital intensity, at-home items
+# (F88_11/12/13/14/16) rise slightly, and transport CO2e below carries a
+# matching planted out-of-home effect, so 67 has mediation to find.
+ooh_plant = pmax(1, pmin(7, round(4.2 - 0.45 * z + rnorm(n, 0, 0.9))))
+home_plant = pmax(1, pmin(7, round(4.2 + 0.3 * z + rnorm(n, 0, 0.9))))
 survey_endline = data.table(aid = aid, status = status,
   submitdate = as.Date("2024-06-20"),
   q21_1comment = fifelse(status == "reporter", h, NA_integer_),
@@ -45,7 +52,11 @@ survey_endline = data.table(aid = aid, status = status,
   F88_2 = sample(1:7, n, replace = TRUE),
   F88_3 = sample(1:7, n, replace = TRUE),
   F88_10 = sample(1:7, n, replace = TRUE),
-  F88_19 = sample(1:7, n, replace = TRUE))
+  F88_19 = sample(1:7, n, replace = TRUE),
+  F88_4 = ooh_plant, F88_5 = ooh_plant, F88_6 = ooh_plant,
+  F88_7 = ooh_plant, F88_8 = ooh_plant, F88_18 = ooh_plant, F88_21 = ooh_plant,
+  F88_11 = home_plant, F88_12 = home_plant, F88_13 = home_plant,
+  F88_14 = home_plant, F88_16 = home_plant)
 survey_endline = survey_endline[status != "nocontact"][, status := NULL][]
 
 demographics = data.table(aid = aid, order = 1L, age = age, gender = gender, postort = postort)
@@ -101,18 +112,35 @@ grad = c(fuel_co2e = -15, car_maint_co2e = -8, public_trans_co2e = -7, taxi_co2e
   vehicles_co2e = 0, groceries_co2e = -5, restaurant_co2e = -8, electricity_co2e = 0,
   train_bus_co2e = -3, bus_co2e = -2, car_rent_co2e = -1, transport_other_co2e = -1, escooter_co2e = 0)
 
+# Planted mediation (67): out-of-home leisure carries a transport effect
+# (90 kg/yr per SD of leisure, spread over the transport categories), so
+# partialling out ooh_leisure must move the transport gradient; at-home
+# leisure gets no planted effect. The mock uses a literal transport-category
+# vector (20's vector is not in scope here).
+transport_cats = c("fuel_co2e", "car_maint_co2e", "car_rent_co2e", "public_trans_co2e",
+  "bus_co2e", "taxi_co2e", "train_bus_co2e", "aviation_co2e", "ferry_co2e",
+  "escooter_co2e", "transport_other_co2e")
+ooh_effect = (90 * (ooh_plant - mean(ooh_plant)) + rnorm(n, 0, 40)) /
+  length(transport_cats)
+
 months = seq(as.Date("2023-07-01"), by = "month", length.out = 12)
 inc_eff = (log1p(income_level) - mean(log1p(income_level))) * 150
 grid = CJ(aid = aid, month = months, category = names(base))
 grid[, h := time[aid]]
-grid[, y := base[category] + grad[category] * h + inc_eff[aid] * (category != "rent_co2e") * 0.3]
+grid[, y := base[category] + grad[category] * h +
+  inc_eff[aid] * (category != "rent_co2e") * 0.3 +
+  fifelse(category %in% transport_cats, ooh_effect[aid], 0)]
 grid[, y := pmax(1, y + rnorm(.N, sd = 15))]
 grid[, monthly := y / 12 * (1 + rnorm(.N, sd = 0.1))]
 monthly_co2e = grid[, .(aid, month, category, co2e = pmax(0, monthly))]
 # SEK at ~40-45 SEK per kg CO2e (real sample: ~333k SEK observed spending
 # against ~8t CO2e), so observed spending and register income land on the
-# same scale and the spending/income ratio bands in 66 are exercised
-monthly_kr = grid[, .(aid, month, category = sub("_co2e$", "_kr", category), kr = pmax(50, monthly * 75 + rnorm(.N, sd = 50)))]
+# same scale and the spending/income ratio bands in 66 are exercised.
+# Planted composition margin (68): the SEK-per-kg ratio falls with screen
+# time, so at equal spending the high-digital basket is slightly dirtier and
+# 68's intensity model must recover a positive composition component.
+monthly_kr = grid[, .(aid, month, category = sub("_co2e$", "_kr", category),
+  kr = pmax(50, monthly * 75 * (1 - 0.006 * (h - 4)) + rnorm(.N, sd = 50)))]
 
 # Bank-registered income (mirrors kk-handels-income CSV: aid, date, category, income)
 bank_cat = c("salary", "benefits", "other")
@@ -151,4 +179,4 @@ monthly_kr[category == "rent_kr" & aid %in% sample(aid, 10) &
 
 rm(grid, q, base, grad, inc_eff, major, p, status, h, mnt, ov, low, time, z, income_level,
   age, gender, postort, months, n, aid, q11_names, bank_cat, kk_income, monthly_bank,
-  dup_aid, cd, u, v)
+  dup_aid, cd, u, v, ooh_plant, home_plant, transport_cats, ooh_effect)

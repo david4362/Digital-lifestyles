@@ -21,6 +21,7 @@ summary_row <- function(x, measure, sample) {
 descriptives = rbind(
   summary_row(analysis_data$index, "Digital index (standardized, main)", "M5 complete-case sample"),
   summary_row(analysis_data$index_raw, "Digital index (raw composite, pre-standardization)", "M5 complete-case sample"),
-  summary_row(device_time$time, "E4 screen time (hours/day)", "Valid E4 reporters")
+  summary_row(device_time$time, "E4 screen time (hours/day)",
+    "E4 anchor sample (valid E4 report and valid index)")
 )
 fwrite(descriptives, file.path(out_dir, "descriptives.csv"))

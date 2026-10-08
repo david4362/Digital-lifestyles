@@ -36,7 +36,7 @@ control_data <- (keep
             [, income_scb := log1p(pmax(DispInk04, 0)) - mean(log1p(pmax(DispInk04, 0)), na.rm = T)]
 
             # Raw battery responses (30); the index built below replaces the
-            # role the scaled battery played in v1
+            # role the scaled battery played in the earlier pipeline
             [item_battery, on = "aid", nomatch = 0]
 
             # Keep only needed cols (deso for the fixed-effects robustness

@@ -1,7 +1,8 @@
-# verify_export.R — invariant checks on the copied v2 export (TRE_output_v2/).
-# Run from eriksson-code/ after copying the export out of the TRE:
+# verify_export.R — invariant checks on the copied export (TRE_output/ in
+# the repo root). Run from eriksson-code/ after copying the export out of
+# the TRE:
 #   Rscript verify_export.R
-# In the TRE itself the export sits at output_v2/ next to the cache (the
+# In the TRE itself the export sits at output/ next to the cache (the
 # out_dir defined in 20_filter_participants.R) — point out_dir there instead.
 #
 # Each check restates one invariant that the pipeline guarantees structurally,
@@ -9,10 +10,13 @@
 # what landed in the repo must be what the pipeline wrote and must be
 # internally consistent across files. Mirrors 41_model_check.R (abs diff <
 # tolerance) and 54_item_analyses.R (stopifnot) conventions.
+#
+# Checks 15-16 (volume-vs-composition) require an export from a run that
+# includes 68_volume_composition.R; the 2026-10-05 export predates it.
 
 library(data.table)
 
-out_dir <- "../TRE_output_v2"
+out_dir <- "../TRE_output"
 
 step         <- fread(file.path(out_dir, "stepwise_table.csv"))
 step_sample  <- fread(file.path(out_dir, "stepwise_sample.csv"))
@@ -27,6 +31,8 @@ coverage     <- fread(file.path(out_dir, "account_coverage.csv"))
 register     <- fread(file.path(out_dir, "coverage_check.csv"))
 e4diag       <- fread(file.path(out_dir, "e4_diagnostics.csv"))
 e4rq1        <- fread(file.path(out_dir, "e4_rq1_robustness.csv"))
+volmarg      <- fread(file.path(out_dir, "volume_margins.csv"))
+volcomp      <- fread(file.path(out_dir, "volume_composition.csv"))
 run_info     <- fread(file.path(out_dir, "run_info.csv"))
 
 main_label    <- "Main: prereg index minus e-commerce & online selling (11 items)"
@@ -59,7 +65,7 @@ ok_cal_m5 <- abs(cal$m5_per_index_sd - main_m5$per_sd) < 1e-6
 ok_per_hour_identity <- all(abs(step$per_hour - step$per_sd / h_per_sd) < 1e-6)
 
 # 7. The figure audit rows are exactly the item_level rows, one per item, and
-#    the y positions are a clean 1..n. (v1 bug: labels were shifted onto other
+#    the y positions are a clean 1..n. (Earlier bug: labels were shifted onto other
 #    items' estimates; this is the check that makes that impossible to miss.)
 fig_join <- merge(
   items[, .(item, label, estimate, lo, hi)],
@@ -97,7 +103,7 @@ ok_register_identity <- all(abs(register$per_hour - register$per_sd / h_per_sd) 
 
 # 12. The anchor feeding the pipeline is the bivariate one: it is the only row
 #     marked used_in_pipeline, and its b equals h_per_sd and the anchor slope
-#     recorded in e4_diagnostics. (v1 gap: three anchor rows, none marked.)
+#     recorded in e4_diagnostics. (Earlier gap: three anchor rows, none marked.)
 used <- anchor[used_in_pipeline == TRUE, model]
 ok_anchor <- length(used) == 1L && used == "bivariate" &&
   abs(anchor[model == "bivariate", b_index] - h_per_sd) < 1e-10 &&
@@ -108,11 +114,29 @@ ok_anchor <- length(used) == 1L && used == "bivariate" &&
 ok_e4_m5 <- abs(e4rq1[model == "E4_M5_city", per_hour] -
   e4diag[check == "E4 vs total CO2e, M5 slope (kg per measured hour)", value]) < 1e-10
 
-# 14. run_info records the v2 spec: main index without q11b_7/q11b_8
+# 14. run_info records the index spec: main index without q11b_7/q11b_8
 #     (e-commerce/online selling), no-calls additionally without q11b_2.
-ok_run_info <- run_info$export_version == "v2" &&
-  !grepl("q11b_7", run_info$index_items) && !grepl("q11b_8", run_info$index_items) &&
+ok_run_info <- !grepl("q11b_7", run_info$index_items) && !grepl("q11b_8", run_info$index_items) &&
   grepl("q11_1", run_info$index_items) && !grepl("q11b_2", run_info$index_nocalls_items)
+
+# 15. volume_margins' M5 CO2e row is the headline M5: 68 decomposes exactly
+#     the published gradient (asserted in 68 against 42's ladder at run time,
+#     re-checked here against the copied export).
+ok_volume_headline <- abs(volmarg[outcome == "co2e" & spec == "M5", per_sd] -
+  main_m5$per_sd) < 1e-6
+
+# 16. The accounting split recomputes in the export: volume + composition +
+#     covariance residual = headline, and the volume share is the volume
+#     component over the headline.
+ok_volume_accounting <- abs(
+    volcomp[component == "volume_component", estimate] +
+    volcomp[component == "composition_component", estimate] +
+    volcomp[component == "covariance_residual", estimate] -
+    volcomp[component == "headline_gradient", estimate]) < 1e-6 &&
+  abs(volcomp[component == "headline_gradient", share_of_headline_pct] - 100) < 1e-9 &&
+  abs(volcomp[component == "volume_component", share_of_headline_pct] -
+    100 * volcomp[component == "volume_component", estimate] /
+      volcomp[component == "headline_gradient", estimate]) < 1e-6
 
 checks <- data.table(
   check = c("ladder N constant and = frozen M5 sample",
@@ -128,10 +152,13 @@ checks <- data.table(
             "coverage_check per_hour = per_sd / h_per_sd",
             "bivariate anchor feeds the pipeline (b = h_per_sd)",
             "E4 M5 slope identical in e4_rq1_robustness and e4_diagnostics",
-            "run_info records the v2 index spec"),
+            "run_info records the index spec",
+            "volume_margins M5 CO2e row = headline M5",
+            "volume/composition split recomputes to the headline"),
   pass = c(ok_ladder_n, ok_flow_m5, ok_decomp, ok_calibration_checks, ok_cal_m5,
            ok_per_hour_identity, ok_figure, ok_variants, ok_coverage_ref,
-           ok_coverage_pct, ok_register_identity, ok_anchor, ok_e4_m5, ok_run_info))
+           ok_coverage_pct, ok_register_identity, ok_anchor, ok_e4_m5, ok_run_info,
+           ok_volume_headline, ok_volume_accounting))
 
 print(checks)
 stopifnot(all(checks$pass))
