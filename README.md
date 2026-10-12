@@ -28,7 +28,11 @@ are derived (per-SD ÷ 0.338 h/SD) and secondary.
 - **The e-commerce items do not drive the relation**: the 13-item variant
   (q11b_7/q11b_8 back in) gives +214.3 — only ~10 kg/SD (~5%) more than the
   main index. The item that matters is **calls** (+385 kg/item-SD, the largest
-  of all 13; dropping it: 203.9 → 140.8).
+  of all 13; dropping it: 203.9 → 140.8). ⚠ *Both numbers predate the
+  item-scaling fix of 2026-10-12 (they were computed on raw items, so
+  +214.3 was a raw-item-weighted composite and +385 a per-raw-scale-point
+  slope mislabelled per item SD); corrected values land with the next TRE
+  rerun — see notes/continuity.md.*
 - **Calibration audited**: bivariate anchor b = 0.3384 h per index SD
   (n = 2,082, R² = 0.018, r = 0.134); derived per-hour M5 = 602.6 kg/h,
   identical to the direct per-hour fit; all internal checks TRUE
@@ -41,6 +45,11 @@ are derived (per-SD ÷ 0.338 h/SD) and secondary.
   +330*** (excluded), smartphone +216***, e-commerce +222** (excluded),
   information search +181***, social media +175***, TV +107***, computer +51*,
   streaming −87**; gaming −54 (BH p = .061); tablet/console/reading ns.
+  ⚠ *These are the 2026-10-07 run's slopes per raw scale point, mislabelled
+  per item SD (the analysis_data item columns were raw, not z-scaled —
+  fixed in 40 on 2026-10-12); per-item-SD values = these × the item SD
+  (0.70–1.45) and land with the next TRE rerun. Significance unchanged
+  (p identical under the rescaling).*
 - **Decomposition** (per index SD): groceries +39.1, e-commerce channel +28.1,
   restaurants +22.4, aviation +26.1, travel +21.5, clothing +10.6,
   uncategorized +16.7, alcohol +7.7; transport total +45.6 (p = .015;

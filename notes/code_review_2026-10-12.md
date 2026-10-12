@@ -261,3 +261,31 @@ file parses.
 Remaining known non-issues (documented, not changed): `TRE_output/` still
 contains the frozen `item_figure_check.csv` from the 2026-10-07 run — the
 next real-data run will simply not write it.
+
+## Addendum 2026-10-12 (post-review) — item-scaling bug found and fixed
+
+Committing the style remediation surfaced a substance bug already recorded in
+notes/continuity.md (2026-10-07): analysis_data's q11 columns were the RAW
+1-6 answers (item_battery rode along through 40's control_data chain; the
+z-scaling lived only in z_items, which joins back just the composites). So
+54's item-level slopes were per raw scale point (labels said per item SD),
+59's 13-item variant and 61's halves/PC1 were raw-item-weighted (comments
+claimed z-scaled). The prior session log said to wait for David's branch;
+the user chose to fix locally (2026-10-12).
+
+Fix (all in 40_control_vars.R; 54/59/61 unchanged — their comments become
+true): control_data no longer carries the item columns (the item_battery
+join filtered nothing — everyone there passed 20's battery gate via the
+spending filter); mu/sd come from item_battery joined to the frozen
+analysis sample (identical parameters to before); the final join brings
+the z-scaled items into analysis_data.
+
+Mock verification: the changed item_level estimates and SEs follow the
+exact identity z-slope = raw-slope x analysis-sample item SD (p identical —
+pure reparametrization of the same models); main, no-calls and
+battery-sample-scaled variants byte-identical; only the 13-item variant
+row, index_weightings, social_games and the item forest figure moved; every
+other output byte-identical. verify_export 15/15 on the frozen 2026-10-07
+export. Real-data item-level / 13-item / weightings numbers need a TRE
+rerun; README.md marks the stale citations. David's calls-diagnostics
+branch must rebase onto this (its fix assumes the old raw-item lineage).

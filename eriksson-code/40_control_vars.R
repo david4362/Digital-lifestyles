@@ -43,10 +43,16 @@ control_data[, income_scb := log1p(pmax(DispInk04, 0)) - mean(log1p(pmax(DispInk
 # 4. Raw battery responses (30; the index built below replaces the role
 # the scaled battery played in the earlier pipeline), then keep only the
 # needed columns (deso for 56's fixed effects, income_q for 50's quintile
-# stratification, items for 54/59/61) and collapse to one row per person.
-control_data = control_data[item_battery, on = "aid", nomatch = 0]
+# stratification) and collapse to one row per person. The battery items are
+# NOT carried here: the analysis sample gets the z-scaled items from
+# z_items below, so every downstream use of an item column (54's
+# item-level models, 59's 13-item variant, 61's halves/PC1) is in units of
+# item SDs; the raw answers stay in item_battery / answered_survey (45's
+# alpha, 65's item correlations). Everyone here already passed the battery
+# gate in 20 (the spending filter keeps answered_survey members only), so
+# the earlier item_battery join filtered nothing.
 control_data = unique(control_data[, c("aid", "age", "gender", "income", "income_q", "income_scb",
-  "density", "hh_size", "children", "education", "major_city", "deso", q11_cols), with = FALSE])
+  "density", "hh_size", "children", "education", "major_city", "deso"), with = FALSE])
 
 # Join KK bank income, keeping every participant. In a data.table join
 # X[i, on = "aid"] the rows of i (the right-hand side) are the ones kept, so
@@ -91,8 +97,11 @@ analysis_data = lm_data[complete.cases(lm_data[, ..covariate_vars])]
 #    the answered values). The parameters are then applied to every battery
 #    respondent who passed the gate, so the index is also defined for E4
 #    reporters outside the analysis sample (the anchor below needs them).
-mu_items = unlist(analysis_data[, lapply(.SD, mean, na.rm = TRUE), .SDcols = q11_cols])
-sd_items = unlist(analysis_data[, lapply(.SD, sd, na.rm = TRUE), .SDcols = q11_cols])
+#    (the analysis table carries no item columns; the parameters come from
+#    the raw answers of the analysis-sample members)
+analysis_items = item_battery[analysis_data[, .(aid)], on = "aid", nomatch = 0]
+mu_items = unlist(analysis_items[, lapply(.SD, mean, na.rm = TRUE), .SDcols = q11_cols])
+sd_items = unlist(analysis_items[, lapply(.SD, sd, na.rm = TRUE), .SDcols = q11_cols])
 z_items = copy(item_battery)
 z_items[, (q11_cols) := Map(function(x, m, s) (x - m) / s,
   .SD, mu_items, sd_items), .SDcols = q11_cols]
@@ -126,10 +135,17 @@ h_per_sd = dt_coefs[["index"]]
 # index SD; see calibration_check.csv for the full conversion audit).
 z_items[, hours_est := dt_coefs[["(Intercept)"]] + dt_coefs[["index"]] * index]
 
-# Join the exposure (+ variants and anchored hours) into the frozen analysis
-# sample and the control table (43/47/50/63 build their category models from
-# control_data; 52 uses hours_est for the same-unit E4 comparison).
-analysis_data = z_items[, .(aid, index, index_nocalls, index_raw, hours_est)][
+# Join the exposure (+ variants, anchored hours AND the z-scaled items)
+# into the frozen analysis sample and the control table (43/47/50/63 build
+# their category models from control_data; 52 uses hours_est for the
+# same-unit E4 comparison). The q11 columns joined into the analysis sample
+# are the z-scaled items from step 1 above, per the pre-registered
+# construction — the fix for the item-scaling bug recorded in
+# notes/continuity.md (2026-10-07): previously the raw answers rode along
+# from item_battery, so 54's item-level slopes and 59's 13-item variant
+# were per raw scale point / raw-item-weighted while their comments (and
+# the export labels) claimed z-scaled.
+analysis_data = z_items[, c("aid", ..q11_cols, "index", "index_nocalls", "index_raw", "hours_est")][
   analysis_data, on = "aid"]
 control_data = z_items[, .(aid, index, hours_est)][control_data, on = "aid"]
 

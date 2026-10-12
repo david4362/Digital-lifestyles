@@ -140,6 +140,38 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-10-12 — full code review applied + item-scaling bug FIXED locally
+  (supersedes the "do not patch 59 locally" note below).** Complete style
+  review of eriksson-code (criteria: non-programmer clarity, no defensive
+  coding, data.table + native R only, minimal verbosity) — findings and
+  verification trail in `notes/code_review_2026-10-12.md`; two commits on
+  main (style remediation + this fix). Style round: 67's hidden dependency
+  on 55, defensive structures removed (54's stopifnot audit +
+  item_figure_check.csv, four n<30 silent skips, 68's stopifnot), TRUE/FALSE,
+  duplicated logic consolidated (group_annual/decomp_targets in 20; form0,
+  m5_row, fit_row, e4_data in 40; screen_valid in 30; 70_run_info.R), 46
+  margins rewritten, 40 chain split, vol_comp row-wise, assignments on `=`
+  (.lintr updated). All 73 mock outputs byte-identical throughout.
+  **Substance fix (user decision, overriding the Oct-07 "do not patch"
+  note):** the analysis_data q11 columns were RAW (item_battery rode along
+  via control_data; z-scaling lived only in z_items), so 54's item-level
+  slopes were per raw scale point and 59's 13-item row / 61's halves+PC1
+  were raw-item-weighted, while comments/labels claimed z-scaled. Fixed in
+  40: control_data no longer carries the items; the final join brings the
+  **z-scaled items** from z_items into analysis_data (mu/sd now computed
+  from item_battery joined to the frozen sample — identical parameters);
+  54/59/61 needed no edits, their comments are now true. Mock-verified: the
+  changed item_level numbers follow the exact identity z-slope = raw-slope
+  × item SD (se likewise, p identical — pure reparametrization); main,
+  no-calls and battery-scaled variants unchanged; only the 13-item row,
+  index_weightings and social_games moved; all other outputs byte-identical.
+  **Consequences:** README item-level + 13-item numbers marked ⚠ pending
+  TRE rerun (they were per raw point, mislabelled per item SD); brief /
+  critique notes of 2026-10-07 are dated records — left as-is. When David's
+  calls-diagnostics branch lands, it must REBASE onto this (its 59 fix and
+  any item-level tables assume the old raw-item lineage); verify_export
+  15/15 still passes on the frozen 2026-10-07 export.
+
 - **2026-10-07 (night) — pre-branch commit + calls-diagnostics groundwork.**
   Committed the Oct-07 export + notes to main *before* David's
   calls-diagnostics branch lands (his Claude's side repo
