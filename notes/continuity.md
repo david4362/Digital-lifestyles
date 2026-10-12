@@ -156,9 +156,11 @@ Read this first each session. Keep it updated: decisions, open questions, next s
   check comments renumbered 16-20; README "scripts 20-70". Kept as
   deliberate: his "Revised index" relabel + the post-registration-
   correction framing in EXPORT_README (verify_export's main_label
-  matches), item_scaling_check.csv, and his two in-pipeline stopifnots
-  (item SD-1 guard in 40, leaf additivity in 69) — the latter duplicate
-  export checks 16/20 and are criterion-2 tension, flagged not stripped.
+  matches), item_scaling_check.csv. His two in-pipeline stopifnots
+  (item SD-1 guard in 40, leaf additivity in 69) were REMOVED per user
+  decision (they duplicate export checks 16/20; no defensive coding in
+  the pipeline) — the audit CSV and the export checks carry both
+  guarantees.
   Verified: RUN_MOCK end-to-end; all 80 analysis outputs byte-identical
   to David's own pre-restructure mock run (only the export README copy
   differs, from fixes above); verify_export 20/20 against the mock

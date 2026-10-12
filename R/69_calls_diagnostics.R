@@ -218,12 +218,8 @@ calls_category = calls_category[
 calls_category[, share_of_total_pct := 100 * estimate / total_estimate]
 calls_category[, total_estimate := NULL]
 
-# Exact additivity is the criterion for a valid broadness decomposition.
-calls_additivity = calls_category[, .(
-  total = estimate[outcome == "total"],
-  leaf_sum = sum(estimate[scope == "leaf"])
-), by = specification]
-stopifnot(all(abs(calls_additivity$total - calls_additivity$leaf_sum) < 1e-6))
+# The leaf coefficients add exactly to the total by the dcast construction
+# above; verify_export check 20 asserts the additivity on the export.
 setorder(calls_category, scope, specification, estimate)
 fwrite(calls_category, file.path(out_dir, "calls_category.csv"))
 

@@ -150,11 +150,12 @@ analysis_data = z_items[, c("aid", ..q11_cols, "index", "index_nocalls", "index_
   analysis_data, on = "aid"]
 control_data = z_items[, .(aid, index, hours_est)][control_data, on = "aid"]
 
-# Fail loudly if a future join reintroduces raw item responses. Missing values
-# are allowed by the battery rule; every answered item must have SD 1 here.
+# Item-scaling audit table: mean and SD of every item column in the frozen
+# sample. The z-scaled construction gives mean 0 / SD 1 by design (up to
+# floating point); verify_export check 16 asserts it on the export, where it
+# catches a join that reintroduces raw responses (the 2026-10-12 bug).
 item_sds_check = unlist(analysis_data[, lapply(.SD, sd, na.rm = TRUE),
   .SDcols = q11_cols])
-stopifnot(all(abs(item_sds_check - 1) < 1e-10))
 item_scaling_check = data.table(
   item = q11_cols,
   n = unlist(analysis_data[, lapply(.SD, function(x) sum(!is.na(x))),
