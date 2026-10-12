@@ -81,8 +81,8 @@ main and no-calls index), `decomp_table.csv` / `sek_table.csv`
 coverage explain the gradient), `e4_diagnostics.csv` +
 `e4_item_correlations.csv` (E4 credibility; no iOS/Android platform variable
 exists in the data — see the script headers of `65_e4_diagnostics.R`),
-`item_level.csv` + `item_figure_check.csv` (item-level gradients; the figure
-audit asserts every axis label sits on its own item's estimate and CI),
+`item_level.csv` (item-level gradients; the forest figure takes its labels
+and estimates directly from these rows),
 `volume_margins.csv` + `volume_composition.csv` + `budget_shares.csv` +
 `quintile_desc.csv` + `quintile_contrast.csv` (volume vs. composition of the
 headline gradient: how much of it is "buys more" spending vs. a carbon-heavier

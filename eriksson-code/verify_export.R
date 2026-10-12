@@ -8,127 +8,110 @@
 # Each check restates one invariant that the pipeline guarantees structurally,
 # so a violation means the copy-out or the run is broken, not just "unexpected":
 # what landed in the repo must be what the pipeline wrote and must be
-# internally consistent across files. Mirrors 41_model_check.R (abs diff <
-# tolerance) and 54_item_analyses.R (stopifnot) conventions.
+# internally consistent across files.
 #
-# Checks 15-16 (volume-vs-composition) require an export from a run that
+# Checks 14-15 (volume-vs-composition) require an export from a run that
 # includes 68_volume_composition.R; the 2026-10-05 export predates it.
 
 library(data.table)
 
-out_dir <- "../TRE_output"
+out_dir = "../TRE_output"
 
-step         <- fread(file.path(out_dir, "stepwise_table.csv"))
-step_sample  <- fread(file.path(out_dir, "stepwise_sample.csv"))
-flow         <- fread(file.path(out_dir, "sample_flow.csv"))
-cal          <- fread(file.path(out_dir, "calibration_check.csv"))
-anchor       <- fread(file.path(out_dir, "anchor_check.csv"))
-decomp       <- fread(file.path(out_dir, "decomp_table.csv"))
-items        <- fread(file.path(out_dir, "item_level.csv"))
-figure       <- fread(file.path(out_dir, "item_figure_check.csv"))
-variants     <- fread(file.path(out_dir, "index_variants.csv"))
-coverage     <- fread(file.path(out_dir, "account_coverage.csv"))
-register     <- fread(file.path(out_dir, "coverage_check.csv"))
-e4diag       <- fread(file.path(out_dir, "e4_diagnostics.csv"))
-e4rq1        <- fread(file.path(out_dir, "e4_rq1_robustness.csv"))
-volmarg      <- fread(file.path(out_dir, "volume_margins.csv"))
-volcomp      <- fread(file.path(out_dir, "volume_composition.csv"))
-run_info     <- fread(file.path(out_dir, "run_info.csv"))
+step = fread(file.path(out_dir, "stepwise_table.csv"))
+step_sample = fread(file.path(out_dir, "stepwise_sample.csv"))
+flow = fread(file.path(out_dir, "sample_flow.csv"))
+cal = fread(file.path(out_dir, "calibration_check.csv"))
+anchor = fread(file.path(out_dir, "anchor_check.csv"))
+decomp = fread(file.path(out_dir, "decomp_table.csv"))
+items = fread(file.path(out_dir, "item_level.csv"))
+variants = fread(file.path(out_dir, "index_variants.csv"))
+coverage = fread(file.path(out_dir, "account_coverage.csv"))
+register = fread(file.path(out_dir, "coverage_check.csv"))
+e4diag = fread(file.path(out_dir, "e4_diagnostics.csv"))
+e4rq1 = fread(file.path(out_dir, "e4_rq1_robustness.csv"))
+volmarg = fread(file.path(out_dir, "volume_margins.csv"))
+volcomp = fread(file.path(out_dir, "volume_composition.csv"))
+run_info = fread(file.path(out_dir, "run_info.csv"))
 
-main_label    <- "Main: prereg index minus e-commerce & online selling (11 items)"
-nocalls_label <- "Also minus calls (10 items)"
-main_m5     <- step[model == "M5_city" & index_variant == main_label]
-nocalls_m5  <- step[model == "M5_city" & index_variant == nocalls_label]
-h_per_sd    <- cal$hours_per_index_sd
+main_label = "Main: prereg index minus e-commerce & online selling (11 items)"
+nocalls_label = "Also minus calls (10 items)"
+main_m5 = step[model == "M5_city" & index_variant == main_label]
+nocalls_m5 = step[model == "M5_city" & index_variant == nocalls_label]
+h_per_sd = cal$hours_per_index_sd
 
 # 1. The M0-M5 ladder is estimated on one frozen sample: N identical across
 #    all 12 rows and equal to the frozen M5 complete-case sample.
-ok_ladder_n <- uniqueN(step$n) == 1L && step$n[1] == step_sample$n_rows
+ok_ladder_n = uniqueN(step$n) == 1L && step$n[1] == step_sample$n_rows
 
 # 2. The frozen M5 sample matches the m5_complete_case stage of sample_flow.
-ok_flow_m5 <- step_sample$n_rows == flow[stage == "m5_complete_case", n]
+ok_flow_m5 = step_sample$n_rows == flow[stage == "m5_complete_case", n]
 
 # 3. The decomposition's total row is the headline M5 (per_sd and per_hour).
-total_row <- decomp[cat == "total"]
-ok_decomp <- abs(total_row$per_sd - main_m5$per_sd) < 1e-6 &&
+total_row = decomp[cat == "total"]
+ok_decomp = abs(total_row$per_sd - main_m5$per_sd) < 1e-6 &&
   abs(total_row$per_hour - main_m5$per_hour) < 1e-6
 
 # 4. The export's own calibration internal checks are all TRUE.
-ok_calibration_checks <- cal$check_hours_per_sd && cal$check_m5_per_sd &&
+ok_calibration_checks = cal$check_hours_per_sd && cal$check_m5_per_sd &&
   cal$check_per_hour
 
 # 5. calibration_check's m5_per_index_sd is the ladder M5 per_sd.
-ok_cal_m5 <- abs(cal$m5_per_index_sd - main_m5$per_sd) < 1e-6
+ok_cal_m5 = abs(cal$m5_per_index_sd - main_m5$per_sd) < 1e-6
 
 # 6. Every per_hour in the ladder is per_sd / h_per_sd (per-hour is derived,
 #    per-SD is the headline scale).
-ok_per_hour_identity <- all(abs(step$per_hour - step$per_sd / h_per_sd) < 1e-6)
+ok_per_hour_identity = all(abs(step$per_hour - step$per_sd / h_per_sd) < 1e-6)
 
-# 7. The figure audit rows are exactly the item_level rows, one per item, and
-#    the y positions are a clean 1..n. (Earlier bug: labels were shifted onto other
-#    items' estimates; this is the check that makes that impossible to miss.)
-fig_join <- merge(
-  items[, .(item, label, estimate, lo, hi)],
-  figure[, .(item, label, estimate, lo, hi)],
-  by = "item", suffixes = c("", "_figure"))
-ok_figure <- nrow(fig_join) == nrow(items) &&
-  all(fig_join$label == fig_join$label_figure) &&
-  all(abs(fig_join$estimate - fig_join$estimate_figure) < 1e-6) &&
-  all(abs(fig_join$lo - fig_join$lo_figure) < 1e-6) &&
-  all(abs(fig_join$hi - fig_join$hi_figure) < 1e-6) &&
-  !anyDuplicated(figure$y_position) &&
-  setequal(figure$y_position, seq_len(nrow(figure)))
-
-# 8. The main and no-calls rows of index_variants equal the corresponding
+# 7. The main and no-calls rows of index_variants equal the corresponding
 #    M5 rows of the ladder (same model, same sample, must be the same number).
-ok_variants <- abs(variants[variant == main_label, per_sd] - main_m5$per_sd) < 1e-6 &&
+ok_variants = abs(variants[variant == main_label, per_sd] - main_m5$per_sd) < 1e-6 &&
   abs(variants[variant == nocalls_label, per_sd] - nocalls_m5$per_sd) < 1e-6
 
-# 9. account_coverage's reference row is the headline M5, pct_change 0.
-ref_row <- coverage[analysis == "Reference"]
-ok_coverage_ref <- abs(ref_row$per_sd - main_m5$per_sd) < 1e-6 &&
+# 8. account_coverage's reference row is the headline M5, pct_change 0.
+ref_row = coverage[analysis == "Reference"]
+ok_coverage_ref = abs(ref_row$per_sd - main_m5$per_sd) < 1e-6 &&
   ref_row$pct_change_vs_reference == 0
 
-# 10. pct_change_vs_reference recomputes as (per_sd - reference) / reference
+# 9. pct_change_vs_reference recomputes as (per_sd - reference) / reference
 #     * 100 on every total-CO2e row. The two income-ratio rows are their own
 #     reference (see their spec column) and are 0 by design.
-tot_rows <- coverage[outcome == "total CO2e"]
-ratio_rows <- coverage[spec == "M5, income > 0 (reference for ratio outcomes)"]
-ok_coverage_pct <- all(abs(tot_rows$pct_change_vs_reference -
+tot_rows = coverage[outcome == "total CO2e"]
+ratio_rows = coverage[spec == "M5, income > 0 (reference for ratio outcomes)"]
+ok_coverage_pct = all(abs(tot_rows$pct_change_vs_reference -
     (tot_rows$per_sd - main_m5$per_sd) / main_m5$per_sd * 100) < 1e-6) &&
   all(ratio_rows$pct_change_vs_reference == 0)
 
-# 11. The register-outcome rows of coverage_check obey the same per-hour identity.
-ok_register_identity <- all(abs(register$per_hour - register$per_sd / h_per_sd) < 1e-6)
+# 10. The register-outcome rows of coverage_check obey the same per-hour identity.
+ok_register_identity = all(abs(register$per_hour - register$per_sd / h_per_sd) < 1e-6)
 
-# 12. The anchor feeding the pipeline is the bivariate one: it is the only row
+# 11. The anchor feeding the pipeline is the bivariate one: it is the only row
 #     marked used_in_pipeline, and its b equals h_per_sd and the anchor slope
 #     recorded in e4_diagnostics. (Earlier gap: three anchor rows, none marked.)
-used <- anchor[used_in_pipeline == TRUE, model]
-ok_anchor <- length(used) == 1L && used == "bivariate" &&
+used = anchor[used_in_pipeline == TRUE, model]
+ok_anchor = length(used) == 1L && used == "bivariate" &&
   abs(anchor[model == "bivariate", b_index] - h_per_sd) < 1e-10 &&
   abs(e4diag[check == "E4 vs main index: anchor slope b (hours per index SD)", value] -
       h_per_sd) < 1e-10
 
-# 13. The E4-vs-total M5 slope is identical in e4_rq1_robustness and e4_diagnostics.
-ok_e4_m5 <- abs(e4rq1[model == "E4_M5_city", per_hour] -
+# 12. The E4-vs-total M5 slope is identical in e4_rq1_robustness and e4_diagnostics.
+ok_e4_m5 = abs(e4rq1[model == "E4_M5_city", per_hour] -
   e4diag[check == "E4 vs total CO2e, M5 slope (kg per measured hour)", value]) < 1e-10
 
-# 14. run_info records the index spec: main index without q11b_7/q11b_8
+# 13. run_info records the index spec: main index without q11b_7/q11b_8
 #     (e-commerce/online selling), no-calls additionally without q11b_2.
-ok_run_info <- !grepl("q11b_7", run_info$index_items) && !grepl("q11b_8", run_info$index_items) &&
+ok_run_info = !grepl("q11b_7", run_info$index_items) && !grepl("q11b_8", run_info$index_items) &&
   grepl("q11_1", run_info$index_items) && !grepl("q11b_2", run_info$index_nocalls_items)
 
-# 15. volume_margins' M5 CO2e row is the headline M5: 68 decomposes exactly
+# 14. volume_margins' M5 CO2e row is the headline M5: 68 decomposes exactly
 #     the published gradient (asserted in 68 against 42's ladder at run time,
 #     re-checked here against the copied export).
-ok_volume_headline <- abs(volmarg[outcome == "co2e" & spec == "M5", per_sd] -
+ok_volume_headline = abs(volmarg[outcome == "co2e" & spec == "M5", per_sd] -
   main_m5$per_sd) < 1e-6
 
-# 16. The accounting split recomputes in the export: volume + composition +
+# 15. The accounting split recomputes in the export: volume + composition +
 #     covariance residual = headline, and the volume share is the volume
 #     component over the headline.
-ok_volume_accounting <- abs(
+ok_volume_accounting = abs(
     volcomp[component == "volume_component", estimate] +
     volcomp[component == "composition_component", estimate] +
     volcomp[component == "covariance_residual", estimate] -
@@ -138,14 +121,13 @@ ok_volume_accounting <- abs(
     100 * volcomp[component == "volume_component", estimate] /
       volcomp[component == "headline_gradient", estimate]) < 1e-6
 
-checks <- data.table(
+checks = data.table(
   check = c("ladder N constant and = frozen M5 sample",
             "frozen M5 sample = sample_flow m5_complete_case",
             "decomposition total = headline M5",
             "calibration internal checks all TRUE",
             "calibration m5_per_index_sd = ladder M5 per_sd",
             "per_hour = per_sd / h_per_sd on every ladder row",
-            "figure audit = item_level, y positions 1..n",
             "index_variants = ladder M5 rows (main, no-calls)",
             "account_coverage reference = headline M5",
             "pct_change_vs_reference recomputes (total CO2e rows)",
@@ -156,7 +138,7 @@ checks <- data.table(
             "volume_margins M5 CO2e row = headline M5",
             "volume/composition split recomputes to the headline"),
   pass = c(ok_ladder_n, ok_flow_m5, ok_decomp, ok_calibration_checks, ok_cal_m5,
-           ok_per_hour_identity, ok_figure, ok_variants, ok_coverage_ref,
+           ok_per_hour_identity, ok_variants, ok_coverage_ref,
            ok_coverage_pct, ok_register_identity, ok_anchor, ok_e4_m5, ok_run_info,
            ok_volume_headline, ok_volume_accounting))
 

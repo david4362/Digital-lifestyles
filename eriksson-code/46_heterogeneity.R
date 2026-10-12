@@ -10,33 +10,50 @@ library(lmtest)
 bands = demographics_unique[, .(aid, band = cut(age, c(18, 30, 45, 65, Inf),
   labels = c("18-29", "30-44", "45-64", "65+"), right = FALSE))]
 d = analysis_data[bands, on = "aid", nomatch = 0]
+# gender arrives as a character vector (fcase in 10); make the factor
+# explicit so levels() works and the reference level (Kvinna, alphabetical
+# first) is visible here rather than implicit in lm.
+d[, gender := factor(gender)]
 
-margins = rbindlist(lapply(c("band", "gender", "major_city"), function(v) {
-  m = lm(update(as.formula(lm_formula), paste(". ~ . + index:", v)), d)
+# Level-specific slopes from one interaction model per variable (M5 +
+# index x group). The index coefficient is the slope in the reference level
+# (the first level: 18-29, Kvinna, outside major cities); every other
+# level's slope is the index coefficient plus its interaction coefficient,
+# and the SE combines the two coefficients' variances and their covariance
+# (delta method). The interaction tests behind these margins are in 58.
+level_rows = function(m, v, lv) {
   V = vcovHC(m, type = "HC3")
   cf = coef(m)
-  lv = if (is.factor(d[[v]])) levels(d[[v]]) else sort(unique(d[[v]]))
-  inms = setdiff(grep("index", names(cf), value = TRUE), "index")
-  lvl_of = function(nm) sub(paste0("^", v), "", gsub("index|:", "", nm))
-  rbindlist(lapply(seq_along(lv), function(i) {
-    hit = inms[sapply(inms, lvl_of) == as.character(lv[i])]
-    if (length(hit) == 0) {
-      e = cf[["index"]]
-      s = sqrt(V["index", "index"])
+  rbindlist(lapply(lv, function(l) {
+    if (l == lv[1]) {
+      est = cf[["index"]]
+      se = sqrt(V["index", "index"])
     } else {
-      nm = hit[1]
-      e = cf[["index"]] + cf[[nm]]
-      s = sqrt(V["index", "index"] + V[nm, nm] + 2 * V["index", nm])
+      # R orders the two variables in the interaction coefficient's name
+      # by their first appearance in the formula (genderMan:index here,
+      # index:major_cityTRUE), so take whichever of the two names the
+      # model used.
+      nm = intersect(names(cf), c(paste0(v, l, ":index"), paste0("index:", v, l)))[1]
+      est = cf[["index"]] + cf[[nm]]
+      se = sqrt(V["index", "index"] + V[nm, nm] + 2 * V["index", nm])
     }
-    data.table(mod = v, level = as.character(lv[i]), n = nobs(m), est = e, se = s,
-      p = 2 * pt(-abs(e / s), df = df.residual(m)), per_sd = e,
-      per_hour = e / h_per_sd)
+    data.table(mod = v, level = l, n = nobs(m), est = est, se = se,
+      p = 2 * pt(-abs(est / se), df = df.residual(m)), per_sd = est,
+      per_hour = est / h_per_sd)
   }))
-}))
+}
+
+margins = rbind(
+  level_rows(lm(update(as.formula(lm_formula), ". ~ . + index:band"), d),
+    "band", levels(d$band)),
+  level_rows(lm(update(as.formula(lm_formula), ". ~ . + index:gender"), d),
+    "gender", levels(d$gender)),
+  level_rows(lm(update(as.formula(lm_formula), ". ~ . + index:major_city"), d),
+    "major_city", c("FALSE", "TRUE")))
 margins[, `:=`(lo = est - 1.96 * se, hi = est + 1.96 * se)]
 fwrite(margins, file.path(out_dir, "het_margins.csv"))
 
-modttl <- c(band = "Age group", gender = "Gender", major_city = "Major city")
+modttl = c(band = "Age group", gender = "Gender", major_city = "Major city")
 png(file.path(out_dir, "het_plot.png"), width = 1200, height = 500, res = 120)
 par(mfrow = c(1, 3), mar = c(5, 8, 4, 1))
 for (v in c("band", "gender", "major_city")) {

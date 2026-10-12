@@ -3,17 +3,17 @@ library(sandwich)
 library(lmtest)
 
 # Age linearity check on the M5 specification (linear vs natural spline).
-linear_model <- lm(as.formula(lm_formula), data = analysis_data)
-age_spline_formula <- update(
+linear_model = lm(as.formula(lm_formula), data = analysis_data)
+age_spline_formula = update(
   as.formula(lm_formula),
   . ~ . - age + splines::ns(age, df = 4)
 )
-spline_model <- lm(age_spline_formula, data = analysis_data)
+spline_model = lm(age_spline_formula, data = analysis_data)
 
-linear_ct <- coeftest(linear_model, vcov. = vcovHC(linear_model, type = "HC3"))["index", ]
-spline_ct <- coeftest(spline_model, vcov. = vcovHC(spline_model, type = "HC3"))["index", ]
+linear_ct = coeftest(linear_model, vcov. = vcovHC(linear_model, type = "HC3"))["index", ]
+spline_ct = coeftest(spline_model, vcov. = vcovHC(spline_model, type = "HC3"))["index", ]
 
-age_spline_results <- rbind(
+age_spline_results = rbind(
   data.table(
     model = "M5 linear age",
     n = nobs(linear_model),

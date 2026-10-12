@@ -1,12 +1,12 @@
 library(data.table)
 source("05_labels.R")
 
-stepwise <- fread(file.path(out_dir, "stepwise_table.csv"))
-res <- fread(file.path(out_dir, "decomp_table.csv"))
-main <- stepwise[index_variant == variantlab[["main"]]]
+stepwise = fread(file.path(out_dir, "stepwise_table.csv"))
+res = fread(file.path(out_dir, "decomp_table.csv"))
+main = stepwise[index_variant == variantlab[["main"]]]
 png(file.path(out_dir, "pres_stepwise.png"), width = 1200, height = 700, res = 150)
 par(mar = c(5, 14, 4, 2), cex.axis = 1.1, cex.lab = 1.2)
-y <- seq_len(nrow(main))
+y = seq_len(nrow(main))
 plot(main$per_sd, y, xlim = range(c(main$lo_sd, main$hi_sd)),
   yaxt = "n", pch = 19, cex = 1.4, col = "#1f4e79",
   xlab = "kg CO2e per index SD", ylab = "",
@@ -17,11 +17,11 @@ abline(v = 0, lty = 2)
 dev.off()
 
 # Pres 2: decomp, groups + total only
-show <- c("total", "transport", "ecom", "digital", "placebo_insurance", "vehicles")
-d <- res[cat %in% show]
+show = c("total", "transport", "ecom", "digital", "placebo_insurance", "vehicles")
+d = res[cat %in% show]
 png(file.path(out_dir, "pres_decomp.png"), width = 1200, height = 700, res = 150)
 par(mar = c(5, 14, 4, 2), cex.axis = 1.1, cex.lab = 1.2)
-y <- seq_len(nrow(d))
+y = seq_len(nrow(d))
 plot(d$per_sd, y, xlim = range(c(d$lo, d$hi)),
   yaxt = "n", pch = 19, cex = 1.4, col = ifelse(d$p < 0.05, "#1f4e79", "grey60"),
   xlab = "kg CO2e per index SD", ylab = "",

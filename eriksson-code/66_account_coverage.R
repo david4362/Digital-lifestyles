@@ -29,11 +29,11 @@ library(lmtest)
 # from person_coverage (20). The participants go on the right of every join
 # (X[i, on = "aid"] keeps i's rows — see 40): the frozen M5 sample is kept,
 # not the full users/coverage population.
-cov_data <- users_latest[, .(aid, bank_accounts = `nr-of-bank-accounts`)][
+cov_data = users_latest[, .(aid, bank_accounts = `nr-of-bank-accounts`)][
   analysis_data, on = "aid"]
-cov_data <- person_coverage[, .(aid, n_months, observed_annual_spending)][
+cov_data = person_coverage[, .(aid, n_months, observed_annual_spending)][
   cov_data, on = "aid"]
-cov_data <- scb[, .(aid, register_income = DispInk04 * 100)][cov_data, on = "aid"]
+cov_data = scb[, .(aid, register_income = DispInk04 * 100)][cov_data, on = "aid"]
 
 cov_data[, account_group := fcase(
   bank_accounts == 1, "1", bank_accounts == 2, "2", bank_accounts == 3, "3",
@@ -47,7 +47,7 @@ cov_data[, co2e_income := fifelse(register_income > 0,
 
 # Descriptives per account group: who has how many accounts, and how much
 # of consumption and income is observed there
-account_groups_desc <- cov_data[, .(n = .N, share = .N / nrow(cov_data),
+account_groups_desc = cov_data[, .(n = .N, share = .N / nrow(cov_data),
   mean_index = mean(index), mean_n_months = mean(n_months),
   mean_bank_accounts = mean(bank_accounts), mean_co2e = mean(co2e),
   mean_observed_annual_spending = mean(observed_annual_spending),
@@ -58,11 +58,11 @@ setorder(account_groups_desc, account_group)
 fwrite(account_groups_desc, file.path(out_dir, "account_groups_desc.csv"))
 
 # One row per analysis: M5 (or M5 variant) on the given data, slope per SD
-fit_row <- function(d, form, analysis, outcome, spec, ref) {
-  m <- lm(form, data = d)
-  ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
-  est <- ct[["Estimate"]]
-  se <- ct[["Std. Error"]]
+account_row = function(d, form, analysis, outcome, spec, ref) {
+  m = lm(form, data = d)
+  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
+  est = ct[["Estimate"]]
+  se = ct[["Std. Error"]]
   data.table(analysis = analysis, outcome = outcome, spec = spec, n = nobs(m),
     per_sd = est, se = se, p = ct[["Pr(>|t|)"]],
     lo = est - 1.96 * se, hi = est + 1.96 * se,
@@ -72,50 +72,40 @@ fit_row <- function(d, form, analysis, outcome, spec, ref) {
 
 # Reference estimates: the original M5 on total CO2e, and the unrestricted
 # ratio-outcome M5s (their own family references)
-ref_co2e <- coef(lm(as.formula(lm_formula), data = analysis_data))[["index"]]
-ref_spending <- coef(lm(as.formula(sub("^co2e", "spending_income", lm_formula)),
+ref_co2e = coef(lm(as.formula(lm_formula), data = analysis_data))[["index"]]
+ref_spending = coef(lm(as.formula(sub("^co2e", "spending_income", lm_formula)),
   data = cov_data))[["index"]]
-ref_co2e_income <- coef(lm(as.formula(sub("^co2e", "co2e_income", lm_formula)),
+ref_co2e_income = coef(lm(as.formula(sub("^co2e", "co2e_income", lm_formula)),
   data = cov_data))[["index"]]
 
-account_strata <- rbindlist(lapply(c("1", "2", "3", "4+"), function(g) {
-  d <- cov_data[account_group == g]
-  if (nrow(d) < 30) {
-    message("66: skipping account group ", g, " (n = ", nrow(d), ")")
-    return(NULL)
-  }
-  lab <- if (g == "4+") "M5, 4+ accounts" else paste0("M5, exactly ", g, " account", if (g != "1") "s")
-  fit_row(d, lm_formula, "Account strata", "total CO2e", lab, ref_co2e)
+account_strata = rbindlist(lapply(c("1", "2", "3", "4+"), function(g) {
+  d = cov_data[account_group == g]
+  lab = if (g == "4+") "M5, 4+ accounts" else paste0("M5, exactly ", g, " account", if (g != "1") "s")
+  account_row(d, lm_formula, "Account strata", "total CO2e", lab, ref_co2e)
 }))
 
-# Spending-plausible bands: restricted to participants whose observed annual
-# spending is within a reasonable share of register disposable income.
-# "Reasonable" is a judgment call (documented here and in the export README);
-# both bands are reported. Strata below n = 30 are skipped, as in 64.
-band_row <- function(lo, hi) {
-  d <- cov_data[!is.na(spending_income) & spending_income >= lo & spending_income <= hi]
-  if (nrow(d) < 30) {
-    message("66: skipping spending-share band ", lo * 100, "-", hi * 100,
-      "% (n = ", nrow(d), ")")
-    return(NULL)
-  }
-  fit_row(d, lm_formula, "Spending-plausible sample", "total CO2e",
+# Spending-plausible bands (the 50-150% and wide 25-200% bands of header
+# point 6): observed annual spending within a reasonable share of register
+# disposable income.
+band_row = function(lo, hi) {
+  d = cov_data[!is.na(spending_income) & spending_income >= lo & spending_income <= hi]
+  account_row(d, lm_formula, "Spending-plausible sample", "total CO2e",
     paste0("M5, observed spending ", lo * 100, "-", hi * 100, "% of register income"),
     ref_co2e)
 }
 
-account_coverage <- rbind(
-  fit_row(analysis_data, lm_formula, "Reference", "total CO2e",
+account_coverage = rbind(
+  account_row(analysis_data, lm_formula, "Reference", "total CO2e",
     "M5 (reference)", ref_co2e),
-  fit_row(cov_data, update(as.formula(lm_formula), . ~ . + bank_accounts),
+  account_row(cov_data, update(as.formula(lm_formula), . ~ . + bank_accounts),
     "Account control", "total CO2e", "M5 + bank accounts (linear)", ref_co2e),
-  fit_row(cov_data, update(as.formula(lm_formula), . ~ . + factor(bank_accounts)),
+  account_row(cov_data, update(as.formula(lm_formula), . ~ . + factor(bank_accounts)),
     "Account control", "total CO2e", "M5 + account fixed effects", ref_co2e),
   account_strata,
-  fit_row(cov_data, sub("^co2e", "spending_income", lm_formula),
+  account_row(cov_data, sub("^co2e", "spending_income", lm_formula),
     "Income-normalised outcome", "observed spending / register income",
     "M5, income > 0 (reference for ratio outcomes)", ref_spending),
-  fit_row(cov_data, sub("^co2e", "co2e_income", lm_formula),
+  account_row(cov_data, sub("^co2e", "co2e_income", lm_formula),
     "Income-normalised outcome", "total CO2e / register income (kg per 100k SEK)",
     "M5, income > 0 (reference for ratio outcomes)", ref_co2e_income),
   band_row(0.5, 1.5),
@@ -124,8 +114,8 @@ fwrite(account_coverage, file.path(out_dir, "account_coverage.csv"))
 
 # Slope by account group (the strata rows of the table above)
 png(file.path(out_dir, "account_coverage.png"), width = 900, height = 600, res = 120)
-s <- account_coverage[analysis == "Account strata"]
-y <- seq_len(nrow(s))
+s = account_coverage[analysis == "Account strata"]
+y = seq_len(nrow(s))
 plot(s$per_sd, y, xlim = range(c(s$lo, s$hi)), yaxt = "n", pch = 19, col = "steelblue",
   xlab = "kg CO2e per index SD (HC3 95% CI)", ylab = "", main = "M5 gradient by number of connected accounts")
 axis(2, y, paste0(s$spec, " (n=", s$n, ")"), las = 1, cex.axis = 0.8)

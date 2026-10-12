@@ -8,17 +8,17 @@ library(lmtest)
 # rows without marking the used one, which read as an inconsistency: the
 # +major_city slope 0.94 h per raw index unit does not reproduce the
 # per-hour/per-SD ratios in the tables — the bivariate one does.)
-device_city <- merge(device_time, control_data[, .(aid, major_city, density)], by = "aid")
-dt_lm_city <- lm(time ~ index + age + gender + major_city, data = device_city)
+device_city = merge(device_time, control_data[, .(aid, major_city, density)], by = "aid")
+dt_lm_city = lm(time ~ index + age + gender + major_city, data = device_city)
 
-r2_row <- function(m, name, used) {
-  s <- summary(m)
-  ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))
+r2_row = function(m, name, used) {
+  s = summary(m)
+  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))
   data.table(model = name, used_in_pipeline = used, n = nobs(m), r2 = s$r.squared,
     adj_r2 = s$adj.r.squared, b_index = ct["index", "Estimate"],
     se = ct["index", "Std. Error"], p = ct["index", "Pr(>|t|)"])
 }
-anchor_check <- rbind(
+anchor_check = rbind(
   r2_row(dt_lm, "bivariate", TRUE),
   r2_row(dt_lm_controls, "+sex+age", FALSE),
   r2_row(dt_lm_city, "+major_city", FALSE))
@@ -28,18 +28,20 @@ fwrite(anchor_check, file.path(out_dir, "anchor_check.csv"))
 # conversion in one audited place. The index is standardized (SD 1 in the
 # analysis sample), so the anchor slope is hours per index SD directly; the
 # raw-composite chain (slope per raw unit x raw SD) is reported alongside and
-# must reproduce it. per_hour_direct fits the M5 on the anchored hours scale;
+# must reproduce it — hours_per_index_sd multiplies and divides by sd_raw, so
+# it is that identity by construction, listed so the chain is auditable end
+# to end. per_hour_direct fits the M5 on the anchored hours scale;
 # per_hour_derived divides the per-SD slope by h_per_sd — the two must agree,
 # which is exactly the arithmetic that failed to add up across the earlier files.
-m5 <- lm(as.formula(lm_formula), data = analysis_data)
-ct5 <- coeftest(m5, vcov. = vcovHC(m5, type = "HC3"))["index", ]
-m5_hours <- lm(as.formula(sub("index", "hours_est", lm_formula, fixed = TRUE)),
+m5 = lm(as.formula(lm_formula), data = analysis_data)
+ct5 = coeftest(m5, vcov. = vcovHC(m5, type = "HC3"))["index", ]
+m5_hours = lm(as.formula(sub("index", "hours_est", lm_formula, fixed = TRUE)),
   data = analysis_data)
-ct5h <- coeftest(m5_hours, vcov. = vcovHC(m5_hours, type = "HC3"))["hours_est", ]
-sd_raw <- sd(analysis_data$index_raw)
-b_z <- dt_coefs[["index"]]
-per_sd <- ct5[["Estimate"]]
-calibration_check <- data.table(
+ct5h = coeftest(m5_hours, vcov. = vcovHC(m5_hours, type = "HC3"))["hours_est", ]
+sd_raw = sd(analysis_data$index_raw)
+b_z = dt_coefs[["index"]]
+per_sd = ct5[["Estimate"]]
+calibration_check = data.table(
   anchor_model = "bivariate lm(time ~ index), valid E4 reporters with a valid index (see anchor_check.csv)",
   anchor_n = nobs(dt_lm),
   anchor_b_per_index_sd = b_z,

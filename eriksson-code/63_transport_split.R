@@ -14,31 +14,19 @@ library(lmtest)
 # specificity check that the mechanism is commuting, not travel in
 # general.
 
-# Person x category annual emissions, canonical recipe from 20
+# Person x category annual emissions, canonical recipe from 20; the three
+# buckets (short/long/ambiguous) are the category vectors defined in 20.
+# fit_row and form0 come from 40, group_annual from 20.
 cat_annual = annualise(monthly_co2e, "co2e")
-
-bucket = function(cats) {
-  cat_annual[category %in% cats, .(y = sum(y, na.rm = T)), by = aid]
-}
-
-form0 = sub("^co2e", "y", lm_formula)
 base = control_data[, .(aid, age, gender, income, income_scb, income_bank, density,
   index, hh_size, children, education, major_city)]
-
-fit_row = function(d, outcome, spec) {
-  m = lm(as.formula(form0), d)
-  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
-  data.table(outcome = outcome, spec = spec, n = nobs(m), mean = mean(d$y),
-    per_sd = ct[["Estimate"]], se = ct[["Std. Error"]], p = ct[["Pr(>|t|)"]],
-    per_hour = ct[["Estimate"]] / h_per_sd)
-}
 
 # The three buckets on the full M5 sample (44/47-style: lm drops the
 # complete-case rows, so these match the headline sample rule)
 split_m5 = rbind(
-  fit_row(base[bucket(short_co2e), on = "aid", nomatch = 0], "short", "M5"),
-  fit_row(base[bucket(long_co2e), on = "aid", nomatch = 0], "long", "M5"),
-  fit_row(base[bucket(ambiguous_co2e), on = "aid", nomatch = 0], "ambiguous", "M5"))
+  fit_row(base[group_annual(cat_annual, short_co2e), on = "aid", nomatch = 0], "short", "M5"),
+  fit_row(base[group_annual(cat_annual, long_co2e), on = "aid", nomatch = 0], "long", "M5"),
+  fit_row(base[group_annual(cat_annual, ambiguous_co2e), on = "aid", nomatch = 0], "ambiguous", "M5"))
 
 # Work-from-home mediation on the endline sample. Same design as 55: rows
 # missing work_home are dropped up front, so the with/without comparison
@@ -47,9 +35,9 @@ e1 = analysis_data[endline_latest[, .(aid, work_home = F88_2)], on = "aid", noma
 e1 = e1[!is.na(work_home)]
 
 fit_wfh = function(cats, outcome) {
-  d = e1[bucket(cats), on = "aid", nomatch = 0]
-  m0 = lm(as.formula(form0), d)
-  m1 = lm(update(as.formula(form0), . ~ . + work_home), d)
+  d = e1[group_annual(cat_annual, cats), on = "aid", nomatch = 0]
+  m0 = lm(form0, d)
+  m1 = lm(update(form0, . ~ . + work_home), d)
   ct0 = coeftest(m0, vcov. = vcovHC(m0, type = "HC3"))["index", ]
   ct1 = coeftest(m1, vcov. = vcovHC(m1, type = "HC3"))["index", ]
   rbind(

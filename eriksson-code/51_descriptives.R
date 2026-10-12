@@ -1,7 +1,7 @@
 library(data.table)
 
-summary_row <- function(x, measure, sample) {
-  q = quantile(x, probs = c(0, .05, .25, .50, .75, .95, 1), na.rm = T)
+summary_row = function(x, measure, sample) {
+  q = quantile(x, probs = c(0, .05, .25, .50, .75, .95, 1), na.rm = TRUE)
   data.table(
     measure = measure,
     sample = sample,
@@ -13,8 +13,8 @@ summary_row <- function(x, measure, sample) {
     p75 = unname(q[5]),
     p95 = unname(q[6]),
     max = unname(q[7]),
-    mean = mean(x, na.rm = T),
-    sd = sd(x, na.rm = T)
+    mean = mean(x, na.rm = TRUE),
+    sd = sd(x, na.rm = TRUE)
   )
 }
 

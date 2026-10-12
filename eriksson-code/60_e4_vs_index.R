@@ -18,18 +18,20 @@ library(lmtest)
 # (The p-value for the difference uses a normal approximation; the
 # individual slopes use t.)
 
-e4_data = analysis_data[device_time[, .(aid, time)], on = "aid", nomatch = 0]
-e4_data[, z_index := as.vector(scale(index))]
-e4_data[, z_time := as.vector(scale(time))]
+# e4_data (the E4 subsample) comes from 40; the z-scores go on a copy so the
+# shared table is not modified.
+e4 = copy(e4_data)
+e4[, z_index := as.vector(scale(index))]
+e4[, z_time := as.vector(scale(time))]
 
 # Separate M5 models, per-SD slopes (the per-SD version of 52's per-hour rows)
-m_index = lm(sub("index", "z_index", lm_formula, fixed = TRUE), data = e4_data)
-m_time = lm(sub("index", "z_time", lm_formula, fixed = TRUE), data = e4_data)
+m_index = lm(sub("index", "z_index", lm_formula, fixed = TRUE), data = e4)
+m_time = lm(sub("index", "z_time", lm_formula, fixed = TRUE), data = e4)
 ct_index = coeftest(m_index, vcov. = vcovHC(m_index, type = "HC3"))["z_index", ]
 ct_time = coeftest(m_time, vcov. = vcovHC(m_time, type = "HC3"))["z_time", ]
 
 # Joint model with both exposures
-m_joint = lm(sub("index", "z_index + z_time", lm_formula, fixed = TRUE), data = e4_data)
+m_joint = lm(sub("index", "z_index + z_time", lm_formula, fixed = TRUE), data = e4)
 ct_joint = coeftest(m_joint, vcov. = vcovHC(m_joint, type = "HC3"))
 V = vcovHC(m_joint, type = "HC3")[c("z_index", "z_time"), c("z_index", "z_time")]
 b = coef(m_joint)[c("z_index", "z_time")]

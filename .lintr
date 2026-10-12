@@ -1,4 +1,7 @@
 linters: linters_with_defaults(
     line_length_linter(160),
+    # Assignments use "=" wherever R allows it; "<-" only for the
+    # replacement forms R requires (names(x) <- ..., x[i] <- ...).
+    assignment_linter = NULL,
     commented_code_linter = NULL
   )

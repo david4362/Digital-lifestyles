@@ -3,7 +3,7 @@ library(sandwich)
 library(lmtest)
 
 # E1 outcomes: latest endline response per aid (endline_latest from 30)
-e1_data <- analysis_data[endline_latest[, .(
+e1_data = analysis_data[endline_latest[, .(
   aid,
   work_home = F88_2,
   overtime = F88_3,
@@ -19,14 +19,14 @@ e1_data[, `:=`(
 )]
 
 # E1 outcomes against the digital index, using the M5 covariates.
-e1_outcomes <- c(
+e1_outcomes = c(
   "work_home", "overtime", "unaffordable", "bnpl",
   "work_home_ever", "overtime_ever", "unaffordable_ever", "bnpl_ever"
 )
 
-e1_index <- rbindlist(lapply(e1_outcomes, function(outcome) {
-  m <- lm(as.formula(sub("^co2e", outcome, lm_formula)), data = e1_data)
-  ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
+e1_index = rbindlist(lapply(e1_outcomes, function(outcome) {
+  m = lm(as.formula(sub("^co2e", outcome, lm_formula)), data = e1_data)
+  ct = coeftest(m, vcov. = vcovHC(m, type = "HC3"))["index", ]
   data.table(
     outcome = outcome,
     n = nobs(m),
@@ -40,24 +40,25 @@ e1_index[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(e1_index, file.path(out_dir, "e1_index_outcomes.csv"))
 
 # Category annual emissions, canonical recipe from 20
-cat_annual <- annualise(monthly_co2e, "co2e")
+cat_annual = annualise(monthly_co2e, "co2e")
 
-transport_annual <- cat_annual[category %in% transport_co2e, .(transport_co2e = sum(y, na.rm = T)), by = aid]
-transport_data <- e1_data[transport_annual, on = "aid", nomatch = 0]
+transport_annual = group_annual(cat_annual, transport_co2e)
+setnames(transport_annual, "y", "transport_co2e")
+transport_data = e1_data[transport_annual, on = "aid", nomatch = 0]
 # Both specifications use the same participants: rows missing work_home are
 # dropped up front, so the coefficient comparison reflects the added control
 # and not a changing sample.
-transport_data <- transport_data[!is.na(work_home)]
+transport_data = transport_data[!is.na(work_home)]
 
-transport_formula <- as.formula(sub("^co2e", "transport_co2e", lm_formula))
-transport_without_work <- lm(transport_formula, data = transport_data)
-transport_with_work <- lm(update(transport_formula, . ~ . + work_home), data = transport_data)
+transport_formula = as.formula(sub("^co2e", "transport_co2e", lm_formula))
+transport_without_work = lm(transport_formula, data = transport_data)
+transport_with_work = lm(update(transport_formula, . ~ . + work_home), data = transport_data)
 
 # HC3 index estimate for each specification (coeftest computed once)
-ct_without <- coeftest(transport_without_work, vcov. = vcovHC(transport_without_work, type = "HC3"))["index", ]
-ct_with <- coeftest(transport_with_work, vcov. = vcovHC(transport_with_work, type = "HC3"))["index", ]
+ct_without = coeftest(transport_without_work, vcov. = vcovHC(transport_without_work, type = "HC3"))["index", ]
+ct_with = coeftest(transport_with_work, vcov. = vcovHC(transport_with_work, type = "HC3"))["index", ]
 
-transport_results <- rbind(
+transport_results = rbind(
   data.table(
     specification = "Without work from home",
     n = nobs(transport_without_work),
@@ -81,28 +82,28 @@ fwrite(transport_results, file.path(out_dir, "e1_transport_work_home.csv"))
 # E-commerce shares in CO2e and SEK, with and without affordability/BNPL
 # controls. These follow the level/share construction in 50_ecommerce.R;
 # ecom groups are defined in 20.
-co2e_wide <- cat_annual[category %in% ecom_co2e, .(ecom = sum(y, na.rm = T)), by = aid][
-  cat_annual[, .(total = sum(y, na.rm = T)), by = aid], on = "aid"]
+co2e_wide = cat_annual[category %in% ecom_co2e, .(ecom = sum(y, na.rm = TRUE)), by = aid][
+  cat_annual[, .(total = sum(y, na.rm = TRUE)), by = aid], on = "aid"]
 co2e_wide[, share_co2e := ecom / total]
 
-kr_annual <- annualise(monthly_kr[category %notin% excluded_kr], "kr")
-kr_wide <- kr_annual[category %in% ecom_kr, .(ecom = sum(y, na.rm = T)), by = aid][
-  kr_annual[, .(total = sum(y, na.rm = T)), by = aid], on = "aid"]
+kr_annual = annualise(monthly_kr[category %notin% excluded_kr], "kr")
+kr_wide = kr_annual[category %in% ecom_kr, .(ecom = sum(y, na.rm = TRUE)), by = aid][
+  kr_annual[, .(total = sum(y, na.rm = TRUE)), by = aid], on = "aid"]
 kr_wide[, share_kr := ecom / total]
 
-share_data <- e1_data[co2e_wide[, .(aid, share_co2e)], on = "aid", nomatch = 0]
-share_data <- share_data[kr_wide[, .(aid, share_kr)], on = "aid", nomatch = 0]
+share_data = e1_data[co2e_wide[, .(aid, share_co2e)], on = "aid", nomatch = 0]
+share_data = share_data[kr_wide[, .(aid, share_kr)], on = "aid", nomatch = 0]
 # Same idea as the transport comparison: drop rows missing the
 # affordability/BNPL items up front so both specifications share participants.
-share_data <- share_data[!is.na(unaffordable) & !is.na(bnpl)]
+share_data = share_data[!is.na(unaffordable) & !is.na(bnpl)]
 
-share_results <- rbindlist(lapply(c("share_co2e", "share_kr"), function(outcome) {
-  formula_without <- as.formula(sub("^co2e", outcome, lm_formula))
-  formula_with <- update(formula_without, . ~ . + unaffordable + bnpl)
-  model_without <- lm(formula_without, data = share_data)
-  model_with <- lm(formula_with, data = share_data)
-  ct_without <- coeftest(model_without, vcov. = vcovHC(model_without, type = "HC3"))["index", ]
-  ct_with <- coeftest(model_with, vcov. = vcovHC(model_with, type = "HC3"))["index", ]
+share_results = rbindlist(lapply(c("share_co2e", "share_kr"), function(outcome) {
+  formula_without = as.formula(sub("^co2e", outcome, lm_formula))
+  formula_with = update(formula_without, . ~ . + unaffordable + bnpl)
+  model_without = lm(formula_without, data = share_data)
+  model_with = lm(formula_with, data = share_data)
+  ct_without = coeftest(model_without, vcov. = vcovHC(model_without, type = "HC3"))["index", ]
+  ct_with = coeftest(model_with, vcov. = vcovHC(model_with, type = "HC3"))["index", ]
 
   rbind(
     data.table(
