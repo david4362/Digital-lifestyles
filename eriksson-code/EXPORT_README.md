@@ -8,8 +8,13 @@ documentation of every table is in `export_data_dictionary.csv`.
 
 ## Exposure: the digital lifestyle index
 
-**Main index (the headline exposure of every "per_sd" column).**
-Pre-registered construction, minus the two e-commerce items:
+**Revised headline index (the exposure of every "per_sd" column).**
+The registration specified all 13 items. After registration, the investigators
+judged the two commerce items to be conceptually circular because they measure
+the purchase channel while the outcomes measure transaction-observed
+consumption. The 11-item exclusion is therefore a transparent post-registration
+correction, not the confirmatory registered specification. The registered
+13-item result is retained in `index_variants.csv`:
 
 1. **Items (11):** device-use frequencies `q11_1`–`q11_5` (computer,
    smartphone, TV, game console, tablet; 1–6 scale) and digital-activity
@@ -28,7 +33,7 @@ Pre-registered construction, minus the two e-commerce items:
    **≥ 8 of 11** main items answered for sample entry (≥ 7 of 10 for the
    no-calls variant).
 
-**Registered variants** (`index_variants.csv`, `index_weightings.csv`,
+**Index variants** (`index_variants.csv`, `index_weightings.csv`,
 `stepwise_table.csv`): also dropping calls `q11b_2` (10 items; the second
 M0–M5 ladder in `stepwise_table.csv`); the device-use half (5 items) and the
 digital-activity half (6 items); the first principal component; all 13 items
@@ -81,8 +86,15 @@ main and no-calls index), `decomp_table.csv` / `sek_table.csv`
 coverage explain the gradient), `e4_diagnostics.csv` +
 `e4_item_correlations.csv` (E4 credibility; no iOS/Android platform variable
 exists in the data — see the script headers of `65_e4_diagnostics.R`),
-`item_level.csv` (item-level gradients; the forest figure takes its labels
-and estimates directly from these rows),
+`item_level.csv` + `item_figure_check.csv` (item-level gradients; the figure
+audit asserts every axis label sits on its own item's estimate and CI),
+`item_scaling_check.csv` (asserts that the item-level predictors have SD 1),
+`calls_age_specs.csv` + `calls_age_desc.csv` +
+`calls_stepwise.csv` + `calls_joint_comparison.csv` + `item_level_joint.csv` +
+`calls_category.csv` + `calls_e1_outcomes.csv` (exploratory diagnostics of the
+mixed phone/video-calls item under linear, banded and spline age adjustment,
+across covariate blocks, conditional on the other ten revised-index items,
+across consumption categories, and against homeworking/overtime),
 `volume_margins.csv` + `volume_composition.csv` + `budget_shares.csv` +
 `quintile_desc.csv` + `quintile_contrast.csv` (volume vs. composition of the
 headline gradient: how much of it is "buys more" spending vs. a carbon-heavier
@@ -95,6 +107,6 @@ the E1 item-code mapping on the data before the models are interpreted).
 ## Reproducing
 
 `Rscript RUN_TRE.R` from `eriksson-code/` in the TRE regenerates this whole
-directory into `output/` next to the cache (scripts 20–68, sourced in
+directory into `output/` next to the cache (scripts 20–69, sourced in
 order; the run copies this README and the data dictionary in and writes
 `run_info.csv`).

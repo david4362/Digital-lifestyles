@@ -31,12 +31,20 @@ e4rq1 = fread(file.path(out_dir, "e4_rq1_robustness.csv"))
 volmarg = fread(file.path(out_dir, "volume_margins.csv"))
 volcomp = fread(file.path(out_dir, "volume_composition.csv"))
 run_info = fread(file.path(out_dir, "run_info.csv"))
+items        <- fread(file.path(out_dir, "item_level.csv"))
+figure       <- fread(file.path(out_dir, "item_figure_check.csv"))
+item_scaling <- fread(file.path(out_dir, "item_scaling_check.csv"))
+calls_age    <- fread(file.path(out_dir, "calls_age_specs.csv"))
+calls_joint  <- fread(file.path(out_dir, "calls_joint_comparison.csv"))
+joint_items  <- fread(file.path(out_dir, "item_level_joint.csv"))
+calls_step   <- fread(file.path(out_dir, "calls_stepwise.csv"))
+calls_cat    <- fread(file.path(out_dir, "calls_category.csv"))
 
-main_label = "Main: prereg index minus e-commerce & online selling (11 items)"
-nocalls_label = "Also minus calls (10 items)"
-main_m5 = step[model == "M5_city" & index_variant == main_label]
-nocalls_m5 = step[model == "M5_city" & index_variant == nocalls_label]
-h_per_sd = cal$hours_per_index_sd
+main_label    <- "Revised index: excludes e-commerce & online selling (11 items)"
+nocalls_label <- "Also minus calls (10 items)"
+main_m5     <- step[model == "M5_city" & index_variant == main_label]
+nocalls_m5  <- step[model == "M5_city" & index_variant == nocalls_label]
+h_per_sd    <- cal$hours_per_index_sd
 
 # 1. The M0-M5 ladder is estimated on one frozen sample: N identical across
 #    all 12 rows and equal to the frozen M5 complete-case sample.
@@ -120,6 +128,32 @@ ok_volume_accounting = abs(
     100 * volcomp[component == "volume_component", estimate] /
       volcomp[component == "headline_gradient", estimate]) < 1e-6
 
+# 17. Item-level and weighting analyses consume z-standardized item columns.
+#     This catches the earlier join bug that left raw 1-6 values in analysis_data.
+ok_item_scaling <- nrow(item_scaling) == 13L &&
+  all(abs(item_scaling$mean) < 1e-10) &&
+  all(abs(item_scaling$sd - 1) < 1e-10)
+
+# 18. Calls age specifications use one sample and export all three requested
+#     functional forms; the separate/joint comparison also shares one sample.
+ok_calls_age <- setequal(calls_age$specification, c(
+  "M5 linear age", "M5 age bands", "M5 natural spline age (4 df)")) &&
+  uniqueN(calls_age$n) == 1L
+ok_calls_joint <- nrow(calls_joint) == 2L && uniqueN(calls_joint$n) == 1L &&
+  nrow(joint_items) == 11L && uniqueN(joint_items$n) == 1L &&
+  joint_items$n[1] == calls_joint$n[1]
+ok_calls_step <- nrow(calls_step) == 6L && uniqueN(calls_step$n) == 1L &&
+  setequal(calls_step$model, names(modellab))
+ok_calls_category <- setequal(calls_cat$specification, c(
+  "Calls separately", "Calls conditional on other 10 items")) &&
+  all(c("total", "group", "leaf") %in% calls_cat$scope) &&
+  !anyDuplicated(calls_cat[, .(outcome, specification)]) &&
+  uniqueN(calls_cat$n) == 1L &&
+  all(abs(calls_cat[scope == "leaf", sum(estimate), by = specification]$V1 -
+    calls_cat[outcome == "total", estimate]) < 1e-6) &&
+  all(abs(calls_cat[scope == "leaf", sum(share_of_total_pct),
+    by = specification]$V1 - 100) < 1e-6)
+
 checks = data.table(
   check = c("ladder N constant and = frozen M5 sample",
             "frozen M5 sample = sample_flow m5_complete_case",
@@ -135,11 +169,17 @@ checks = data.table(
             "E4 M5 slope identical in e4_rq1_robustness and e4_diagnostics",
             "run_info records the index spec",
             "volume_margins M5 CO2e row = headline M5",
-            "volume/composition split recomputes to the headline"),
+            "volume/composition split recomputes to the headline",
+            "item predictors are analysis-sample z scores",
+            "calls age specifications share one sample",
+            "calls separate/joint item models share one sample",
+            "calls M0-M5 ladder shares one sample",
+            "calls category output has separate and conditional models"),
   pass = c(ok_ladder_n, ok_flow_m5, ok_decomp, ok_calibration_checks, ok_cal_m5,
            ok_per_hour_identity, ok_variants, ok_coverage_ref,
            ok_coverage_pct, ok_register_identity, ok_anchor, ok_e4_m5, ok_run_info,
-           ok_volume_headline, ok_volume_accounting))
+           ok_volume_headline, ok_volume_accounting, ok_item_scaling,
+           ok_calls_age, ok_calls_joint, ok_calls_step, ok_calls_category))
 
 print(checks)
 stopifnot(all(checks$pass))
