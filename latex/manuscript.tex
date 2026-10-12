@@ -20,7 +20,7 @@
 
 \title{Digital lifestyles and consumption-based carbon emissions:\\
 individual-level evidence from linked bank-transaction, survey, and register data}
-\author{David Andersson \and Mathias Lehner% \and G\"oran Finnveden \and Anna Furberg
+\author{David Andersson \and Mathias Lehner \and Mikael Eriksson% \and G\"oran Finnveden \and Anna Furberg
 }
 \date{Draft --- \today}
 
@@ -29,8 +29,28 @@ individual-level evidence from linked bank-transaction, survey, and register dat
 \maketitle
 
 \begin{abstract}
-\todo{Condense the extended abstract (latex/extended\_abstract.tex) to
-$\sim$150--250 words once the venue is decided.}
+Digitalization could reduce household carbon footprints by substituting for
+travel and material consumption, or increase them by facilitating and
+stimulating additional consumption. Evidence on the net individual-level
+relationship remains scarce. We link baseline survey measures of digital
+practices among Swedish adults to annual consumption-based greenhouse-gas
+emissions estimated from bank transactions and to sociodemographic registers.
+The complete-case analysis includes 4,250 participants. Our revised digital
+lifestyle index combines 11 device-use and digital-activity frequencies; it
+excludes two purchase-channel items that were mistakenly included in the
+pre-registered index, for which we retain the original 13-item specification as
+a sensitivity analysis. After adjustment for age, gender, three measures of
+income, education, household composition, and urbanity, a one-standard-deviation
+higher digital lifestyle index is associated with 204 kg CO\textsubscript{2}e
+more per year (95\% CI: 141--267), or 4.5\% of mean annual emissions. The
+gradient is distributed across multiple consumption categories and is explained
+primarily by greater expenditure rather than a more carbon-intensive basket.
+Contrary to a digital-substitution account, transport emissions and both at-home
+and out-of-home leisure are non-negative among more digitally engaged
+participants. Device-assisted mobile screen time is only weakly correlated with
+the broader index and has no independent association with emissions. The results
+identify digital engagement as a marker of consumption volume rather than
+evidence that additional screen time itself causes emissions.
 \end{abstract}
 
 \onehalfspacing
@@ -44,45 +64,191 @@ behavior and measured consumption-based emissions in the same individuals.}
 \section{Data}
 
 \subsection{Sample}
-\todo{$\sim$6{,}000 Swedish adults (Konsumtionskollen sample); surveys 2024;
-bank-account linkage retrieving transactions back to 2019.}
+We use the Konsumtionskollen dataset, which links surveys, bank transactions,
+user-profile information, and Swedish administrative registers at the
+individual level. Participants connected one or more bank accounts to a
+research application, allowing transactions to be observed retrospectively.
+The baseline survey measured device use and digital activities; a subsequent
+endline survey collected device-assisted mobile screen time and activity
+frequencies. All analyses of identifiable register-linked data were conducted
+in the Statistics Sweden Trusted Research Environment.
+
+The baseline survey contains 12,153 unique participants. We retain the latest
+baseline response where duplicate responses exist. Of these participants,
+11,172 satisfy the digital-battery response rule described below. We define an
+observed transaction month as one in which non-excluded spending exceeds SEK
+3,000 and require at least three such months during the 12 months preceding the
+baseline survey. This restriction leaves 4,392 participants. Linkage to the
+control variables leaves 4,251 participants, of whom 4,250 have complete data
+for the fully adjusted model. We freeze this complete-case sample for all steps
+of the main model sequence so that changes between specifications do not reflect
+changes in sample composition. Analyses involving endline measures use the
+corresponding respondent subsets and report their sample sizes separately.
 
 \subsection{Consumption-based carbon footprints}
-\todo{Bank transactions categorized to COICOP and converted to
-CO\textsubscript{2}e; person-level annual aggregation; P99 winsorization.}
+Transactions are assigned to consumption categories in the underlying
+Konsumtionskollen system and converted to kilograms of carbon-dioxide
+equivalents (CO\textsubscript{2}e) using category-specific emissions factors.
+We aggregate transactions by participant, month, and category. For each
+participant--category combination observed in at least three valid months,
+annual emissions are calculated as the sum over observed months divided by the
+number of observed months and multiplied by 12. Annual emissions are winsorized
+at the category-specific 99th percentile before categories are summed. The
+primary outcome is total annual consumption-based CO\textsubscript{2}e.
+
+For the decomposition, we additionally construct theoretically motivated
+groups. Transport comprises fuel, vehicle maintenance and rental, public and
+other ground transport, aviation, and ferry travel. The e-commerce-intensive
+goods group comprises clothing, electronics, books, toys, sports goods, other
+shopping, and home-and-garden goods; it denotes categories commonly purchased
+online rather than transactions known to have occurred online. Internet and
+telecommunications form the digital-services category. Insurance is used as a
+low-channel placebo. We also retain mutually exclusive leaf categories to show
+where the total gradient is distributed. Spending outcomes are constructed from
+the corresponding transaction amounts using the same observation window and
+annualization rule.
 
 \subsection{Digital lifestyle intensity}
-\todo{Pre-registered index: device-use frequencies (baseline q11\_1--q11\_5+)
-and digital-activity frequencies (q11b\_1--q11b\_8), anchored cardinally by
-the device-assisted screen-time report (endline E4: iOS Sk\"armtid / Android
-Digitalt v\"alm\aa ende, average daily h:min previous week). Report reliability
-(Cronbach's $\alpha$). Note E4 opt-outs and missingness.}
+The baseline survey asks how frequently participants used five devices
+(computer, smartphone, television, game console, and tablet) and performed
+eight digital activities (streaming, phone or video calls, social media,
+information search, gaming, digital reading, e-commerce, and online selling)
+during the preceding three months. All items use a six-point response scale
+ranging from no use to several times per hour.
+
+The pre-registration specified an equally weighted index containing all 13
+items. After registration, we recognized that e-commerce and online selling
+measure the purchase channel itself and are therefore conceptually too proximal
+to transaction-observed consumption outcomes. We treat their inclusion as a
+design mistake rather than redefine the registered specification
+retrospectively. The substantively preferred index consequently excludes these
+two items and contains 11 items; the registered 13-item index is retained as a
+sensitivity analysis. Calls remain in the revised index because they are a
+digital practice rather than a purchase channel; a ten-item specification that
+also excludes calls is reported as an exploratory sensitivity analysis.
+
+Each item is standardized using its mean and standard deviation in the frozen
+analysis sample. The index is the unweighted mean of the answered standardized
+items and is itself re-standardized to mean zero and standard deviation one.
+Following the pre-registered tolerance of up to three missing items, the revised
+index requires at least eight of 11 responses; the registered index requires at
+least ten of 13. The revised index has Cronbach's $\alpha=0.56$. We interpret it
+as a formative composite of heterogeneous digital practices rather than as a
+reflective scale whose items are expected to be interchangeable.
+
+At endline, respondents were instructed to read their average daily mobile
+screen time for the previous week from iOS Screen Time or Android Digital
+Wellbeing and transcribe hours and minutes. Reports above 18 hours per day are
+treated as implausible. There are 2,200 valid reports, of which 2,082 can be
+linked to a valid revised index. We regress measured hours on the standardized
+index to obtain an interpretive anchor. The association is weak
+($b=0.338$ hours per index SD, $R^2=0.018$), so kilograms per index SD is our
+primary scale. Values per anchored hour are secondary and should not be read as
+effects of an additional measured screen-time hour. Missing screen-time reports
+do not exclude participants from analyses using the baseline index.
 
 \subsection{Register variables}
-\todo{Income, education, household composition, DeSO-level urbanity.}
+The adjustment set combines demographic, application-profile, transaction, and
+register information. It includes exact age in years; gender; log application
+income; log disposable register income; log mean monthly bank inflows;
+educational attainment in five levels; household size; an indicator for
+children; log population density in the participant's DeSO area; and an
+indicator for residence in Stockholm, Gothenburg, or Malm\"o. One participant
+is excluded because bank-income data are missing. Exact age enters linearly in
+the main specification; a four-degree-of-freedom natural spline assesses
+sensitivity to functional form.
 
 \section{Empirical strategy}
 
 \subsection{Net gradient}
-\todo{Total CO\textsubscript{2}e $\sim$ screen-time hours + sociodemographic
-controls; HC3 robust SEs.}
+We estimate cross-sectional ordinary least-squares models of the form
+\begin{equation}
+	Y_i = \alpha + \beta D_i + \boldsymbol{X}_i'\boldsymbol{\gamma} + \varepsilon_i,
+	\label{eq:main}
+\end{equation}
+where $Y_i$ is annual consumption-based CO\textsubscript{2}e, $D_i$ is the
+standardized digital lifestyle index, and $\boldsymbol{X}_i$ is the adjustment
+set. The coefficient $\beta$ is reported as kilograms of annual
+CO\textsubscript{2}e per index standard deviation. We use HC3
+heteroskedasticity-robust standard errors and two-sided tests with 95\%
+confidence intervals.
+
+Controls are introduced sequentially on the same complete-case sample: M0 is
+bivariate; M1 adds gender and age; M2 adds the three income measures and
+education; M3 adds household size and children; M4 adds log population density;
+and M5 adds major-city residence. M5 is the primary adjusted specification.
+These models estimate conditional gradients, not causal effects: digital
+practices are not randomly assigned, and unmeasured preferences, employment,
+or life circumstances may influence both digital behavior and consumption.
 
 \subsection{Decomposition}
-\todo{Category-level gradients: transport (demobilization), goods and
-e-commerce-intensive categories, digital services (rebound/direct), with
-no-channel categories (rent, insurance) as placebos. Category mapping
-justification (see 00\_constants.R).}
+We replace total emissions in Equation~\ref{eq:main} with each grouped and leaf
+category while retaining the M5 adjustment set. The transport coefficient tests
+the proposed demobilization margin; e-commerce-intensive goods and digital
+services capture material and direct digital channels. Because grouped and leaf
+categories overlap, grouped estimates are interpreted separately rather than
+summed. The mutually exclusive leaf estimates provide the additive description
+of the total gradient. Insurance serves as a low-channel falsification outcome,
+although low mean emissions limit the precision of formal equivalence tests.
+
+To distinguish greater consumption volume from a more carbon-intensive basket,
+we additionally estimate M5 models for annual emission-relevant spending and
+for emissions intensity, defined as kilograms of CO\textsubscript{2}e per SEK
+1,000 spent. We report an accounting decomposition evaluated at the sample
+means: the spending gradient multiplied by mean emissions intensity is the
+volume component, while the intensity gradient multiplied by mean spending is
+the composition component. A residual captures the fact that separate OLS
+slopes of a product need not add exactly to the slope of total emissions. These
+components are descriptive and are not interpreted as causal mediation.
 
 \subsection{Mechanism}
-\todo{Out-of-home leisure frequency (endline E1) mediating the transport
-gradient.}
+The pre-registered mechanism proposed that digital engagement substitutes for
+out-of-home activity and thereby reduces transport. The endline survey records
+12-month frequencies on seven-point scales for seven out-of-home activities
+(library visits, sports and cultural events, hosting dinner guests, dancing,
+exercise, and time in nature) and five primarily at-home activities
+(audiobooks, music, books, films, and television series). Because hosting dinner
+guests, exercise, and time in nature do not invariably entail travel or paid
+consumption, we refer to the first measure more precisely as the
+out-of-home/social-activity composite. We form unweighted means of the available
+items within each domain.
+
+We first regress each activity and both composites on the digital index and M5
+controls. We then estimate the transport and total-emissions gradients on one
+common endline subsample: without the leisure composites, adding out-of-home
+leisure, and adding both composites. The percentage attenuation of $\beta$ is
+reported as the share of the gradient statistically accounted for by these
+measures. Because exposure, leisure, and emissions are not jointly randomized
+or temporally isolated, this is a descriptive mechanism check rather than a
+causal mediation analysis.
 
 \subsection{Heterogeneity}
-\todo{Pre-specified: age, gender, urbanity.}
+We report M5-adjusted index gradients by pre-specified age group
+(18--29, 30--44, 45--64, and 65+), gender, and major-city residence. Formal
+tests add the corresponding index-by-group interaction to M5; differences
+between subgroup point estimates are not inferred from separate confidence
+intervals. Income-quintile patterns are exploratory.
 
 \subsection{Design caveats}
-\todo{Timing: screen time measured at endline, consumption observed 2019--2024;
-reverse-causality/stability argument.}
+The baseline frequency battery precedes the endline screen-time report, while
+transaction outcomes are constructed from the 12 months preceding the baseline
+survey. The anchor therefore maps a broader, earlier digital-practice composite
+onto a one-week measure of later mobile screen time; it does not establish that
+the two constructs are equivalent. We accordingly separate the main digital
+lifestyle analysis from models using measured screen time itself.
+
+Observed spending may also depend on how completely participants connected
+their bank accounts. We assess this by adding account-count controls, estimating
+models within account-count strata, normalizing spending and emissions by
+register income, and restricting the sample to participants whose observed
+spending is within pre-defined proportions of register income. Further
+sensitivity analyses use the registered 13-item index, the index excluding
+calls, device and activity subindices, a first principal component, a nonlinear
+age adjustment, DeSO fixed effects, stricter transaction coverage, alternative
+housing and life-stage controls, and the E4-reporting subsample. These checks
+probe measurement and specification dependence but do not remove the
+cross-sectional design's fundamental risk of residual confounding and reverse
+causation.
 
 \section{Results}
 
@@ -109,8 +275,45 @@ parameters for prospective life-cycle scenarios; methodological template for
 linking financial-transaction and survey data.}
 
 \section*{Pre-registration}
-\todo{Link to OSF pre-registration (required before touching real data in the
-TRE).}
+The original analysis plan was registered on the Open Science Framework before
+any member of the research team analyzed the digital-lifestyle exposures in the
+real linked data \todo{insert permanent OSF DOI and registration date}. The team
+had previously analyzed the transaction outcomes and several covariates for a
+separate study, and analysis code for the present study had been developed using
+a partly scrambled extract and synthetic endline data. These forms of prior
+access were disclosed in the registration. The original registration specified
+the net-emissions gradient, category decomposition, leisure mechanism,
+heterogeneity analyses, the 13-item digital index, and its mobile-screen-time
+anchor.
+
+After the first disclosure-controlled aggregate outputs had been inspected, a
+linked addendum documented the analyses already conducted and specified further
+item-level, screen-time, account-coverage, age-flexibility, telework, and
+overspending analyses \todo{insert addendum DOI/date, or state explicitly that
+the drafted addendum was not registered}. Analyses specified only in this
+addendum are distinguished from those in the original registration; analyses
+developed after either document are labelled exploratory.
+
+The principal deviation concerns exposure construction. The registered index
+included e-commerce and online selling. We subsequently concluded that this was
+a design mistake because these items directly measure participation in purchase
+channels while the outcomes are transaction-observed consumption. We therefore
+use the 11-item index excluding those two items as the substantively preferred,
+post-registration correction and retain the registered 13-item estimate in all
+index-sensitivity results. The associated response threshold changes from at
+least 10 of 13 to at least eight of 11 items, preserving the registered
+tolerance of three missing responses. We also make the index-SD scale primary,
+rather than the registered anchored-hour scale, because the empirical anchor is
+weak ($R^2=0.018$); both scales are generated by the same linear transformation
+and yield identical statistical inference.
+
+Other post-registration analyses include the spending-volume versus carbon-
+intensity accounting decomposition, detailed account-count restrictions, and
+diagnostic analyses of the calls item. These are used to characterize and probe
+the observed association, not to redefine the registered hypotheses. A table in
+the Supplementary Information will classify every reported analysis as
+originally registered, addendum-specified, post-registration correction, or
+exploratory and will give the corresponding output file and specification.
 
 % \bibliographystyle{plainnat}
 % \bibliography{references}
@@ -118,7 +321,77 @@ TRE).}
 \appendix
 
 \section{Survey instruments}
-\todo{Baseline q11/q11b batteries; endline E1, E4 wording.}
+
+\subsection{Baseline digital-practice battery}
+The baseline items ask, ``Approximately how often have you used the following
+equipment during the past three months?'' (q11) and ``Approximately how often
+have you done the following things during the past three months?'' (q11b).
+Every item uses the same ordered response options: (1) not used, (2) less often
+than weekly, (3) one to six times per week, (4) daily, (5) several times per
+day, and (6) several times per hour. Table~\ref{tab:digital-items} gives the
+item wording translated from Swedish. The original Swedish questionnaires and
+codebooks will be supplied in the study repository.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Baseline items used to construct the digital lifestyle indices.}
+	\label{tab:digital-items}
+	\begin{tabular}{@{}p{0.14\textwidth}p{0.66\textwidth}p{0.08\textwidth}@{}}
+		\toprule
+		Item & English translation & Revised index \\
+		\midrule
+		q11\_1 & Desktop or laptop computer & Yes \\
+		q11\_2 & Mobile phone or smartphone & Yes \\
+		q11\_3 & Television & Yes \\
+		q11\_4 & Game console & Yes \\
+		q11\_5 & Tablet or e-reader & Yes \\
+		q11b\_1 & Watched films, series, or YouTube & Yes \\
+		q11b\_2 & Talked on the phone or had video calls & Yes \\
+		q11b\_3 & Used social media (e.g., Facebook) & Yes \\
+		q11b\_4 & Searched for information online & Yes \\
+		q11b\_5 & Played computer or video games & Yes \\
+		q11b\_6 & Read books or magazines digitally & Yes \\
+		q11b\_7 & Shopped on e-commerce sites & No \\
+		q11b\_8 & Sold something (e.g., on an online marketplace) & No \\
+		\bottomrule
+	\end{tabular}
+	\begin{flushleft}\footnotesize
+	Note: All 13 items belong to the originally registered index. The revised
+	index excludes q11b\_7 and q11b\_8 as a post-registration correction.
+	\end{flushleft}
+\end{table}
+
+The calls item combines ordinary phone calls and video calls in one response.
+It therefore cannot distinguish occupational video meetings from private
+communication. Analyses of this item are interpreted as exploratory diagnostics
+of a mixed communication measure.
+
+\subsection{Device-assisted mobile screen time}
+The endline item asks respondents how much time they spend using their mobile
+phone and instructs them to open iOS ``Screen Time'' or Android ``Digital
+Wellbeing'' and report the displayed average daily use for the previous week.
+Hours and minutes are entered in separate fields. Respondents can instead select
+``I have not activated that function'' or ``Skip the question/I cannot find the
+information.'' We convert the two fields to decimal hours per day and exclude
+values above 18 hours. The survey does not record operating system, and the item
+measures mobile-device use rather than total time across all digital devices.
+
+\subsection{Endline activity battery}
+The endline battery asks, ``How often during the past 12 months have you done
+the following?'' Responses range from (1) never, through (2) once during the
+past 12 months, (3) once every six months, (4) once per quarter, (5) once per
+month, and (6) once per week, to (7) several times per week.
+
+The out-of-home/social-activity composite contains visiting a library
+(F88\_4), attending a sports event (F88\_5), attending a cultural event such as
+an art exhibition, theatre performance, or concert (F88\_6), inviting someone
+home for dinner (F88\_7), dancing (F88\_8), exercising (F88\_18), and spending
+time in nature or outdoor recreation (F88\_21). The at-home composite contains
+listening to an audiobook (F88\_11), listening to music (F88\_12), reading a
+book (F88\_13), watching a film (F88\_14), and watching a television series
+(F88\_16). The domain labels are analytical groupings: individual activities,
+especially exercise and reading, need not occur exclusively inside or outside
+the home.
 
 \section{Robustness}
 \todo{}
