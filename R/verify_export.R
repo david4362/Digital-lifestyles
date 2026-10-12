@@ -1,8 +1,9 @@
-# verify_export.R — invariant checks on the copied export (TRE_output/ in
-# the repo root). Run from eriksson-code/ after copying the export out of
-# the TRE:
+# verify_export.R — invariant checks on the copied export (the newest dated
+# folder under output/ in the repo root). Run from R/ after copying the
+# export out of the TRE:
 #   Rscript verify_export.R
-# In the TRE itself the export sits at output/ next to the cache (the
+# It checks the newest output/<date>/ automatically (ISO dates sort). In
+# the TRE itself the export sits at output/<date>/ next to the cache (the
 # out_dir defined in 20_filter_participants.R) — point out_dir there instead.
 #
 # Each check restates one invariant that the pipeline guarantees structurally,
@@ -15,7 +16,8 @@
 
 library(data.table)
 
-out_dir = "../TRE_output"
+runs = sort(list.dirs(file.path("..", "output"), recursive = FALSE))
+out_dir = runs[length(runs)]  # newest dated folder (ISO dates sort)
 
 step = fread(file.path(out_dir, "stepwise_table.csv"))
 step_sample = fread(file.path(out_dir, "stepwise_sample.csv"))

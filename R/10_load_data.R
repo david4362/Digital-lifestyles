@@ -5,7 +5,7 @@ library(haven)
 
 ## Directories to load data from
 data_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "data_raw")
-cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "eriksson-code", "cache")
+cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "R", "cache")
 scb_dir = file.path(data_dir, 'register_data', 'scb', 'Forskningsstudie om konsumtion och attityder')
 
 ## Loading and summarising transactions

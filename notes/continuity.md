@@ -140,6 +140,28 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-10-12 (later) — repo cleanup & reorganization (user request).**
+  `eriksson-code/` renamed to **`R/`**; all output now lives under **`output/`**
+  with dated folders — `output/2026-09-25/` (former
+  `archive/TRE_output_2026-09-25/`) and `output/2026-10-07/` (former
+  `TRE_output/`); the rest of `archive/` (old exploratory code + its README)
+  deleted, retrievable from git history. Code touched: cache path →
+  `/safe/…/chalmers/R/cache` in RUN_TRE/10/11; `out_dir` in 20 is now dated
+  (`output/<yyyy-mm-dd>/`, runs never overwrite each other);
+  `verify_export.R` auto-detects the newest folder under `output/`; README,
+  the source `R/EXPORT_README.md` and `.gitignore` (`output/` no longer
+  ignored — dated export snapshots are tracked) updated. The snapshot
+  copies *inside* `output/<date>/` (their EXPORT_README, run_info.csv) still
+  mention old paths by design — they document what those runs used.
+  Verified after the move: RUN_MOCK 20–70 clean (writes
+  `tempdir/output/2026-10-12`) and verify_export 16/16 on
+  `output/2026-10-07/`. **TRE-side action for the next real run:** place the
+  scripts at `/safe/…/chalmers/R/` and move the cache
+  (`mv …/chalmers/eriksson-code/cache …/chalmers/R/cache`); the run then
+  writes `…/chalmers/R/output/<date>/`. Heads-up: David's calls-diagnostics
+  branch (still unpushed) is based on the old layout, so its diff review
+  will show these renames as noise.
+
 - **2026-10-12 — full code review applied + item-scaling bug FIXED locally
   (supersedes the "do not patch 59 locally" note below).** Complete style
   review of eriksson-code (criteria: non-programmer clarity, no defensive

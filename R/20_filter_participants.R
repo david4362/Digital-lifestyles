@@ -141,8 +141,9 @@ ecom_kr = sub("_co2e$", "_kr", ecom_co2e)
 digital_kr = "internet_tele_kr"
 vehicles_kr = "vehicles_kr"
 
-# All pipeline outputs go to ONE directory, defined once here. Every run
-# rewrites it wholesale (exploratory phase — no export versioning); the run
+# All pipeline outputs go to ONE shared directory, defined once here: a
+# dated folder per run (output/<yyyy-mm-dd>/), so runs never overwrite each
+# other; re-running on the same date rewrites that date's folder. The run
 # manifest run_info.csv records when the run happened and with which spec.
-out_dir = file.path(dirname(cache_dir), "output")
+out_dir = file.path(dirname(cache_dir), "output", format(Sys.Date(), "%Y-%m-%d"))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)

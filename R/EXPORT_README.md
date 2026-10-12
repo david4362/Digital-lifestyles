@@ -1,8 +1,8 @@
 # Export — Digital lifestyles and consumption-based carbon emissions
 
 This directory is a complete, self-contained export of the analysis pipeline run
-(`RUN_TRE.R` from `eriksson-code/`, SCB TRE). Every run rewrites it wholesale
-(exploratory phase — no export versioning). `run_info.csv` records the run date, R version,
+(`RUN_TRE.R` from `R/`, SCB TRE). Each run writes its own dated folder
+(`output/<date>/`; re-running on the same date rewrites it). `run_info.csv` records the run date, R version,
 item lists, battery rule, filter thresholds and scales; the per-column
 documentation of every table is in `export_data_dictionary.csv`.
 
@@ -94,7 +94,7 @@ the E1 item-code mapping on the data before the models are interpreted).
 
 ## Reproducing
 
-`Rscript RUN_TRE.R` from `eriksson-code/` in the TRE regenerates this whole
-directory into `output/` next to the cache (scripts 20–68, sourced in
+`Rscript RUN_TRE.R` from `R/` in the TRE regenerates this whole
+directory into `output/<date>/` next to the cache (scripts 20–68, sourced in
 order; the run copies this README and the data dictionary in and writes
 `run_info.csv`).

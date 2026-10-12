@@ -14,7 +14,7 @@ Three headline results structure the paper:
 
 Pre-specified heterogeneity: age, gender, urbanity.
 
-## Headline results — real-data run (2026-10-07, `TRE_output/`)
+## Headline results — real-data run (2026-10-07, `output/2026-10-07/`)
 
 Frozen M5 complete-case sample N = 4,250 (survey 12,153 → battery gate 11,172 →
 ≥ 12 observed months & filters 4,392 → controls 4,251 → M5 complete case 4,250;
@@ -87,11 +87,11 @@ are derived (per-SD ÷ 0.338 h/SD) and secondary.
   interactions (gender p = .13, city p = .32); e-commerce CO2e share flat
   (~12%) across digital quintiles.
 
-`eriksson-code/verify_export.R` re-checks the copied export after any TRE run
+`R/verify_export.R` re-checks the copied export after any TRE run (newest folder under `output/`)
 (16 invariants: ladder-N constancy, decomposition ≡ headline, figure ≡
 item_level, variants ≡ ladder, per-hour identities, anchor consistency,
 volume-vs-composition ≡ headline). **All 16 pass on the 2026-10-07
-`TRE_output/` copy-out** (the first export including 67 and 68) and on the
+`output/2026-10-07/` copy-out** (the first export including 67 and 68) and on the
 mock pipeline.
 
 ## Data
@@ -101,7 +101,7 @@ This project **reuses the Konsumtionskollen data** (bank transactions categorize
 - **Local mock data** (realistic structure, partly scrambled real values — treat as non-substantive): `../Konsumtionskollen/default_filter.RData` (5.2 GB, git-ignored there). Contains `survey` (4,353 × 114 — full questionnaire incl. the `q15_*` time-use battery), `users` (225 cols incl. age, sex, education, pop density), `transactions` (3.5M × 166), `monthly_emissions`, `monthly_spending`, `monthly_incomes`.
 - **Real data**: in the SCB TRE (Trusted Research Environment). Scripts must run unchanged there; follow the loader pattern from `Konsumtionskollen/10_load_data.R`.
 
-The 5.2 GB local mock RData was only used by the archived exploratory scripts. The analysis pipeline reads the parquet cache built from the raw TRE data by `eriksson-code/10_load_data.R`; for local pipeline testing without real data, use `eriksson-code/RUN_MOCK.R` (synthetic data from `eriksson-code/00_mock_data.R`).
+The 5.2 GB local mock RData was only used by the old exploratory scripts (removed in the 2026-10-12 cleanup — see git history). The analysis pipeline reads the parquet cache built from the raw TRE data by `R/10_load_data.R`; for local pipeline testing without real data, use `R/RUN_MOCK.R` (synthetic data from `R/00_mock_data.R`).
 
 ### Key variables (survey)
 
@@ -128,7 +128,7 @@ Until the endline data/codebook is available locally, development proceeds with 
 
 ## Pipeline
 
-The analysis pipeline lives in **`eriksson-code/`** (real data in the SCB TRE;
+The analysis pipeline lives in **`R/`** (real data in the SCB TRE;
 run with `Rscript RUN_TRE.R` from that directory). Scripts are numbered and
 sourced in order:
 
@@ -146,18 +146,19 @@ sourced in order:
 | `67_mechanism.R` | **Pre-registered leisure mechanism (result 3)**: E1 out-of-home / at-home leisure composites, index-vs-leisure gradients, transport & total gradient without/with the mediators (`mech_diag.csv` validates the E1 item codes on the data first) |
 | `68_volume_composition.R` | **Volume vs. composition of the headline gradient** ("buys more" vs. "buys dirtier"): M5 margins in CO2e, emission-relevant spending (kr minus rent) and basket intensity (kg CO2e per 1,000 SEK), the accounting split at sample means (volume component + composition component + covariance residual = headline), budget-share (Engel) gradients per category, and the adjusted D5–D1 index-quintile contrasts (`volume_margins.csv`, `volume_composition.csv`, `budget_shares.csv`, `quintile_desc.csv`, `quintile_contrast.csv`) |
 
-Outputs go to `output/` next to the TRE cache (defined once in 20); every
-run rewrites the directory wholesale (exploratory phase, no export
-versioning — `run_info.csv` records the run date and spec). After
-copying an export out of the TRE, run `verify_export.R` from `eriksson-code/`
-against the copied folder (16 invariant checks). See
-`eriksson-code/EXPORT_README.md` (copied into every export). `TRE_output/`
-in the repo root holds the latest copy-out of the real export (run
-2026-10-07); the superseded first-pass export (13-item pipeline index,
-complete-battery rule) is archived in `archive/TRE_output_2026-09-25/`.
+Outputs go to a dated folder `output/<run date>/` next to the TRE cache
+(defined once in 20; runs never overwrite each other — `run_info.csv`
+records the run date and spec). After copying an export out of the TRE,
+run `verify_export.R` from `R/` — it checks the newest folder under
+`output/` automatically (16 invariant checks). See `R/EXPORT_README.md`
+(copied into every export). Real exports are versioned in the repo as
+dated folders under `output/`: `output/2026-10-07/` (latest) and
+`output/2026-09-25/` (superseded first pass, 13-item pipeline index,
+complete-battery rule).
 
 The old exploratory scripts (pre-codebook screen-time search against the local
-mock RData) are archived in `archive/` — do not run them.
+mock RData) were removed in the 2026-10-12 cleanup — retrievable from git
+history.
 
 ## Conventions
 

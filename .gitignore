@@ -10,8 +10,8 @@ cache/
 *.rds
 *.dta
 
-# Generated outputs (keep small final figures by exception if needed)
-output/
+# Real exports are tracked as dated snapshots under output/<date>/;
+# throwaway mock output goes to R's tempdir, never here.
 
 # Advisor feedback (private)
 advisor/

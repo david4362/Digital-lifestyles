@@ -1,5 +1,5 @@
 library(arrow)
-cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "eriksson-code", "cache")
+cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "R", "cache")
 
 monthly_kr = read_parquet(file.path(cache_dir, "monthly_kr.parquet"))
 monthly_co2e = read_parquet(file.path(cache_dir, "monthly_co2e.parquet"))

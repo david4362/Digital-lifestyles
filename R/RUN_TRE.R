@@ -1,14 +1,14 @@
-# RUN_TRE.R — full pipeline in the TRE. Run from eriksson-code/:
+# RUN_TRE.R — full pipeline in the TRE. Run from R/:
 #   Rscript RUN_TRE.R
 # Reads the parquet cache when complete, else builds it from raw data (slow,
-# writes cache). Outputs go to output/ next to cache/ (defined in
-# 20_filter_participants.R) and are rewritten wholesale by every run
-# (exploratory phase — no export versioning). The run copies the export
+# writes cache). Outputs go to output/<run date>/ next to cache/ (defined in
+# 20_filter_participants.R); each run writes its own dated folder, so runs
+# never overwrite each other. The run copies the export
 # README and the column-level data dictionary into the export directory and
 # writes a run manifest (run_info.csv) so the export documents itself
 # (70_run_info.R, the last sourced script).
 # Scripts 20-70, sourced in order.
-cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "eriksson-code", "cache")
+cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "R", "cache")
 cache_files = c("monthly_kr.parquet", "monthly_co2e.parquet", "demographics.parquet",
   "survey.parquet", "survey_endline.parquet", "users.parquet", "scb.parquet",
   "bank_income.parquet")

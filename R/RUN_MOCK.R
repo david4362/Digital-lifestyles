@@ -1,4 +1,4 @@
-# RUN_MOCK.R — local pipeline test. Run from eriksson-code/:
+# RUN_MOCK.R — local pipeline test. Run from R/:
 #   Rscript RUN_MOCK.R
 # Builds the mock data in memory (00_mock_data.R), then sources the analysis
 # scripts in the same order as RUN_TRE.R (20-68 plus 70_run_info.R, so the
