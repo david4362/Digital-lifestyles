@@ -1,0 +1,13 @@
+variable,n_missing
+co2e,0
+age,0
+gender,0
+income,0
+income_scb,0
+density,0
+hours_est,0
+hh_size,0
+children,0
+education,0
+major_city,0
+income_bank,1

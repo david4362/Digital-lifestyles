@@ -60,6 +60,13 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Key decisions
 
+- **No export versioning (2026-10-07).** The exploratory phase makes small
+  iterative changes, so major version tags are dropped: the pipeline writes
+  to `output/` (rewritten wholesale by every run; `run_info.csv` run_date is
+  the only provenance tag), the repo keeps the latest copy-out in
+  `TRE_output/`, and the superseded first-pass export is archived in
+  `archive/TRE_output_2026-09-25/`. Historical "v1" mentions in old session
+  entries refer to that first-pass pipeline era.
 - Project lives in `Digital-lifestyles/` inside the outer manuscript folder; own git repo.
 - Reuse Konsumtionskollen data by path, never copy the 5.2 GB file into this repo.
 - Light extract cached to `cache/digital_cache.RData` so sessions don't pay the 5-GB load.
@@ -107,16 +114,192 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Next steps
 
-1. Report the v2 real-data results to the supervisor (headline +203.9 kg/SD;
-   e-commerce-item removal does NOT explain the relation — calls account for
-   part of it; the coverage gradient concentrates among 3+ accounts).
-2. Decide the manuscript treatment of calls (q11b_2): main 11-item estimate
+1. Report the run-2026-10-07 results to the supervisor — concise academic
+   brief in `notes/brief_supervisor_2026-10-07.md` (answers all six points
+   of the 2026-09-28 email + the new volume/mechanism results, with
+   interpretations and proposed further analyses) and a Swedish email draft
+   in `notes/email_draft_2026-10-07.md`.
+   Substance: volume split 96% ("buys more, not dirtier"; composition
+   premium 0.27 pp, p = .17) and the RQ3 mechanism not supported (index →
+   out-of-home leisure is positive, +0.07 points/SD, mediation share ≤ 10%
+   ns). Headline unchanged (+203.9 kg/SD).
+2. Prereg deviation table — add the RQ3 falsification as a fourth dated entry;
+   report the mechanism as a registered negative result, no post-hoc reframe.
+3. Decide the manuscript treatment of calls (q11b_2): main 11-item estimate
    with the 10-item no-calls ladder as the registered sensitivity (both in
    `stepwise_table.csv`).
-3. Start paper-side work on the real numbers (figures from `TRE_output_v2/`).
-4. Push the local commits (v2 code, real export, verify script) when ready.
+4. Start paper-side work on the real numbers (figures from `TRE_output/`);
+   RQ2 section builds on `volume_composition.csv` + `quintile_contrast.csv`
+   (D5–D1 = +599 kg, +13.3%), budget shares as BH-adjusted descriptive.
+5. Critique backlog (unchanged priorities): calls deep-dive (§4.2),
+   sociable-vs-solitary item split as prereg v3 (§5.2), pre-window
+   year-by-year gradient (§5.1), additive decomposition display + per-hour
+   CI anchor-SE propagation (§6), equivalence constants, representativeness
+   vs LISA, literature brief for the "first individual-level evidence" claim.
+6. Push the local commits when ready.
 
 ## Session log
+
+- **2026-10-07 (night) — pre-branch commit + calls-diagnostics groundwork.**
+  Committed the Oct-07 export + notes to main *before* David's
+  calls-diagnostics branch lands (his Claude's side repo
+  `Digital-lifestyles-calls-diagnostics` is not on the remote yet — only
+  `main`). Verified his Claude's +214 claim against our code: **real bug** —
+  `59_index_variants.R` builds the 13-item row from the RAW q11 columns of
+  `analysis_data` while its comment claims they are z-scaled (z-scaling lives
+  in `z_items`; only the composites are joined back), so +214.3 is not the
+  registered construction and the 11-vs-13 comparison ("e-commerce adds
+  ~10 kg/SD") is contaminated; corrected number pending David's branch +
+  TRE rerun. **Do not patch 59 locally — his branch supersedes.** David's task
+  list (full pipeline run, verify_export output, wholly new output dir +
+  run_info, corrected 11-vs-13, five calls tables, SSYK check) is blocked on
+  his push. SSYK check prepared: `JE_Lev_LISA_2024.txt` is loaded in full into
+  `scb.parquet` (no `select`), so occupation columns may already be cached —
+  one grep in TRE + `ls` of the raw register dir settles it.
+  User instruction: no drafting or sending of replies to David unless
+  explicitly requested.
+
+- **2026-10-07 (evening, later) — `decomp_table.csv` gains `pct_of_mean`**
+  (relative gradient = 100 × per_sd / mean — percent of the category mean per
+  index SD; the %-of-mean view from the 7.3 analysis now lives in the table
+  itself instead of being derived by hand). `43_decomposition.R` computes it,
+  dictionary row added (both `eriksson-code/` and `TRE_output/` copies), and
+  the local `TRE_output/decomp_table.csv` copy back-filled (pure arithmetic on
+  the existing mean/per_sd columns; TRE-side regeneration at the next run).
+  Values confirm the analysis note's table (aviation 10.3 %, travel 9.0 %,
+  alcohol 8.1 %, restaurant 7.0 %, ecom 5.4 %, groceries 5.4 %, transport
+  4.6 %, total 4.5 %, digital 4.1 %, public trans −0.7 %). RUN_MOCK 20–68
+  clean with the new column. `sek_table.csv` unchanged — same column can be
+  added there on request.
+
+- **2026-10-07 (evening) — TRE re-run with 67 + 68 landed in `TRE_output/`;
+  full analysis in `notes/results_analysis_2026-10-07.md`. All 16
+  verify_export checks pass** (incl. the two new volume-split checks — first
+  real export including 68). Headline reproduces to full precision
+  (+203.91556801758 kg/SD) → clean re-run of the frozen spec.
+  - **Volume vs. composition (the centerpiece): 96.2% of the headline is
+    spending VOLUME** (+196.1 kg/SD) vs composition +26.9 (13.2%, p = .167 ns),
+    covariance residual −19.1 (−9.4%). Intensity margin +0.105 kg/1,000 SEK
+    per SD (p = .17); `pct_premium` = 0.27 pp of the mean (CO2e +4.53% vs
+    emission-relevant spending +4.26%). The critique's ~85–95% prediction is
+    confirmed at the top of the range → **"buys more", not "buys dirtier"**;
+    the category decomposition becomes a budget-share restatement of the
+    volume story. Policy magnitude: adjusted D5–D1 = +599 kg CO2e (13.3% of
+    mean, p = 3.4e-9), spending +31,914 SEK (12.4%), intensity +1.9% ns;
+    register income only +7.6% across quintiles. Engel shares: only 2 of 30
+    rows survive BH (restaurant spending share +0.29 pp/SD; public-trans CO2e
+    share −0.18 pp/SD) — budget_shares.csv is descriptive.
+  - **RQ3 mechanism REFUTED, first leg reversed (67):** index → out-of-home
+    leisure composite +0.073 points/SD (p = 8.8e-5) and at-home +0.137
+    (p = 1e-13) — the digitally intensive go out MORE, not less (film,
+    tv-series, sports events, dancing, dinner guests, culture events all up;
+    library/exercised/nature/book null). Mediation negligible: transport
+    +62.7 → +61.6 (share 1.8%) → +56.7 with both mediators (share 9.6%);
+    mediator→transport coefficients ns (+15.4 OOH, p = .59). Mediators
+    positively predict total CO2e (OOH +143 kg/point, p = .0028). The
+    critique's substitution fallback is also dead. → Report as a registered
+    negative result; the surviving story is "sociable, active,
+    high-consumption lifestyle" (matches item level + social_games.csv).
+  - `mech_diag.csv` clean (share_code_8_9 = 0 everywhere) but severe ceiling
+    effects in the at-home E1 set (music 85% at max, tv_series 52%, exercised
+    45%) — state as a caveat. E1 subsample gradients similar to full sample
+    (+237.8 total / +62.7 transport, n = 2,392) → direction flip is not
+    selection.
+  - Cosmetic fix landed in code for the next run: `51_descriptives.R` E4 row
+    label now "E4 anchor sample (valid E4 report and valid index)" (this
+    export still shows the old label with n = 2,082).
+
+- **2026-10-07 (later) — De-versioned the outputs (user decision).** Exploratory
+  phase = constant small iterative changes, so no major version tags:
+  `out_dir` is `output/` again (rewritten wholesale by every run; only
+  `run_info.csv` run_date + spec provenance), `export_version` dropped from
+  the run manifest (and from the dictionary and verify check 14 — the index
+  spec greps stay), repo folders: `TRE_output_v2/` → `TRE_output/` and the
+  old `TRE_output/` (first-pass export) → `archive/TRE_output_2026-09-25/`.
+  In-code "v1" fix notes reworded to "the earlier pipeline"; exported variant
+  label "Items z-scaled on the battery sample (v1 scaling)" → "Items z-scaled
+  on the battery sample" (59). verify_export now checks `../TRE_output`.
+  RUN_MOCK (20–68) still clean.
+
+- **2026-10-07 — 68_volume_composition.R: the volume-vs-composition split of
+  the headline gradient ("buys more" vs. "buys dirtier").** Implements item 2
+  of `notes/analysis_critique_2026-10-07.md` (the missing centerpiece: index →
+  spending +3.85% of mean vs. CO2e +4.53% of mean implies most of the gradient
+  is spending volume at average basket intensity).
+  - **Design:** the split follows CO2e = intensity × spending at sample means.
+    **Emission-relevant spending = non-excluded kr (20) minus `rent_kr`** —
+    rent has no emissions factor (20), so it can carry none of the CO2e
+    gradient, and keeping it in the denominator would make the intensity
+    margin measure housing tenure instead of the basket. `volume_component =
+    mean intensity × spending gradient`; `composition_component = intensity
+    gradient × mean spending`; `covariance_residual = headline − volume −
+    composition` (OLS slopes of a product are not exactly additive — the
+    residual is reported, not hidden). Formal composition test = the M5
+    intensity model (kg CO2e per 1,000 SEK ~ index); the "M5 + spend_goods"
+    rows are descriptive equal-spending comparisons (50's precedent), never
+    headline specs — spending is an outcome of the lifestyle, not a control.
+  - **Outputs (5 tables + 2 figures):** `volume_margins.csv` (M5 margins:
+    co2e, spend_goods, spend_total, intensity, log × 2 + the two descriptive
+    equal-spending rows; stopifnot asserts the CO2e row ≡ 42's ladder M5),
+    `volume_composition.csv` (the accounting + shares + pct_premium),
+    `budget_shares.csv` (Engel margins: share of emission-relevant spending
+    and of CO2e per group + top-10 goods leaves, pp per index SD, non-buyers
+    = 0 share), `quintile_desc.csv` + `quintile_contrast.csv` (D1–D5 means
+    incl. register income; adjusted D5–D1 gaps from the quintile-factor model
+    with `index_gap_sd` for back-conversion), `volume_composition.png`
+    (components bar + spending-share forest), `quintile_gradient.png`.
+  - **Mock verification:** 00_mock_data now plants a composition margin — the
+    SEK-per-kg ratio falls with screen time (`1 - 0.006*(h - 4)`; the first
+    attempt at 0.03 was far too strong — flipped the mock spending gradient,
+    intensity p ≈ 1e-126). Full RUN_MOCK (now 20–68) clean; recovered as
+    planted: intensity +0.066 kg/1,000 SEK per SD (p < 1e-69), accounting
+    residual 0.36 of a −42.6 headline, headline ≡ ladder M5. All 16
+    verify_export checks pass on the mock export.
+  - **verify_export.R extended to 16 invariants** (15: volume_margins M5 CO2e
+    row = headline; 16: volume + composition + residual = headline, shares
+    recompute). Checks 15–16 need an export from a run including 68 — the
+    2026-10-05 export predates it (same situation as 67's tables). Dictionary
+    (+35 rows), EXPORT_README and README updated (pipeline now 20–68).
+  - NEXT TRE RUN: read volume_composition.csv's `volume_share` — if it lands
+    near the critique's ~85–95% prediction, the paper's RQ2 interpretation is
+    "broad-based spending volume, small basket-composition premium" and the
+    category decomposition should be presented on top of the volume story;
+    if composition is large, the Engel tables (`budget_shares.csv`) identify
+    which categories carry the dirtier basket.
+
+- **2026-10-05 (evening) — 67_mechanism.R: the pre-registered leisure
+  mechanism (result 3) implemented and mock-verified; awaiting TRE run.**
+  - **Design:** E1 endline frequency battery (1 = "Ingen gång" … 7 = "Flera
+    gånger i veckan"), grid-order codes anchored by 55's validated four
+    (F88_2 = arbetat hemifrån, F88_3 = övertid, F88_10 = köpt utan råd,
+    F88_19 = BNPL). Pre-registered out-of-home set (7 items): F88_4/5/6/7/8/
+    18/21 = bibliotek, idrottsevenemang, kulturevenemang, bjudit hem på
+    middag, dansat, motionerat, naturen. At-home half (5): F88_11/12/13/14/
+    16 = ljudbok, musik, bok, film, tv-serie. Composites = unweighted mean of
+    answered items (no re-standardization — the 1-7 scale is common; rows
+    missing everything drop).
+  - **Outputs:** `mech_diag.csv` (item-level answer distributions +
+    share_code_8_9 — CHECK THIS FIRST on real data: it flags grid-order
+    miscoding or "Vet ej" codes above the 7-point scale before the models
+    are trusted), `e1_leisure_index.csv` (index vs each item + both
+    composites, M5 covariates, points per index SD), `e1_leisure_mechanism.csv`
+    (transport & total CO2e gradient M5 → M5+ooh → M5+ooh+home, identical
+    participants, mediator coefficients + pct_gradient_shared),
+    `mech_forest.png`.
+  - **Mock verification:** RUN_MOCK (now 20–67) clean; 00_mock_data plants
+    the mechanism (ooh items −0.45/SD of z, transport +90 kg per SD of ooh
+    spread over the transport categories) — recovered exactly: ooh composite
+    −0.48/SD, transport gradient −59.4 → −23.8 with ooh control (share 60%),
+    at-home mediator correctly null (p = .89). Dictionary + EXPORT_README +
+    README updated for the new tables; RUN_TRE/RUN_MOCK source lists
+    extended to 67. verify_export.R still targets the 2026-10-05 v2 export
+    (mechanism tables enter the export only at the NEXT TRE run).
+  - NEXT TRE RUN: run `Rscript RUN_TRE.R` (now also writes the mechanism
+    tables), inspect mech_diag.csv FIRST, then read `e1_leisure_mechanism.csv`:
+    the preregistered question is how much of the transport gradient
+    (+45.6 kg/SD) is accounted for by lower out-of-home leisure — note the
+    observed transport gradient is POSITIVE, so a negative/zero share is a
+    real possibility (the mechanism would then not explain the gradient).
 
 - **2026-10-05 (afternoon) — v2 real-data TRE run landed and verified
   (`TRE_output_v2/`). All 14 post-run invariant checks pass** — now saved as

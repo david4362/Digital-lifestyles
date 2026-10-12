@@ -89,6 +89,7 @@ decomp_table.csv,n,"Observations in the category model (complete cases per model
 decomp_table.csv,df,"Residual degrees of freedom"
 decomp_table.csv,mean,"Mean annual CO2e (kg/yr) of the group in the model sample (SEK/yr in sek_table)"
 decomp_table.csv,per_sd,"Slope in kg CO2e/yr (SEK/yr in sek_table) per 1 SD of the index, HC3 robust"
+decomp_table.csv,pct_of_mean,"Relative gradient: 100 × per_sd / mean, i.e. percent of the category mean per index SD"
 decomp_table.csv,se,"HC3 robust standard error of per_sd"
 decomp_table.csv,p,"Two-sided p-value of per_sd"
 decomp_table.csv,per_hour,"DERIVED secondary scale: per_sd / h_per_sd (see calibration_check.csv)"

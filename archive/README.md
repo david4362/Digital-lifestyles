@@ -1,4 +1,4 @@
-# Archive: exploratory analysis scripts (July–August 2026)
+# Archive: exploratory analysis scripts and superseded outputs
 
 Pre-codebook exploration from before the real pipeline existed. Superseded by
 `eriksson-code/` (see `RUN_TRE.R` there); kept only as a record of the
@@ -15,3 +15,8 @@ screen-time item search that led to identifying endline item E4.
   the E4 sample diagnostics in `eriksson-code/41/45/52`.
 
 Do not run these; the analysis pipeline is `eriksson-code/` only.
+
+- `TRE_output_2026-09-25/` — the superseded first-pass export of the analysis
+  pipeline (13-item pipeline index on the complete-battery rule), kept as the
+  record behind the historical session notes in `../notes/continuity.md`. The
+  current copy-out of the real export lives in `../TRE_output/`.

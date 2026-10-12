@@ -1,0 +1,8 @@
+component,unit,estimate,se,p,share_of_headline_pct
+headline_gradient,kg CO2e/yr per index SD,203.91556801758,32.2709064637096,2.90665822841859e-10,100
+volume_component,kg CO2e/yr per index SD,196.121287771514,28.9091838318032,1.33009916561031e-11,96.1776924038514
+composition_component,kg CO2e/yr per index SD,26.8763904359622,19.451629658502,0.167135551735374,13.1801562270347
+covariance_residual,kg CO2e/yr per index SD,-19.0821101898967,,,-9.35784863088611
+volume_share,percent of headline,96.1776924038514,,,
+composition_share,percent of headline,13.1801562270347,,,
+pct_premium,percentage points of the mean,0.272322917933094,,,

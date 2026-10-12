@@ -30,7 +30,8 @@ res <- rbindlist(lapply(names(targets), function(nm) {
   ct <- coeftest(m, vcov. = vcovHC(m, type = "HC3"))
   e <- ct["index", ]
   data.table(cat = nm, n = nobs(m), df = df.residual(m), mean = mean(d$y),
-    per_sd = e[["Estimate"]], se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
+    per_sd = e[["Estimate"]], pct_of_mean = 100 * e[["Estimate"]] / mean(d$y),
+    se = e[["Std. Error"]], p = e[["Pr(>|t|)"]],
     per_hour = e[["Estimate"]] / h_per_sd, se_hour = e[["Std. Error"]] / h_per_sd)
 }))
 res[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se,

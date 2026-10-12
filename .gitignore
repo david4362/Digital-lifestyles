@@ -18,6 +18,7 @@ advisor/
 
 # OS / editor
 .DS_Store
+Thumbs.db
 .vscode/
 
 # LaTeX build artifacts
