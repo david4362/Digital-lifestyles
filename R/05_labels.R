@@ -7,7 +7,7 @@ modellab = c(M0_bivariate = "Bivariate", M1_sex_age = "+ Sex & age",
 
 # Index-variant labels (42's second ladder, 59's variants table)
 variantlab = c(
-  main = "Main: prereg index minus e-commerce & online selling (11 items)",
+  main = "Revised index: excludes e-commerce & online selling (11 items)",
   nocalls = "Also minus calls (10 items)")
 
 grouplab = c(total = "Total", transport = "Transport", ecom = "E-commerce intensive",

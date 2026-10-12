@@ -24,6 +24,7 @@ control_data[, education := factor(fcase(
 
 # 2. Demographics: age (centered) and major-city indicator
 control_data = control_data[demographics_unique, on = "aid", nomatch = 0]
+control_data[, age_years := age]
 control_data[, age := age - mean(age, na.rm = TRUE)]
 control_data[, major_city := fifelse(postort %in% c("Stockholm", "Göteborg", "Malmö"), TRUE, FALSE)]
 
@@ -51,7 +52,7 @@ control_data[, income_scb := log1p(pmax(DispInk04, 0)) - mean(log1p(pmax(DispInk
 # alpha, 65's item correlations). Everyone here already passed the battery
 # gate in 20 (the spending filter keeps answered_survey members only), so
 # the earlier item_battery join filtered nothing.
-control_data = unique(control_data[, c("aid", "age", "gender", "income", "income_q", "income_scb",
+control_data = unique(control_data[, c("aid", "age", "age_years", "gender", "income", "income_q", "income_scb",
   "density", "hh_size", "children", "education", "major_city", "deso"), with = FALSE])
 
 # Join KK bank income, keeping every participant. In a data.table join
@@ -148,6 +149,21 @@ z_items[, hours_est := dt_coefs[["(Intercept)"]] + dt_coefs[["index"]] * index]
 analysis_data = z_items[, c("aid", ..q11_cols, "index", "index_nocalls", "index_raw", "hours_est")][
   analysis_data, on = "aid"]
 control_data = z_items[, .(aid, index, hours_est)][control_data, on = "aid"]
+
+# Fail loudly if a future join reintroduces raw item responses. Missing values
+# are allowed by the battery rule; every answered item must have SD 1 here.
+item_sds_check = unlist(analysis_data[, lapply(.SD, sd, na.rm = TRUE),
+  .SDcols = q11_cols])
+stopifnot(all(abs(item_sds_check - 1) < 1e-10))
+item_scaling_check = data.table(
+  item = q11_cols,
+  n = unlist(analysis_data[, lapply(.SD, function(x) sum(!is.na(x))),
+    .SDcols = q11_cols]),
+  mean = unlist(analysis_data[, lapply(.SD, mean, na.rm = TRUE),
+    .SDcols = q11_cols]),
+  sd = item_sds_check
+)
+fwrite(item_scaling_check, file.path(out_dir, "item_scaling_check.csv"))
 
 # ---- Shared model objects and helpers (used by the analysis scripts) ----
 

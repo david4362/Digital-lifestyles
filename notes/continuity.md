@@ -140,6 +140,34 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-10-12 (later) — David's ra/calls-diagnostics MERGED into main**
+  (after the repo cleanup eriksson-code/ -> R/). His single commit e48e4f4
+  ("Add calls and age diagnostics") was built on top of aa19eaa, so the
+  item-scaling fix is included; the merge ported his changes across the
+  rename (git rename detection) with these integration fixes:
+  (1) verify_export.R re-fread item_figure_check.csv + items — a file the
+  style remediation removed; dropped (it crashed verify on any fresh
+  export, confirmed on the mock). (2) ok_calls_step used modellab, not
+  defined in a standalone verify session — verify_export now sources
+  05_labels.R. (3) 69's implicit dependencies made explicit: cat_annual
+  defined locally (was 64's leftover), specs documented as 42's ladder
+  list. (4) style normalized to the post-review conventions ('='
+  assignments, TRUE/FALSE — also caught a leftover `with = F` in 45);
+  check comments renumbered 16-20; README "scripts 20-70". Kept as
+  deliberate: his "Revised index" relabel + the post-registration-
+  correction framing in EXPORT_README (verify_export's main_label
+  matches), item_scaling_check.csv, and his two in-pipeline stopifnots
+  (item SD-1 guard in 40, leaf additivity in 69) — the latter duplicate
+  export checks 16/20 and are criterion-2 tension, flagged not stripped.
+  Verified: RUN_MOCK end-to-end; all 80 analysis outputs byte-identical
+  to David's own pre-restructure mock run (only the export README copy
+  differs, from fixes above); verify_export 20/20 against the mock
+  output. NOTE: the frozen output/2026-10-07 export will now FAIL
+  verify_export (missing calls_* files, old index-variant labels) —
+  expected, documented in the script header; the pending TRE rerun
+  covers the item-scaling fix, the calls diagnostics and the new labels
+  in one go.
+
 - **2026-10-12 (later) — repo cleanup & reorganization (user request).**
   `eriksson-code/` renamed to **`R/`**; all output now lives under **`output/`**
   with dated folders — `output/2026-09-25/` (former

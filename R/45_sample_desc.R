@@ -47,7 +47,7 @@ fwrite(index_alpha, file.path(out_dir, "index_alpha.csv"))
 x = answered_survey[, ..index_main_items]
 x = x[complete.cases(x)]
 ir = sapply(index_main_items, function(cn)
-  cor(x[[cn]], rowSums(x[, setdiff(index_main_items, cn), with = F])))
+  cor(x[[cn]], rowSums(x[, setdiff(index_main_items, cn), with = FALSE])))
 fwrite(data.table(item = index_main_items, sd = sapply(x, sd), item_rest_r = ir),
   file.path(out_dir, "index_alpha_items.csv"))
 
