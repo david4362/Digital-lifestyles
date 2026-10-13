@@ -4,7 +4,7 @@
 # directory and writes the run manifest (run_info.csv) so the export
 # documents itself: index definition, battery rule, filter thresholds,
 # scales.
-file.copy(c("EXPORT_README.md", "export_data_dictionary.csv"), out_dir, overwrite = TRUE)
+file.copy(c("EXPORT_README.md", "metadata/export_data_dictionary.csv"), out_dir, overwrite = TRUE)
 run_info = data.table(
   run_date = format(Sys.Date()),
   r_version = R.version.string,

@@ -8,7 +8,7 @@ library(lmtest)
 #
 # A platform split (iOS vs Android) is not possible with the current data:
 # no cached table records the respondent's device/OS (details in
-# metadata.md, "E4 platform split"). There is also no second, purely
+# metadata/metadata.md, "E4 platform split"). There is also no second, purely
 # self-estimated screen-time item: E4 (q21) is the only screen-time
 # question in either survey wave, so the "self-report" side of the
 # validity check is the q11/q11b frequency battery — the anchor regression

@@ -111,7 +111,7 @@ decomp_targets = function(annual, groups) {
 # Headline outcome: total annual CO2e (sum of winsorized categories)
 emissions = annualise(monthly_co2e, "co2e")[, .(co2e = sum(y, na.rm = TRUE)), by = aid]
 
-# Category groups (leaf names from metadata.md), shared by the decomposition
+# Category groups (leaf names from metadata/metadata.md), shared by the decomposition
 # scripts so the grouping cannot drift between them.
 transport_co2e = c("fuel_co2e", "car_maint_co2e", "car_rent_co2e", "public_trans_co2e",
   "bus_co2e", "taxi_co2e", "train_bus_co2e", "aviation_co2e", "ferry_co2e",

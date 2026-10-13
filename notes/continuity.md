@@ -140,6 +140,19 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-10-13 (after midnight) — metadata consolidated into `R/metadata/`**
+  (user request): `metadata.md`, `export_data_dictionary.csv`, the three
+  survey codebooks (Pre-treatment, SNES, Survey Endline) and SCB
+  Variabellista.xlsx moved there. The only code reference was 70_run_info.R's
+  copy of the dictionary into each export — path updated to
+  `metadata/export_data_dictionary.csv`; comments in 20 and 65 now point at
+  `metadata/metadata.md`. `R/EXPORT_README.md` stays at the R/ root by
+  choice: it is the operational template 70 copies into every export, not a
+  variable list. Verified: RUN_MOCK clean, and the file.copy from the new
+  path succeeds (the mock's throwaway output folder rolled to
+  2026-10-13 — the per-run dating works). No interaction with the merged
+  69_calls_diagnostics.R (it references none of the moved files).
+
 - **2026-10-12 (later) — David's ra/calls-diagnostics MERGED into main**
   (after the repo cleanup eriksson-code/ -> R/). His single commit e48e4f4
   ("Add calls and age diagnostics") was built on top of aa19eaa, so the
