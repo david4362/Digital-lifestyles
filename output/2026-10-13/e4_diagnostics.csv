@@ -1,0 +1,18 @@
+check,value,n,note
+"E4 mean (hours/day, valid reports)",4.39355303030303,2200,"screen_time: parsed h:mm, 0-18 h/day rule applied"
+E4 median (hours/day),3.95,2200,""
+E4 SD (hours/day),2.41398362447446,2200,""
+E4 95th percentile (hours/day),8.58416666666666,2200,""
+E4 vs main index: anchor slope b (hours per index SD),0.33840828647782,2082,bivariate lm(time ~ index) on valid E4 reporters with a valid index; see anchor_check.csv / calibration_check.csv
+E4 vs main index: HC3 SE of b,0.0576878167248182,2082,""
+E4 vs main index: anchor R2,0.018076286622619,2082,"weak anchor: per-SD is the headline scale, per-hour is derived"
+E4 vs main index: anchor p,5.17481053982807e-09,2082,""
+"Pearson r, E4 vs main index",0.134448081513345,2082,sqrt of the bivariate anchor R2
+"Pearson r, E4 vs age",-0.0566716426549142,2082,younger report more screen time if negative
+Share of reports with minutes == 0 (h:mm heaping),0.0513636363636364,2200,transcription heaping at whole hours
+"Share of reports with minutes in {0, 30}",0.102727272727273,2200,""
+"Share of reports with minutes in {15, 30, 45}",0.0945454545454546,2200,""
+Share reporting exactly 18:00,0.000454545454545455,2200,reports at the plausibility cap
+N reports dropped by the > 18 h/day rule,51,2251,""
+N endline respondents with parsed h:mm,2251,2836,opt-outs (not activated / skipped) have no h:mm text
+"E4 vs total CO2e, M5 slope (kg per measured hour)",27.0119885450664,1969,same model as the E4_M5_city row of e4_rq1_robustness.csv; difference vs the index tested in e4_index_test.csv

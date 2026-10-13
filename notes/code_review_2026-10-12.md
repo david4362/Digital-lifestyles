@@ -289,3 +289,15 @@ other output byte-identical. verify_export 15/15 on the frozen 2026-10-07
 export. Real-data item-level / 13-item / weightings numbers need a TRE
 rerun; README.md marks the stale citations. David's calls-diagnostics
 branch must rebase onto this (its fix assumes the old raw-item lineage).
+
+## Addendum 2026-10-13 — two corrections to the spot-checks
+
+The "Correctness spot-checks" above marked `48` TOST arithmetic correct; that
+checked the p-value formulas but not the units. The TOST divided the per-hour
+estimate and bounds by the per-SD `se` instead of `se_hour` (fixed 2026-10-13;
+the frozen export's derived columns backfilled). Also: `66`'s
+`factor(bank_accounts)` FE model hit a singleton account count on the real
+data — leverage 1, HC3 undefined, NaN SEs in the export (fixed 2026-10-13:
+account-group FE, as in 56's singleton-DeSO rule). Both escaped the mock run
+by construction (mock h_per_sd ≈ 1.2 hides the unit mix; mock accounts 1-4
+have no singleton level).

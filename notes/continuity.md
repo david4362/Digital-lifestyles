@@ -122,23 +122,115 @@ Read this first each session. Keep it updated: decisions, open questions, next s
    Substance: volume split 96% ("buys more, not dirtier"; composition
    premium 0.27 pp, p = .17) and the RQ3 mechanism not supported (index →
    out-of-home leisure is positive, +0.07 points/SD, mediation share ≤ 10%
-   ns). Headline unchanged (+203.9 kg/SD).
+   ns). Headline unchanged (+203.9 kg/SD). Before sending: fold in the
+   2026-10-13 corrections (item level per item SD; 13-item +237.2 = +16%,
+   not +5%) and the calls diagnostics — the existing brief is a dated
+   record of the 10-07 numbers.
 2. Prereg deviation table — add the RQ3 falsification as a fourth dated entry;
    report the mechanism as a registered negative result, no post-hoc reframe.
 3. Decide the manuscript treatment of calls (q11b_2): main 11-item estimate
    with the 10-item no-calls ladder as the registered sensitivity (both in
-   `stepwise_table.csv`).
-4. Start paper-side work on the real numbers (figures from `TRE_output/`);
+   `stepwise_table.csv`). The 2026-10-13 calls diagnostics lean toward
+   co-headline + a substantive calls finding (calls alone out-predicts the
+   index; ~90% of its gradient unique; age-robust; a WFH/overtime-linked
+   sociability marker) rather than dropping it as a nuisance item.
+4. Start paper-side work on the real numbers (figures from `output/2026-10-13/`);
    RQ2 section builds on `volume_composition.csv` + `quintile_contrast.csv`
    (D5–D1 = +599 kg, +13.3%), budget shares as BH-adjusted descriptive.
-5. Critique backlog (unchanged priorities): calls deep-dive (§4.2),
-   sociable-vs-solitary item split as prereg v3 (§5.2), pre-window
+5. Critique backlog: calls deep-dive (§4.2) — largely covered by 69's
+   outputs, what remains is interpretation/write-up; sociable-vs-solitary
+   item split as prereg v3 (§5.2), pre-window
    year-by-year gradient (§5.1), additive decomposition display + per-hour
    CI anchor-SE propagation (§6), equivalence constants, representativeness
    vs LISA, literature brief for the "first individual-level evidence" claim.
 6. Push the local commits when ready.
 
 ## Session log
+
+- **2026-10-13 (later) — full logical-correctness review pass + two bug
+  fixes.** Reviewed all 40 R scripts + runners line by line and cross-checked
+  every README headline number against `output/2026-10-13/`; mock pipeline
+  rerun end-to-end (planted effects recovered; all identities hold). Two
+  genuine defects, both fixed:
+  1. **48_equivalence.R mixed units in the TOST**: the per-hour bounds and
+     estimate were divided by the per-SD `se` instead of `se_hour` (t1/t2,
+     p_tost, lo90/hi90, feasible, mde80 off by 1/h_per_sd). Fixed; the
+     derived columns of `output/2026-10-13/equivalence_table.csv` backfilled
+     (p_tost 0.99999 → 0.9226, 90% CI (0.269, 0.576) → (−0.031, 0.877),
+     mde80 0.262 → 0.773 kg/h). pass/feasible unchanged (FALSE/FALSE — the
+     qualitative conclusion stands). Root cause of escape: the 2026-10-12
+     review spot-checked the TOST formulas, not the units.
+  2. **66's account-FE row exported NaN SEs**: a singleton
+     `nr-of-bank-accounts` level gives leverage 1, so HC3 is 0/0 and the
+     whole covariance matrix goes NaN (row had empty se/p/CI; the README's
+     "both p ≈ 1e-08" held only for the linear row). Proven with a synthetic
+     demo (R warns "undefined if hat values exactly 1"). Fixed: FE on
+     `account_group` (1/2/3/4+, the strata grouping — same reasoning as 56's
+     singleton-DeSO exclusion). The frozen export row keeps its numbers (no
+     refit possible without data); refreshes on the next TRE rerun. The mock
+     cannot catch this (accounts 1–4 there).
+  Doc corrections: README flow filter ("≥ 12 observed months" → the actual
+  ≥ 3 valid months rule; ≥ 12 is 57's restriction, n = 3,795), the
+  "bit-identical" claim qualified (labels/schema changed in 3 shared files),
+  the calls-category sentence (separate/conditional figures labeled;
+  "public transport ns" was true only for the separate spec), the account-FE
+  claim; `output/2026-10-13/export_data_dictionary.csv` refreshed to
+  `R/metadata/` (the run-time copy predated the metadata consolidation:
+  documented removed `item_figure_check.csv`, lacked `item_scaling_check` /
+  `calls_*`). Minor: 30 sorts `q21_cols` so the hours/minutes mapping is
+  order-independent; comment fixes in 00 (battery-gate rule), 45 (attrition
+  sample), verify_export (check 14 no longer claims the removed 68
+  assertion). Left as documented design nuances (no effect on current
+  numbers): join-sample `mean` columns, un-`na.rm`'d means, `prcomp(center=
+  FALSE)` in 61, 50's non-buyer NA. Open items unchanged: D_NOCAR = 90.5 vs
+  prereg D = 1,260; H2c names rent + insurance but rent_co2e ≡ 0.
+  DECISION: corrections backfilled into the latest export in place
+  (equivalence derived columns + dictionary), following the pct_of_mean
+  backfill precedent; 2026-10-07 stays frozen as superseded.
+
+- **2026-10-13 — `output/2026-10-13` (the pending TRE rerun) analyzed;
+  README updated.** The rerun carries the item-scaling fix, David's calls
+  diagnostics (69) and the label cleanups in one go. **verify_export 20/20
+  pass** (checks 16–20 = item z-scaling + calls sample identities).
+  44 of 54 CSVs shared with the 2026-10-07 export are byte-identical:
+  headline ladder (+203.92 kg/SD, CI 140.7–267.2), decomposition, volume
+  split (96.2%), calibration (b = 0.3384, 602.6 kg/h), E4/E1, coverage and
+  heterogeneity all bit-reproduced — the frozen spec is intact.
+  - **Item-scaling fix verified and corrections land** (`item_scaling_check`:
+    all 13 items mean 0 / SD 1). Item level per item SD: calls +345.9***,
+    social media +190.7***, online selling +189.2*** (excl), info search
+    +140.9***, smartphone +136.4***, TV +126.5***, e-commerce +108.7**
+    (excl), computer +69.9*, console +39.4 / reading +24.5 / tablet +23.0
+    ns, gaming −64.8 (BH p = .061), streaming −80.2* (BH p = .020).
+    p-values identical to 10-07 (pure reparametrization); magnitudes now
+    truthful, ranking shifts (social media > smartphone). Halves/PC1:
+    151.4 / 190.0 / 207.3; social_games rescaled (p identical).
+  - **Corrected 13-item variant +237.2** (10-07's +214.3 was the
+    raw-item-weighted composite) vs main +203.9 → the e-commerce/selling
+    items add +33.3 kg/SD (**~16%, not ~5%**). "They don't drive the
+    relation" survives (11-item keeps 86%), but every ~5% quote must go.
+  - **Calls diagnostics (69) — the new substance.** Calls alone M5
+    +345.9 kg per item SD (p = 2.5e-27, n = 4,243) with **R² = 0.378 >
+    0.366 of the full index**; ~90% unique (conditional on the other 10
+    items: +308.8 of +343.3 separate). Joint model (`item_level_joint`):
+    calls +308.8, streaming −147.1, TV +91.9, social media +105.1;
+    smartphone and info search ns. Age-robust (345.9 / 346.8 / 353.4
+    across linear / bands / spline); calls_z is higher at 40–69
+    (+0.19–0.23) than 18–39 (−0.01 to −0.07). Per calls-item SD:
+    transport +112 (11.2% of mean; fuel +72, travel +43), groceries +35,
+    uncategorized +30, restaurant +24, ecom +18 sep / +9 conditional —
+    but internet/telecom CO2e flat and public transport negative ns → not
+    a phone-footprint channel. E1: WFH +0.24 days/SD (p = 1.3e-6),
+    overtime +0.28 (p = 8.3e-11) → calls is a connected-work / sociability
+    marker (r with E4 = .067), reinforcing the "sociable, active,
+    high-consumption lifestyle" reading after the refuted leisure
+    mechanism. Critique §4.2 (calls deep-dive) is largely answered.
+  - Cosmetic/structural: descriptives E4 row label fixed; equivalence_table
+    gained `pct_of_mean`; stepwise/variant labels now "Revised index: …";
+    `item_figure_check.csv` gone by design; new files calls_* (6),
+    item_level_joint, item_scaling_check. README rewritten accordingly
+    (item level, 13-item +16%, calls bullet, robustness halves, verify
+    20/20, pipeline 20–70 incl. 69/70 rows, exports list).
 
 - **2026-10-13 (after midnight) — metadata consolidated into `R/metadata/`**
   (user request): `metadata.md`, `export_data_dictionary.csv`, the three

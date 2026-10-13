@@ -116,8 +116,8 @@ ok_run_info = !grepl("q11b_7", run_info$index_items) && !grepl("q11b_8", run_inf
   grepl("q11_1", run_info$index_items) && !grepl("q11b_2", run_info$index_nocalls_items)
 
 # 14. volume_margins' M5 CO2e row is the headline M5: 68 decomposes exactly
-#     the published gradient (asserted in 68 against 42's ladder at run time,
-#     re-checked here against the copied export).
+#     the published gradient (the run-time assertion was removed in the
+#     2026-10-12 de-defensing pass; this check carries the guarantee).
 ok_volume_headline = abs(volmarg[outcome == "co2e" & spec == "M5", per_sd] -
   main_m5$per_sd) < 1e-6
 

@@ -22,9 +22,9 @@ names(q) = q11_names
 survey = data.table(aid = aid, submitdate = "2024-06-15")
 survey[, (q11_names) := q]
 
-# Partial battery: 20 people answer 12 of 13 items. The pipeline rule
-# (complete battery) excludes them; the preregistration rule (>= 10 of 13,
-# exercised by the index-variant robustness in 59) includes them.
+# Partial battery: 20 people answer 12 of 13 items. The pipeline's battery
+# gate (>= 8 of 11 main items, 20) keeps them in; 59's 13-item variant
+# applies the pre-registration's >= 10 of 13 rule to them.
 survey[sample(aid, 20), (q11_names[1]) := NA]
 
 # E4 screen time from z (b ~ 1.2 h per index unit), with opt-out reasons

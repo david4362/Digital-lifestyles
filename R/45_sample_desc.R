@@ -51,7 +51,8 @@ ir = sapply(index_main_items, function(cn)
 fwrite(data.table(item = index_main_items, sd = sapply(x, sd), item_rest_r = ir),
   file.path(out_dir, "index_alpha_items.csv"))
 
-# Attrition: E4 reporters vs non-reporters in the analysis sample
+# Attrition: E4 reporters vs non-reporters among the controls-joined
+# participants (control_data — one row below the frozen M5 sample)
 rep = unique(device_time$aid)
 a = control_data[, .(aid, education, major_city)][
   demographics_unique[, .(aid, age, gender)], on = "aid", nomatch = 0]

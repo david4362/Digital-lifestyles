@@ -9,7 +9,9 @@ source("05_labels.R")
 # delta2 below is 10% of it (h_per_sd is the anchor slope from 40, hours
 # per index SD, audited in calibration_check.csv). The bounds are per hour
 # per the pre-registration, so the TOST runs on the per-hour columns of the
-# decomposition table.
+# decomposition table: estimate per_hour and SE se_hour. The per-SD SE must
+# not be mixed with the per-hour bounds (it was until the 2026-10-13 review;
+# the frozen export's derived columns were backfilled then).
 D_NOCAR = 90.5
 K_GAP = 2
 
@@ -18,20 +20,20 @@ pl = dec[cat %in% c("placebo_insurance")]
 pl[, delta1 := 0.01 * mean]
 pl[, delta2 := 0.10 * D_NOCAR / (K_GAP * h_per_sd)]
 pl[, delta := pmin(delta1, delta2)]
-pl[, `:=`(t1 = (per_hour + delta) / se, t2 = (delta - per_hour) / se)]
+pl[, `:=`(t1 = (per_hour + delta) / se_hour, t2 = (delta - per_hour) / se_hour)]
 pl[, p_tost := pmax(1 - pt(t1, df), 1 - pt(t2, df))]
-pl[, `:=`(lo90 = per_hour - 1.645 * se, hi90 = per_hour + 1.645 * se)]
+pl[, `:=`(lo90 = per_hour - 1.645 * se_hour, hi90 = per_hour + 1.645 * se_hour)]
 pl[, pass := abs(lo90) < delta & abs(hi90) < delta]
-pl[, feasible := se < delta / 1.645]
+pl[, feasible := se_hour < delta / 1.645]
 # Minimum detectable effect at 80% power for a two-sided 5% test,
-# (z_.95 + z_.80) x SE: what the placebo design could have detected, in
-# per-hour and per-index-SD units, alongside the equivalence bound.
-pl[, mde80 := (1.96 + 0.84) * se]
+# (z_.95 + z_.80) x se_hour: what the placebo design could have detected,
+# in per-hour and per-index-SD units, alongside the equivalence bound.
+pl[, mde80 := (1.96 + 0.84) * se_hour]
 pl[, `:=`(mde80_sd = mde80 * h_per_sd, delta_sd = delta * h_per_sd)]
 pl[, `:=`(lo90_sd = lo90 * h_per_sd, hi90_sd = hi90 * h_per_sd)]
 fwrite(pl, file.path(out_dir, "equivalence_table.csv"))
 cat(sprintf("h/SD=%.2f delta2=%.2f\n", h_per_sd, 0.10 * D_NOCAR / (K_GAP * h_per_sd)))
-print(pl[, .(cat, mean, per_hour, se, delta, p_tost, pass, feasible)])
+print(pl[, .(cat, mean, per_hour, se_hour, delta, p_tost, pass, feasible)])
 
 png(file.path(out_dir, "equivalence_plot.png"), width = 900, height = 500, res = 120)
 par(mar = c(5, 10, 4, 2))

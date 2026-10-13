@@ -10,7 +10,9 @@ library(lmtest)
 # index on the frozen M5 sample, HC3:
 # 1. M5 + number of connected bank accounts (linear control)
 # 2. M5 separately within exactly 1 / 2 / 3 / 4+ accounts
-# 3. M5 + account fixed effects
+# 3. M5 + account-group fixed effects (1/2/3/4+, the groups of test 2: a
+#    singleton account count has leverage 1, which makes the HC3 SEs
+#    undefined — same reason 56 excludes singleton DeSOs)
 # 4. M5 with observed annual spending / register disposable income as the
 #    outcome (SEK observed per SEK register income)
 # 5. M5 with total CO2e / register income as the outcome (kg CO2e per
@@ -99,8 +101,8 @@ account_coverage = rbind(
     "M5 (reference)", ref_co2e),
   account_row(cov_data, update(as.formula(lm_formula), . ~ . + bank_accounts),
     "Account control", "total CO2e", "M5 + bank accounts (linear)", ref_co2e),
-  account_row(cov_data, update(as.formula(lm_formula), . ~ . + factor(bank_accounts)),
-    "Account control", "total CO2e", "M5 + account fixed effects", ref_co2e),
+  account_row(cov_data, update(as.formula(lm_formula), . ~ . + factor(account_group)),
+    "Account control", "total CO2e", "M5 + account-group fixed effects (1/2/3/4+)", ref_co2e),
   account_strata,
   account_row(cov_data, sub("^co2e", "spending_income", lm_formula),
     "Income-normalised outcome", "observed spending / register income",

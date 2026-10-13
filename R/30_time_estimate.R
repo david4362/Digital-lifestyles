@@ -9,7 +9,10 @@ endline_latest = survey_endline[order(aid, submitdate), .SD[.N], by = aid]
 # "Skärmtid" / Android "Digitalt välmående", and transcribes it as h:mm).
 # Parsed once here, before the 18 h/day plausibility rule, so the E4
 # diagnostics in 65 can report what the rule drops.
-q21_cols = grep("^q21_(1|2)comment", names(endline_latest), value = TRUE)
+# Sorted so the h:mm field order is q21_1comment before q21_2comment
+# regardless of the column order in the endline export (setnames below is
+# positional: hours first, then minutes).
+q21_cols = sort(grep("^q21_(1|2)comment", names(endline_latest), value = TRUE))
 screen_raw = endline_latest[, c("aid", ..q21_cols)]
 setnames(screen_raw, q21_cols, c("hours", "minutes"))
 screen_raw[, hours := as.integer(hours)]
