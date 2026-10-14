@@ -43,8 +43,8 @@ a sensitivity analysis. After adjustment for age, gender, three measures of
 income, education, household composition, and urbanity, a one-standard-deviation
 higher digital lifestyle index is associated with 204 kg CO\textsubscript{2}e
 more per year (95\% CI: 141--267), or 4.5\% of mean annual emissions. The
-gradient is distributed across multiple consumption categories and is explained
-primarily by greater expenditure rather than a more carbon-intensive basket.
+gradient is distributed across multiple consumption categories and is
+accompanied by greater observed expenditure.
 Contrary to a digital-substitution account, transport emissions and both at-home
 and out-of-home leisure are non-negative among more digitally engaged
 participants. Device-assisted mobile screen time is only weakly correlated with
@@ -191,15 +191,10 @@ summed. The mutually exclusive leaf estimates provide the additive description
 of the total gradient. Insurance serves as a low-channel falsification outcome,
 although low mean emissions limit the precision of formal equivalence tests.
 
-To distinguish greater consumption volume from a more carbon-intensive basket,
+To examine whether the emissions gradient coincides with greater consumption,
 we additionally estimate M5 models for annual emission-relevant spending and
-for emissions intensity, defined as kilograms of CO\textsubscript{2}e per SEK
-1,000 spent. We report an accounting decomposition evaluated at the sample
-means: the spending gradient multiplied by mean emissions intensity is the
-volume component, while the intensity gradient multiplied by mean spending is
-the composition component. A residual captures the fact that separate OLS
-slopes of a product need not add exactly to the slope of total emissions. These
-components are descriptive and are not interpreted as causal mediation.
+total observed spending. These spending analyses are descriptive and are not
+interpreted as causal mediation.
 
 \subsection{Mechanism}
 The pre-registered mechanism proposed that digital engagement substitutes for
@@ -253,20 +248,115 @@ causation.
 \section{Results}
 
 \subsection{Screen-time validity}
+Among the 2,200 respondents with a valid device-assisted report, mean mobile
+screen time was 4.39 hours per day (median 3.95; SD 2.41); 51 reports above 18
+hours per day were excluded. In the 2,082 respondents with both measures, the
+correlation between measured mobile screen time and the digital lifestyle index
+was weak ($r=0.134$, $R^2=0.018$). The index therefore captures a broader set of
+digital practices than mobile screen time alone.
+
+On the fully adjusted E4 subsample ($N=1,969$), measured screen time was not
+associated with annual emissions ($27$ kg CO\textsubscript{2}e per measured
+hour; 95\% CI: $-10$ to $64$; $p=0.148$). When the index and measured screen
+time were entered jointly on standardized scales, the index remained associated
+with emissions ($233$ kg CO\textsubscript{2}e per SD; 95\% CI: $138$--$329$;
+$p<0.001$), whereas measured screen time did not ($29$ kg per SD; 95\% CI:
+$-59$ to $117$; $p=0.518$).
+
 \todo{Device-assisted screen time vs.\ Swedish benchmarks (Internetstiftelsen,
-Svenskarna och internet). See output/screen\_time\_validity.csv.}
+Svenskarna och internet); add table/figure references.}
 
 \subsection{The net gradient}
-\todo{}
+In the frozen complete-case sample ($N=4,250$), a one-SD higher revised digital
+lifestyle index was associated with $180$ kg CO\textsubscript{2}e higher annual
+emissions in the bivariate model (95\% CI: $105$--$254$). Adjustment for age and
+gender increased the estimate to $274$ kg, while adding income and education
+reduced it to $198$ kg. The fully adjusted M5 estimate was $204$ kg per SD
+(95\% CI: $141$--$267$; $p<0.001$), equivalent to 4.5\% of mean annual
+emissions of 4,501 kg CO\textsubscript{2}e.
+
+Digital engagement was also associated with greater observed expenditure. The
+M5 gradients were SEK 10,945 per SD for annual emission-relevant spending
+(95\% CI: 7,783--14,107; $p<0.001$) and SEK 9,690 for total observed spending
+(95\% CI: 6,406--12,975; $p<0.001$), corresponding to 4.3\% and 3.1\% of their
+respective sample means.
+
+The registered 13-item index gave a somewhat larger estimate ($237$ kg per SD;
+95\% CI: $173$--$301$). Excluding calls reduced the estimate to $141$ kg
+(95\% CI: $77$--$204$), but the association remained positive. Estimates were
+also positive for the device-use half ($151$ kg), digital-activity half
+($190$ kg), and first principal component ($207$ kg). At item level, calls had
+the largest separate gradient ($346$ kg per SD) and remained strongly associated
+with emissions conditional on the other ten revised-index items ($309$ kg).
+Social media also retained a positive conditional gradient ($105$ kg; 95\% CI:
+$36$--$174$), whereas streaming retained a negative one ($-147$ kg; 95\% CI:
+$-211$ to $-83$). These item analyses are exploratory and do not identify the
+direction of influence.
+
+Adding bank-account count reduced the headline estimate by 10.7\%, to $182$ kg
+per SD. Restrictions to participants whose observed spending was 25--200\% or
+50--150\% of register income yielded estimates of $164$ and $155$ kg,
+respectively; both remained positive and statistically distinguishable from
+zero.
+
+\todo{Add main coefficient figure/table references and decide whether detailed
+item and account-coverage results remain in the main text or move to the SI.}
 
 \subsection{Decomposition across consumption categories}
-\todo{}
+The emissions gradient was distributed across multiple consumption categories.
+Transport emissions increased by $46$ kg CO\textsubscript{2}e per index SD
+(95\% CI: $9$--$82$; $p=0.015$), contrary to the proposed demobilization
+mechanism. Emissions from the e-commerce-intensive goods group increased by
+$28$ kg (95\% CI: $18$--$39$; $p<0.001$), and internet and telecommunications
+by $1.7$ kg (95\% CI: $0.7$--$2.7$; $p<0.001$). The low-channel insurance
+outcome was small and not statistically distinguishable from zero ($0.14$ kg;
+$p=0.126$).
+
+Among the mutually exclusive leaf categories, the largest positive
+contributions included groceries ($39$ kg), aviation ($26$ kg), restaurants
+($22$ kg), travel ($21$ kg), uncategorized purchases ($17$ kg), clothing
+($11$ kg), other shopping ($8$ kg), and alcohol ($8$ kg) per index SD. The
+pattern was therefore broad rather than confined to purchases of digital
+services or goods commonly bought online.
+
+\todo{Add decomposition figure/table references and multiplicity-adjusted
+leaf-category results in the SI.}
 
 \subsection{Mechanism: out-of-home leisure}
-\todo{}
+More digitally engaged participants did not report less out-of-home or social
+activity. The adjusted out-of-home/social-activity composite increased by 0.073
+points per index SD (95\% CI: 0.037--0.109; $p<0.001$), while the at-home
+composite increased by 0.137 points (95\% CI: 0.101--0.172; $p<0.001$).
+Positive associations were observed for attending sports events (0.164 points),
+attending cultural events (0.088), hosting dinner guests (0.137), and dancing
+(0.144), as well as for audiobooks, music, films, and television series.
+
+On the common mechanism subsample ($N=2,392$), the M5 transport gradient was
+$62.7$ kg CO\textsubscript{2}e per SD. Adding the out-of-home/social-activity
+composite reduced it to $61.6$ kg, and adding both activity composites reduced
+it to $56.7$ kg, an attenuation of 9.6\%. For total emissions, the corresponding
+estimates were $237.8$, $227.4$, and $213.2$ kg per SD, an attenuation of
+10.3\% after both composites. These measures therefore accounted for only a
+limited share of the observed gradients and did not support substitution away
+from out-of-home activity.
+
+\todo{Add the calls-specific correlations with time spent with friends, dinner
+guests, and sports/cultural events after the next TRE run; insert mechanism
+figure/table references.}
 
 \subsection{Heterogeneity}
-\todo{}
+Adjusted subgroup estimates were positive for participants aged 18--29
+($150$ kg per SD), 30--44 ($263$ kg), and 45--64 ($232$ kg). The estimate for
+participants aged 65 and older was imprecise ($561$ kg; 95\% CI: $-544$ to
+$1,665$). Estimates were $157$ kg among women and $253$ kg among men, but the
+index-by-gender interaction was not statistically significant ($p=0.134$).
+They were $182$ kg outside the three major cities and $249$ kg within them; the
+index-by-city interaction was also not statistically significant ($p=0.323$).
+The results therefore provide no clear evidence that the gradient differs by
+gender or major-city residence.
+
+\todo{Add the formal age-group interaction test, resolve the exploratory income-
+quintile presentation, and insert the heterogeneity figure/table reference.}
 
 \section{Discussion}
 
@@ -307,10 +397,10 @@ rather than the registered anchored-hour scale, because the empirical anchor is
 weak ($R^2=0.018$); both scales are generated by the same linear transformation
 and yield identical statistical inference.
 
-Other post-registration analyses include the spending-volume versus carbon-
-intensity accounting decomposition, detailed account-count restrictions, and
-diagnostic analyses of the calls item. These are used to characterize and probe
-the observed association, not to redefine the registered hypotheses. A table in
+Other post-registration analyses include the spending outcomes, detailed
+account-count restrictions, and diagnostic analyses of the calls item. These
+are used to characterize and probe the observed association, not to redefine
+the registered hypotheses. A table in
 the Supplementary Information will classify every reported analysis as
 originally registered, addendum-specified, post-registration correction, or
 exploratory and will give the corresponding output file and specification.
