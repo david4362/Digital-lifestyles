@@ -29,22 +29,11 @@ individual-level evidence from linked bank-transaction, survey, and register dat
 \maketitle
 
 \begin{abstract}
-Digitalization could reduce household carbon footprints by substituting for
-travel and material consumption, or increase them by facilitating and
-stimulating additional consumption. Evidence on the net individual-level
-relationship remains scarce. We link baseline survey measures of digital
+Digitalization holds the potential to reduce household carbon footprints by substituting for travel and material consumption, or increase them by facilitating and stimulating additional consumption. Evidence on the net individual-level relationship remains scarce. We link survey measures of digital
 practices among Swedish adults to annual consumption-based greenhouse-gas
 emissions estimated from bank transactions and to sociodemographic registers.
 The complete-case analysis includes 4,250 participants. Our revised digital
-lifestyle index combines 11 device-use and digital-activity frequencies; it
-excludes two purchase-channel items that were mistakenly included in the
-pre-registered index, for which we retain the original 13-item specification as
-a sensitivity analysis. After adjustment for age, gender, three measures of
-income, education, household composition, and urbanity, a one-standard-deviation
-higher digital lifestyle index is associated with 204 kg CO\textsubscript{2}e
-more per year (95\% CI: 141--267), or 4.5\% of mean annual emissions. The
-gradient is distributed across multiple consumption categories and is
-accompanied by greater observed expenditure.
+lifestyle index combines 11 device-use and digital-activity frequencies. After adjustment for age, gender, income, education, household composition, and urbanity, a one-standard-deviation higher digital lifestyle index is associated with 204 kg CO\textsubscript{2}e more per year (95\% CI: 141--267), or 4.5\% of mean annual emissions. The gradient is distributed across multiple consumption categories and is accompanied by greater observed expenditure.
 Contrary to a digital-substitution account, transport emissions and both at-home
 and out-of-home leisure are non-negative among more digitally engaged
 participants. Device-assisted mobile screen time is only weakly correlated with
@@ -64,17 +53,9 @@ behavior and measured consumption-based emissions in the same individuals.}
 \section{Data}
 
 \subsection{Sample}
-We use the Konsumtionskollen dataset, which links surveys, bank transactions,
-user-profile information, and Swedish administrative registers at the
-individual level. Participants connected one or more bank accounts to a
-research application, allowing transactions to be observed retrospectively.
-The baseline survey measured device use and digital activities; a subsequent
-endline survey collected device-assisted mobile screen time and activity
-frequencies. All analyses of identifiable register-linked data were conducted
-in the Statistics Sweden Trusted Research Environment.
+We use a dataset that links surveys, bank transactions, user-profile information, and Swedish administrative registers at the individual level. Participants connected one or more bank accounts to a research application, allowing historical transactions to be observed and categorized into consumption categories. The baseline survey measured device use and digital activities; a subsequent endline survey collected device-assisted mobile screen time and activity frequencies. All analyses of identifiable register-linked data were conducted in University of Gothenburg's Trusted Research Environment.
 
-The baseline survey contains 12,153 unique participants. We retain the latest
-baseline response where duplicate responses exist. Of these participants,
+The baseline survey contains 12,153 unique participants. Of these participants,
 11,172 satisfy the digital-battery response rule described below. We define an
 observed transaction month as one in which non-excluded spending exceeds SEK
 3,000 and require at least three such months during the 12 months preceding the
@@ -82,13 +63,11 @@ baseline survey. This restriction leaves 4,392 participants. Linkage to the
 control variables leaves 4,251 participants, of whom 4,250 have complete data
 for the fully adjusted model. We freeze this complete-case sample for all steps
 of the main model sequence so that changes between specifications do not reflect
-changes in sample composition. Analyses involving endline measures use the
-corresponding respondent subsets and report their sample sizes separately.
+changes in sample composition.
 
 \subsection{Consumption-based carbon footprints}
-Transactions are assigned to consumption categories in the underlying
-Konsumtionskollen system and converted to kilograms of carbon-dioxide
-equivalents (CO\textsubscript{2}e) using category-specific emissions factors.
+Transactions are assigned to consumption categories and converted to kilograms of carbon-dioxide
+equivalents (CO\textsubscript{2}e) using category-specific emissions factors (Cite: Andersson Novel 2020).
 We aggregate transactions by participant, month, and category. For each
 participant--category combination observed in at least three valid months,
 annual emissions are calculated as the sum over observed months divided by the
@@ -96,8 +75,7 @@ number of observed months and multiplied by 12. Annual emissions are winsorized
 at the category-specific 99th percentile before categories are summed. The
 primary outcome is total annual consumption-based CO\textsubscript{2}e.
 
-For the decomposition, we additionally construct theoretically motivated
-groups. Transport comprises fuel, vehicle maintenance and rental, public and
+We decompose emissions into theoretically motivated groups. Transport comprises fuel, vehicle maintenance and rental, public and
 other ground transport, aviation, and ferry travel. The e-commerce-intensive
 goods group comprises clothing, electronics, books, toys, sports goods, other
 shopping, and home-and-garden goods; it denotes categories commonly purchased
@@ -123,18 +101,13 @@ to transaction-observed consumption outcomes. We treat their inclusion as a
 design mistake rather than redefine the registered specification
 retrospectively. The substantively preferred index consequently excludes these
 two items and contains 11 items; the registered 13-item index is retained as a
-sensitivity analysis. Calls remain in the revised index because they are a
-digital practice rather than a purchase channel; a ten-item specification that
-also excludes calls is reported as an exploratory sensitivity analysis.
+sensitivity analysis.
 
 Each item is standardized using its mean and standard deviation in the frozen
 analysis sample. The index is the unweighted mean of the answered standardized
 items and is itself re-standardized to mean zero and standard deviation one.
 Following the pre-registered tolerance of up to three missing items, the revised
-index requires at least eight of 11 responses; the registered index requires at
-least ten of 13. The revised index has Cronbach's $\alpha=0.56$. We interpret it
-as a formative composite of heterogeneous digital practices rather than as a
-reflective scale whose items are expected to be interchangeable.
+index requires at least eight of 11 responses. The revised index has Cronbach's $\alpha=0.56$. We interpret it as a formative composite of heterogeneous digital practices rather than as a reflective scale whose items are expected to be interchangeable.
 
 At endline, respondents were instructed to read their average daily mobile
 screen time for the previous week from iOS Screen Time or Android Digital
@@ -148,9 +121,7 @@ effects of an additional measured screen-time hour. Missing screen-time reports
 do not exclude participants from analyses using the baseline index.
 
 \subsection{Register variables}
-The adjustment set combines demographic, application-profile, transaction, and
-register information. It includes exact age in years; gender; log application
-income; log disposable register income; log mean monthly bank inflows;
+The control variables comprise of demographic, application-profile, transaction, and register information. It includes age; gender; log income; log disposable register income; log mean monthly bank inflows;
 educational attainment in five levels; household size; an indicator for
 children; log population density in the participant's DeSO area; and an
 indicator for residence in Stockholm, Gothenburg, or Malm\"o. One participant
@@ -252,8 +223,9 @@ Among the 2,200 respondents with a valid device-assisted report, mean mobile
 screen time was 4.39 hours per day (median 3.95; SD 2.41); 51 reports above 18
 hours per day were excluded. In the 2,082 respondents with both measures, the
 correlation between measured mobile screen time and the digital lifestyle index
-was weak ($r=0.134$, $R^2=0.018$). The index therefore captures a broader set of
-digital practices than mobile screen time alone.
+was weak ($r=0.134$, $R^2=0.018$). This suggests that the mobile screen time alone cannot be used as a proxy for a broader set of digital practices.
+
+%What is the E4 subsample? Use plain language, write out what is meant, use examples to explain, eexplin results in an intuitive way. Do not write like a techy AI ;)
 
 On the fully adjusted E4 subsample ($N=1,969$), measured screen time was not
 associated with annual emissions ($27$ kg CO\textsubscript{2}e per measured
@@ -275,6 +247,8 @@ reduced it to $198$ kg. The fully adjusted M5 estimate was $204$ kg per SD
 (95\% CI: $141$--$267$; $p<0.001$), equivalent to 4.5\% of mean annual
 emissions of 4,501 kg CO\textsubscript{2}e.
 
+%What is M5 - write this out. 
+
 Digital engagement was also associated with greater observed expenditure. The
 M5 gradients were SEK 10,945 per SD for annual emission-relevant spending
 (95\% CI: 7,783--14,107; $p<0.001$) and SEK 9,690 for total observed spending
@@ -292,6 +266,8 @@ Social media also retained a positive conditional gradient ($105$ kg; 95\% CI:
 $36$--$174$), whereas streaming retained a negative one ($-147$ kg; 95\% CI:
 $-211$ to $-83$). These item analyses are exploratory and do not identify the
 direction of influence.
+
+% what is meant by "and first principal component (207 kg)" here, explain briefly in text?
 
 Adding bank-account count reduced the headline estimate by 10.7\%, to $182$ kg
 per SD. Restrictions to participants whose observed spending was 25--200\% or
@@ -312,12 +288,14 @@ by $1.7$ kg (95\% CI: $0.7$--$2.7$; $p<0.001$). The low-channel insurance
 outcome was small and not statistically distinguishable from zero ($0.14$ kg;
 $p=0.126$).
 
-Among the mutually exclusive leaf categories, the largest positive
-contributions included groceries ($39$ kg), aviation ($26$ kg), restaurants
+Among the leaf categories, the largest positive
+correlations included groceries ($39$ kg), aviation ($26$ kg), restaurants
 ($22$ kg), travel ($21$ kg), uncategorized purchases ($17$ kg), clothing
 ($11$ kg), other shopping ($8$ kg), and alcohol ($8$ kg) per index SD. The
 pattern was therefore broad rather than confined to purchases of digital
 services or goods commonly bought online.
+
+%Here, SEK increase is more interesting than the CO2e.
 
 \todo{Add decomposition figure/table references and multiplicity-adjusted
 leaf-category results in the SI.}
