@@ -1,0 +1,107 @@
+% Supplementary Information — Digital lifestyles and consumption-based carbon emissions
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\title{Supplementary Information:\\
+Digital lifestyles and consumption-based carbon emissions}
+\author{David Andersson \and Mathias Lehner \and Mikael Eriksson}
+\date{Draft --- \today}
+
+\begin{document}
+\maketitle
+
+\section{Survey instruments}
+
+\subsection{Baseline digital-practice battery}
+The baseline items ask, ``Approximately how often have you used the following
+equipment during the past three months?'' (q11) and ``Approximately how often
+have you done the following things during the past three months?'' (q11b).
+Every item uses the same ordered response options: (1) not used, (2) less often
+than weekly, (3) one to six times per week, (4) daily, (5) several times per
+day, and (6) several times per hour. Table~\ref{tab:digital-items} gives the
+item wording translated from Swedish. The original Swedish questionnaires and
+codebooks will be supplied in the study repository.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Baseline items used to construct the digital lifestyle indices.}
+	\label{tab:digital-items}
+	\begin{tabular}{@{}p{0.14\textwidth}p{0.66\textwidth}p{0.08\textwidth}@{}}
+		\toprule
+		Item & English translation & Revised index \\
+		\midrule
+		q11\_1 & Desktop or laptop computer & Yes \\
+		q11\_2 & Mobile phone or smartphone & Yes \\
+		q11\_3 & Television & Yes \\
+		q11\_4 & Game console & Yes \\
+		q11\_5 & Tablet or e-reader & Yes \\
+		q11b\_1 & Watched films, series, or YouTube & Yes \\
+		q11b\_2 & Talked on the phone or had video calls & Yes \\
+		q11b\_3 & Used social media (e.g., Facebook) & Yes \\
+		q11b\_4 & Searched for information online & Yes \\
+		q11b\_5 & Played computer or video games & Yes \\
+		q11b\_6 & Read books or magazines digitally & Yes \\
+		q11b\_7 & Shopped on e-commerce sites & No \\
+		q11b\_8 & Sold something (e.g., on an online marketplace) & No \\
+		\bottomrule
+	\end{tabular}
+	\begin{flushleft}\footnotesize
+	Note: All 13 items belong to the originally registered index. The revised
+	index excludes q11b\_7 and q11b\_8 as a post-registration correction.
+	\end{flushleft}
+\end{table}
+
+The calls item combines ordinary phone calls and video calls in one response.
+It therefore cannot distinguish occupational video meetings from private
+communication. Analyses of this item are interpreted as exploratory diagnostics
+of a mixed communication measure.
+
+\subsection{Device-assisted mobile screen time}
+The endline item asks respondents how much time they spend using their mobile
+phone and instructs them to open iOS ``Screen Time'' or Android ``Digital
+Wellbeing'' and report the displayed average daily use for the previous week.
+Hours and minutes are entered in separate fields. Respondents can instead select
+``I have not activated that function'' or ``Skip the question/I cannot find the
+information.'' We convert the two fields to decimal hours per day and exclude
+values above 18 hours. The survey does not record operating system, and the item
+measures mobile-device use rather than total time across all digital devices.
+
+\subsection{Endline activity battery}
+The endline battery asks, ``How often during the past 12 months have you done
+the following?'' Responses range from (1) never, through (2) once during the
+past 12 months, (3) once every six months, (4) once per quarter, (5) once per
+month, and (6) once per week, to (7) several times per week.
+
+The out-of-home/social-activity composite contains visiting a library
+(F88\_4), attending a sports event (F88\_5), attending a cultural event such as
+an art exhibition, theatre performance, or concert (F88\_6), inviting someone
+home for dinner (F88\_7), dancing (F88\_8), exercising (F88\_18), and spending
+time in nature or outdoor recreation (F88\_21). The at-home composite contains
+listening to an audiobook (F88\_11), listening to music (F88\_12), reading a
+book (F88\_13), watching a film (F88\_14), and watching a television series
+(F88\_16). The domain labels are analytical groupings: individual activities,
+especially exercise and reading, need not occur exclusively inside or outside
+the home.
+
+
+\section{Analysis classification}
+\todo{Table classifying every reported analysis as originally registered
+(doi:10.17605/OSF.IO/RE7BS), post-registration correction, or exploratory,
+with the corresponding output file and specification.}
+
+\section{Additional robustness}
+\todo{Account-coverage strata, DeSO fixed effects, nonlinear age adjustment,
+alternative index scalings, and the 13-item and no-calls ladders
+(stepwise\_table.csv, index\_variants.csv, coverage\_robustness.csv).}
+
+\end{document}
