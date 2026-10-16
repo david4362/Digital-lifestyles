@@ -5,8 +5,10 @@
 \usepackage[english]{babel}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\graphicspath{{../output/}}
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thetable}{S\arabic{table}}
@@ -103,5 +105,50 @@ with the corresponding output file and specification.}
 \todo{Account-coverage strata, DeSO fixed effects, nonlinear age adjustment,
 alternative index scalings, and the 13-item and no-calls ladders
 (stepwise\_table.csv, index\_variants.csv, coverage\_robustness.csv).}
+
+\subsection{Mobile screen time}
+Among 2,200 respondents with a usable phone reading, mean mobile screen time was
+4.39 hours per day (median 3.95; SD 2.41). The correlation with the digital
+lifestyle index was weak among the 2,082 respondents with both measures
+($r=0.134$, $R^2=0.018$). In the fully adjusted complete-case subsample,
+measured screen time was not associated with annual emissions ($27$ kg
+CO\textsubscript{2}e per hour; 95\% CI: $-10$ to $64$; $p=0.148$). When both
+measures were standardized and entered jointly, the index remained associated
+with emissions ($233$ kg per SD; 95\% CI: $138$--$329$), whereas mobile screen
+time did not ($29$ kg per SD; 95\% CI: $-59$ to $117$).
+
+\subsection{Reported leisure activities}
+\begin{table}[htbp]
+	\centering
+	\caption{Change in the digital-practice gradient after adjustment for
+		reported leisure activities ($N=2,392$).}
+	\begin{tabular}{@{}llrrr@{}}
+		\toprule
+		Outcome & Additional adjustment & kg CO\textsubscript{2}e/SD & 95\% CI & Attenuation \\
+		\midrule
+		Transport & None & 62.7 & 10.4--115.1 & 0.0\% \\
+		Transport & Out-of-home/social & 61.6 & 9.3--113.9 & 1.8\% \\
+		Transport & Both composites & 56.7 & 4.4--109.0 & 9.6\% \\
+		Total emissions & None & 237.8 & 147.9--327.7 & 0.0\% \\
+		Total emissions & Out-of-home/social & 227.4 & 137.9--316.9 & 4.4\% \\
+		Total emissions & Both composites & 213.2 & 123.1--303.2 & 10.3\% \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{Heterogeneity}
+Adjusted subgroup estimates were $150$, $263$, $232$, and $561$ kg per SD for
+ages 18--29, 30--44, 45--64, and 65+, respectively. The oldest-group estimate
+was imprecise (95\% CI: $-544$ to $1,665$). Interactions were not statistically
+significant for gender ($p=0.134$) or major-city residence ($p=0.323$).
+\todo{Add the formal joint age-group interaction test.}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{2026-10-13/het_plot.png}
+	\caption{Fully adjusted digital-practice gradients by age group, gender, and
+		major-city residence. Points show subgroup coefficients and HC3 95\%
+		confidence intervals.}
+\end{figure}
 
 \end{document}

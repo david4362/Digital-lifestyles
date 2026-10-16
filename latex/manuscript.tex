@@ -43,12 +43,11 @@ correlated with the broader index and has no independent association with emissi
 
 \section{Introduction}
 
-Digital technologies are embedded in everyday life: in how people work,
-communicate, shop, and spend their leisure time. The environmental consequences
-of this pervasive digitalization are not straightforward. A video meeting can
-replace a trip to another city, online shopping can replace several visits to
-stores, and gaming with friends can replace an evening out. These practices can
-reduce travel, but they also save time and make consumption activities easier to fit into already busy lives. The same technologies can lower the effort required to search for, advertise, purchase, and get delivery of goods and services, while creating new activities rather than replacing existing ones. Digitalization can therefore reduce the environmental burden of a particular task without reducing the overall level of consumption associated with a person's way of life.
+Digital technologies are embedded in how people work, communicate, shop, and
+spend leisure time. They can replace travel and material activities, but also
+lower the effort needed to consume and allow more activities to fit into daily
+life. Digitalization may therefore reduce the burden of a particular task
+without reducing consumption across a person's lifestyle.
 
 Research on the environmental effects of information and communication
 technologies (ICT) distinguishes the direct footprint of devices and digital
@@ -74,48 +73,30 @@ delivery organization, travel mode, trip chaining, basket size, and returns
 isolated digital service cannot establish whether people whose everyday lives
 are more extensively mediated by digital tools consume less overall.
 
-An everyday-life perspective offers a different starting point. Digital tools
-are not merely substitutes for analogue equivalents; they become woven into
-bundles of work, social relations, entertainment, mobility, and consumption
-\citep{ropke2012}. A systematic review of indirect ICT effects identified
-consumer behaviour, social practices, and the dynamic consequences of adoption
-as important research gaps \citep{bieser2018}. This perspective also changes the
-interpretation of individual differences. Frequent calls, information searches,
-or social-media use may facilitate consumption, but they may also identify
-people who are more socially active, professionally connected, affluent, or
-otherwise engaged in a larger number of activities that digital tools enable. Digital engagement may thus operate as a medium within a consumption-intensive lifestyle rather than as an independent cause of that lifestyle.
+An everyday-life perspective instead treats digital tools as part of bundles of
+work, social relations, entertainment, mobility, and consumption
+\citep{ropke2012}. Frequent calls, searches, or social-media use may facilitate
+consumption, but may also identify socially or professionally active people who
+undertake more activities. Digital engagement may thus be a medium within a
+consumption-intensive lifestyle rather than its independent cause.
 
-Some digital practices nevertheless provide plausible pathways to additional
-consumption. Social-media platforms combine advertising, peer comparison, and
-self-presentation. Existing studies relate social-media use to social
-comparison and lower self-evaluations \citep{vogel2014,verduyn2017}, to envy and
-conspicuous consumption \citep{taylor2016}, and to impulse fashion purchases
-\citep{djafarova2021}. This literature makes a demand-stimulation mechanism
-plausible, but much of the evidence concerns self-reported attitudes, purchase
-intentions, or particular products. It does not establish whether social-media
-engagement predicts total observed consumption; reverse causation and common lifestyle determinants remain equally possible.
+Social-media advertising, comparison, and self-presentation provide plausible
+pathways to additional consumption. Studies link social-media use to social
+comparison, conspicuous consumption, and impulse purchases
+\citep{vogel2014,verduyn2017,taylor2016,djafarova2021}, but largely examine
+self-reports or particular products rather than total observed consumption.
 
-Household carbon footprints rise strongly with affluence, making socioeconomic
-adjustment essential when studying digital lifestyles \citep{ivanova2016,
-oswald2020,wiedmann2020}. At the same time, conventional expenditure surveys and
-application-specific life-cycle studies offer limited visibility into the
-breadth of an individual's consumption. Financial-transaction data can provide
-a more comprehensive, behaviorally observed account of expenditure and its
-associated emissions \citep{andersson2023}. Linking such data to survey measures
-of digital practices and administrative registers creates an opportunity to
-study digital engagement as part of an observed consumption system rather than
-as an isolated technology use case.
+Because carbon footprints rise strongly with affluence, socioeconomic
+adjustment is essential \citep{ivanova2016,oswald2020,wiedmann2020}.
+Financial transactions also observe expenditure more broadly than
+application-specific studies, allowing digital engagement to be studied within
+an observed consumption system \citep{andersson2023}.
 
 We use linked survey, bank-transaction, and register data from Swedish adults to
-ask three questions. First, how is more frequent use of common digital practices
-associated with total consumption-based greenhouse-gas emissions after
-socioeconomic adjustment? Second, is the gradient concentrated in transport,
-goods commonly purchased online, or digital services, or is it distributed
-across consumption categories? Third, extending the same logic in exploratory
-analyses developed after preregistration, are more digitally engaged
-participants more or less socially active than others---as indicated by
-measured mobile screen time and reported leisure activities---and does the
-answer support substitution away from out-of-home consumption?
+ask whether frequent digital practices are associated with total emissions;
+whether any gradient is concentrated in transport, goods commonly purchased
+online, or digital services; and whether digitally engaged participants report
+less out-of-home activity.
 Our primary exposure is a transparent composite of heterogeneous digital practices, not a measure of a single latent trait or of total time online. The analyses estimate conditional cross-sectional associations and cannot identify the causal effect of increasing digital use. Their contribution is instead to test whether digitally engaged lifestyles appear dematerialized when broad consumption is observed at the individual level.
 
 \section{Data}
@@ -123,15 +104,14 @@ Our primary exposure is a transparent composite of heterogeneous digital practic
 \subsection{Sample}
 We use a dataset that links surveys, bank transactions, user-profile information, and Swedish administrative registers at the individual level. Participants connected their bank account(s) to a research application, allowing historical transactions to be observed and categorized into consumption categories. The baseline survey measured device use and digital activities; a subsequent endline survey collected device-assisted mobile screen time and activity frequencies. All analyses of identifiable register-linked data were conducted in University of Gothenburg's Trusted Research Environment.
 
-The baseline survey contains 12,153 unique participants. Of these participants,
-11,172 satisfy the digital-battery response rule described below. We define an
-observed transaction month as one in which non-excluded spending exceeds SEK
-3,000 and require at least three such months during the 12 months preceding the
-baseline survey. This restriction leaves 4,392 participants. Linkage to the
-control variables leaves 4,251 participants, of whom 4,250 have complete data
-for the fully adjusted model. We freeze this complete-case sample for all steps
-of the main model sequence so that changes between specifications do not reflect
-changes in sample composition.
+Of 12,153 baseline participants, 11,172 satisfy the digital-battery response
+rule. Requiring at least three transaction months with non-excluded spending
+above SEK 3,000 leaves 4,392 participants. Linkage and complete adjustment data
+yield the fixed main analysis sample of 4,250.
+
+The Swedish Ethical Review Authority approved the recruitment, consent, and
+data-handling procedures (Ref. 2024-01766-02). All methods followed relevant
+guidelines and regulations, and all participants gave informed consent.
 
 \subsection{Consumption-based carbon footprints}
 Transactions are assigned to consumption categories and converted to kilograms of carbon-dioxide
@@ -189,13 +169,10 @@ effects of an additional measured screen-time hour. Missing screen-time reports
 do not exclude participants from analyses using the baseline index.
 
 \subsection{Register variables}
-The control variables comprise of demographic, application-profile, transaction, and register information. It includes age; gender; log income; log disposable register income; log mean monthly bank inflows;
-educational attainment in five levels; household size; an indicator for
-children; log population density in the participant's DeSO area; and an
-indicator for residence in Stockholm, Gothenburg, or Malm\"o. One participant
-is excluded because bank-income data are missing. Exact age enters linearly in
-the main specification; a four-degree-of-freedom natural spline assesses
-sensitivity to functional form.
+Controls include age, gender, three income measures, education, household size,
+children, neighbourhood population density, and residence in Stockholm,
+Gothenburg, or Malm\"o. Exact age enters linearly; a natural-spline sensitivity
+check relaxes this assumption.
 
 \section{Empirical strategy}
 
@@ -212,17 +189,17 @@ CO\textsubscript{2}e per index standard deviation. We use HC3
 heteroskedasticity-robust standard errors and two-sided tests with 95\%
 confidence intervals.
 
-Controls are introduced sequentially on the same complete-case sample: M0 is
-bivariate; M1 adds gender and age; M2 adds the three income measures and
-education; M3 adds household size and children; M4 adds log population density;
-and M5 adds major-city residence. M5 is the primary adjusted specification.
+Controls are introduced sequentially on the same sample: first age and gender,
+then income and education, household composition, population density, and
+major-city residence. The model containing all these variables is the primary
+adjusted specification.
 These models estimate conditional gradients, not causal effects: digital
 practices are not randomly assigned, and unmeasured preferences, employment,
 or life circumstances may influence both digital behavior and consumption.
 
 \subsection{Decomposition}
 We replace total emissions in Equation~\ref{eq:main} with each grouped and leaf
-category while retaining the M5 adjustment set. The transport coefficient tests
+category while retaining the full adjustment set. The transport coefficient tests
 the proposed demobilization margin; e-commerce-intensive goods and digital
 services capture material and direct digital channels. Because grouped and leaf
 categories overlap, grouped estimates are interpreted separately rather than
@@ -231,35 +208,22 @@ of the total gradient. Insurance serves as a low-channel falsification outcome,
 although low mean emissions limit the precision of formal equivalence tests.
 
 To examine whether the emissions gradient coincides with greater consumption,
-we additionally estimate M5 models for annual emission-relevant spending and
+we additionally estimate fully adjusted models for annual emission-relevant spending and
 total observed spending. These spending analyses are descriptive and are not
 interpreted as causal mediation.
 
-\subsection{Mechanism}
-The pre-registered mechanism proposed that digital engagement substitutes for
-out-of-home activity and thereby reduces transport. The endline survey records
-12-month frequencies on seven-point scales for seven out-of-home activities
-(library visits, sports and cultural events, hosting dinner guests, dancing,
-exercise, and time in nature) and five primarily at-home activities
-(audiobooks, music, books, films, and television series). Because hosting dinner
-guests, exercise, and time in nature do not invariably entail travel or paid
-consumption, we refer to the first measure more precisely as the
-out-of-home/social-activity composite. We form unweighted means of the available
-items within each domain.
-
-We first regress each activity and both composites on the digital index and M5
-controls. We then estimate the transport and total-emissions gradients on one
-common endline subsample: without the leisure composites, adding out-of-home
-leisure, and adding both composites. The percentage attenuation of $\beta$ is
-reported as the share of the gradient statistically accounted for by these
-measures. Because exposure, leisure, and emissions are not jointly randomized
-or temporally isolated, this is a descriptive mechanism check rather than a
-causal mediation analysis.
+\subsection{Reported leisure activities}
+The substitution account implies less out-of-home activity among more digitally
+engaged participants. We test this using endline frequency measures of seven
+out-of-home or social activities and five primarily at-home activities, combined
+as unweighted means. We then examine how adjustment for these measures changes
+the transport and total-emissions gradients on a common subsample. This is a
+descriptive comparison, not causal mediation.
 
 \subsection{Heterogeneity}
-We report M5-adjusted index gradients by pre-specified age group
+We report fully adjusted index gradients by pre-specified age group
 (18--29, 30--44, 45--64, and 65+), gender, and major-city residence. Formal
-tests add the corresponding index-by-group interaction to M5; differences
+tests add the corresponding index-by-group interaction to the fully adjusted model; differences
 between subgroup point estimates are not inferred from separate confidence
 intervals. Income-quintile patterns are exploratory.
 
@@ -287,23 +251,6 @@ causation.
 
 \section{Results}
 
-\subsection{Screen-time validity}
-Among the 2,200 respondents who provided a usable reading from their phone's
-screen-time function, mean mobile screen time was 4.39 hours per day (median
-3.95; SD 2.41); 51 reports above 18
-hours per day were excluded. In the 2,082 respondents with both measures, the
-correlation between measured mobile screen time and the digital lifestyle index
-was weak ($r=0.134$, $R^2=0.018$). This suggests that the mobile screen time alone cannot be used as a proxy for a broader set of digital practices.
-
-Among the 1,969 people who both provided a usable screen-time reading and had
-complete information on all adjustment variables, measured screen time was not
-associated with annual emissions ($27$ kg CO\textsubscript{2}e per measured
-hour; 95\% CI: $-10$ to $64$; $p=0.148$). When the index and measured screen
-time were entered jointly on standardized scales, the index remained associated
-with emissions ($233$ kg CO\textsubscript{2}e per SD; 95\% CI: $138$--$329$;
-$p<0.001$), whereas measured screen time did not ($29$ kg per SD; 95\% CI:
-$-59$ to $117$; $p=0.518$).
-
 \subsection{The net gradient}
 In the frozen complete-case sample ($N=4,250$), a one-SD higher revised digital
 lifestyle index was associated with $180$ kg CO\textsubscript{2}e higher annual
@@ -330,14 +277,17 @@ variables are introduced.
 	\label{fig:stepwise}
 \end{figure}
 
+A separate endline measure of mobile-phone screen time correlated only weakly
+with the index ($r=0.134$) and had no independent association with emissions.
+It appears to capture a different dimension of digital life from the broader
+practice-frequency battery (Supplementary Information).
+
 Digital engagement was also associated with greater observed expenditure:
 SEK 9,690 more total observed annual spending per SD (95\% CI: 6,406--12,975;
-$p<0.001$), or 3.1\% of the sample mean. The expenditure and emissions
-gradients are two views of the same behavior: emissions per 1,000 SEK spent
-showed no adjusted association with the index ($p=0.167$), and comparing
-participants at equal spending removed 83\% of the emissions gradient. More
-digitally engaged participants thus emitted more because they consumed more,
-not because each krona was spent on more carbon-intensive goods.
+$p<0.001$), or 3.1\% of the sample mean. There was no clear association with
+emissions per 1,000 SEK spent ($p=0.167$). The results therefore point to
+greater consumption volume, rather than a systematically more carbon-intensive
+spending mix, while remaining cross-sectional associations.
 
 The registered 13-item index gave a somewhat larger estimate ($237$ kg per SD;
 95\% CI: $173$--$301$). Excluding calls reduced the estimate to $141$ kg
@@ -364,56 +314,45 @@ associated with emissions ($-80$ kg separately; $-147$ kg conditionally;
 95\% CI: $-211$ to $-83$), and gaming was weakly negative ($-65$ kg; not
 significant after multiplicity adjustment).
 
-The category pattern reinforces this contrast. A one-SD higher social-media
-frequency predicted more restaurant emissions ($18$ kg; 95\% CI: $11$--$25$),
-more transport emissions ($66$ kg; 95\% CI: $32$--$101$), and more emissions
-from goods commonly bought online ($13$ kg; 95\% CI: $3$--$24$). Gaming
-predicted none of these (restaurants $2$ kg, transport $-6$ kg, goods $4$ kg,
-all $p>0.2$) and was associated only with digital-services emissions ($2.1$ kg;
-$p<0.001$), consistent with subscription spending. The practices most
-associated with the stereotype of a sedentary online life were thus the only
-ones compatible with a dematerialized consumption pattern, while communicative
-practices marked socially active, consumption-intensive lives. These item
-analyses are exploratory and do not identify the direction of influence.
+\todo{Replace the category-emissions comparison with fully adjusted social-media
+and gaming gradients for spending in restaurants, transport,
+e-commerce-intensive goods, and digital services, reported in SEK and as
+percentages of category means. These TRE results are not in the current export.}
 
 \subsection{Decomposition across consumption categories}
-The registration made directional predictions: negative gradients for
-out-of-home social and cultural consumption (H2a) and transport (H2b),
-positive gradients for goods and digital services (H2c), and a null insurance
-placebo tested by equivalence (H2d). The first two predictions were rejected.
+We expected digital substitution to produce negative gradients for out-of-home
+social and cultural consumption and transport, positive gradients for goods and
+digital services, and no gradient for insurance. These expectations were
+preregistered. The first two were not supported.
 Transport emissions increased by $46$ kg CO\textsubscript{2}e per index SD
 (95\% CI: $9$--$82$; $p=0.015$), contrary to the predicted demobilization, and
 restaurant emissions---the largest component of the registered social and
 cultural group---increased by $22$ kg ($p<0.001$) \todo{add the registered
-social/cultural group estimate from the next TRE run}. H2c was supported:
+social/cultural group estimate from the next TRE run}. As expected,
 emissions from the e-commerce-intensive goods group increased by $28$ kg
 (95\% CI: $18$--$39$; $p<0.001$) and internet and telecommunications by
 $1.7$ kg (95\% CI: $0.7$--$2.7$; $p<0.001$).
 
-The registered placebo equivalence test (H2d) was inconclusive. The insurance
-estimate was small ($0.14$ kg per SD; 90\% CI: $-0.01$ to $0.30$), but the
-registered equivalence bound of $\pm1\%$ of the category mean corresponds to
-only $\pm0.01$ kg per SD, far below what the data can resolve (minimum
-detectable effect $\approx0.26$ kg). The placebo is therefore uninformative at
-the registered threshold, although the point estimate equals less than 0.1\%
-of the total gradient. In spending terms---not the registered scale, which is
-CO\textsubscript{2}e---insurance rose SEK 77 per SD (95\% CI: $-23$ to $177$;
-$p=0.13$), or 4.7\% of the category mean: not distinguishable from zero, but
-similar in relative size to several non-placebo categories, so the placebo
-provides little discriminating power in either unit.
+Insurance spending rose by SEK 77 per SD (95\% CI: $-23$ to $177$; $p=0.13$),
+or 4.7\% of the category mean. Although not distinguishable from zero, this
+relative estimate resembles several non-placebo categories, so insurance
+provides little discrimination. The preregistered CO\textsubscript{2}e
+equivalence test was also inconclusive: its $\pm1\%$ bound was only $\pm0.01$
+kg per SD, far below the minimum detectable effect of approximately 0.26 kg
+(Supplementary Information).
 
 Because category means differ widely, proportional changes describe the
 consumption pattern better than absolute kilograms. Relative to category
 means, the gradient is steepest in out-of-home and discretionary consumption:
 aviation (+10.3\% per index SD), travel (+9.0\%), alcohol (+8.1\%),
 restaurants (+7.0\%), and other shopping (+6.5\%), against +4.7\% for clothing
-and +3.5\% for fuel (Figure~\ref{fig:co2-decomposition}). Groceries show the
-largest absolute gradient ($39$ kg per SD) but a proportional increase
-(+5.4\%) close to the overall 4.5\%, and in spending terms groceries rise only
-+1.9\% per SD---the absolute figure partly reflects the category's high
-emission intensity rather than disproportionate food consumption. The pattern
-is therefore broad, strongest in socially embedded discretionary categories,
-and not confined to digital services or goods commonly bought online.
+and +3.5\% for fuel (Figure~\ref{fig:co2-decomposition}). Aviation is an
+infrequent purchase, so its wide interval and large point estimate may be
+especially sensitive to the transaction window. The pattern is nevertheless
+broad rather than confined to digital services or goods commonly bought online.
+\todo{Estimate aviation and travel gradients using a fixed longer observation
+window among participants with sufficient coverage; do not pool unequal numbers
+of months without accounting for coverage.}
 
 The spending gradients show the same profile
 (Figure~\ref{fig:sek-decomposition}): travel (+8.9\% of the category mean per
@@ -445,7 +384,7 @@ and leaf-category estimates overlap and should not be added together.
 	\label{fig:sek-decomposition}
 \end{figure}
 
-\subsection{Mechanism: out-of-home leisure}
+\subsection{Reported leisure activities}
 More digitally engaged participants did not report less out-of-home or social
 activity. The adjusted out-of-home/social-activity composite increased by 0.073
 points per index SD (95\% CI: 0.037--0.109; $p<0.001$), while the at-home
@@ -454,64 +393,18 @@ Positive associations were observed for attending sports events (0.164 points),
 attending cultural events (0.088), hosting dinner guests (0.137), and dancing
 (0.144), as well as for audiobooks, music, films, and television series.
 
-On the common mechanism subsample ($N=2,392$), the fully adjusted transport gradient was
-$62.7$ kg CO\textsubscript{2}e per SD. Adding the out-of-home/social-activity
-composite reduced it to $61.6$ kg, and adding both activity composites reduced
-it to $56.7$ kg, an attenuation of 9.6\%. For total emissions, the corresponding
-estimates were $237.8$, $227.4$, and $213.2$ kg per SD, an attenuation of
-10.3\% after both composites. Adjusting instead for reported work-from-home
-frequency changed the transport gradient from $62.5$ to $58.9$ kg per SD
-($N=2,391$), so telework likewise accounts for little of the association.
-These measures therefore accounted for only a
-limited share of the observed gradients and did not support substitution away
-from out-of-home activity (Table~\ref{tab:mechanism}).
-
-\begin{table}[htbp]
-	\centering
-	\caption{Change in the digital-practice gradient after adjustment for
-		reported leisure activities ($N=2,392$).}
-	\label{tab:mechanism}
-	\begin{tabular}{@{}llrrr@{}}
-		\toprule
-		Outcome & Additional adjustment & kg CO\textsubscript{2}e/SD & 95\% CI & Attenuation \\
-		\midrule
-		Transport & None & 62.7 & 10.4--115.1 & 0.0\% \\
-		Transport & Out-of-home/social & 61.6 & 9.3--113.9 & 1.8\% \\
-		Transport & Both activity composites & 56.7 & 4.4--109.0 & 9.6\% \\
-		Total emissions & None & 237.8 & 147.9--327.7 & 0.0\% \\
-		Total emissions & Out-of-home/social & 227.4 & 137.9--316.9 & 4.4\% \\
-		Total emissions & Both activity composites & 213.2 & 123.1--303.2 & 10.3\% \\
-		\bottomrule
-	\end{tabular}
-	\begin{flushleft}\footnotesize
-		Note: All models include the full adjustment set. Attenuation is the
-		percentage reduction from the coefficient in the model without activity
-		composites.
-	\end{flushleft}
-\end{table}
+On the common subsample ($N=2,392$), adjustment for both activity composites
+reduced the transport gradient by 9.6\% and the total-emissions gradient by
+10.3\%. Adjustment for work-from-home frequency similarly changed the transport
+gradient only from $62.5$ to $58.9$ kg per SD. The activity measures therefore
+accounted for little of the associations and did not support substitution away
+from out-of-home activity. Detailed models are reported in the Supplementary
+Information.
 
 \subsection{Heterogeneity}
-Adjusted subgroup estimates were positive for participants aged 18--29
-($150$ kg per SD), 30--44 ($263$ kg), and 45--64 ($232$ kg). The estimate for
-participants aged 65 and older was imprecise ($561$ kg; 95\% CI: $-544$ to
-$1,665$). Estimates were $157$ kg among women and $253$ kg among men, but the
-index-by-gender interaction was not statistically significant ($p=0.134$).
-They were $182$ kg outside the three major cities and $249$ kg within them; the
-index-by-city interaction was also not statistically significant ($p=0.323$).
-The results therefore provide no clear evidence that the gradient differs by
-gender or major-city residence (Figure~\ref{fig:heterogeneity}).
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{2026-10-13/het_plot.png}
-	\caption{Fully adjusted digital-practice gradients by age group, gender, and
-		major-city residence. Points show subgroup coefficients and lines show HC3
-		95\% confidence intervals. Interaction tests, rather than overlap between
-		the displayed intervals, determine evidence of subgroup differences.}
-	\label{fig:heterogeneity}
-\end{figure}
-
-\todo{Add the formal age-group interaction test.}
+We found no clear evidence that the gradient differed by gender or major-city
+residence. Age estimates were too imprecise in the oldest group to support a
+conclusion about differences by age (Supplementary Information).
 
 \section{Discussion}
 
@@ -549,14 +442,10 @@ that these substitutions did not add up to a lower-footprint lifestyle among
 people who used digital practices more frequently.
 
 The contrasts between individual practices caution against treating
-digitalization as one uniform exposure and suggest what the composite actually
-measures. The gradient is carried by communicative practices: calls and
-social media predicted higher emissions, including in restaurants and
-transport, whereas streaming was negatively associated with emissions and
-gaming predicted only digital-services spending. Solitary screen practices,
-the stereotype of a sedentary online life, were thus the only ones compatible
-with dematerialization; digital practices that connect people to other people
-marked consumption-intensive lives. Advertising, social comparison, and
+digitalization as one uniform exposure. Calls and social media predicted higher
+emissions, whereas streaming and gaming showed null or negative gradients.
+This exploratory contrast suggests that communicative digital practices mark
+more consumption-intensive lives. Advertising, social comparison, and
 self-presentation could contribute to the social-media pattern
 \citep{vogel2014,taylor2016,djafarova2021}, but we did not measure these
 mechanisms, and the sociality pattern itself was identified after seeing the
@@ -584,7 +473,8 @@ Unmeasured differences in employment, social activity, preferences, or life
 circumstances may affect digital practices and consumption simultaneously. The
 frequency questions do not measure duration, purpose, or whether an activity
 replaced an analogue alternative. Transactions cover the year before the
-baseline survey, while screen time and leisure were measured later. Participants
+baseline survey, while screen time and leisure were measured later. Infrequent
+purchases, especially flights, may be poorly represented by this window. Participants
 were also a selected group willing to connect bank accounts, and their connected
 accounts may not capture all household spending. Adjustment for account count
 and restrictions based on spending relative to register income reduced but did
@@ -603,42 +493,16 @@ strategy, the present results suggest that digitalization requires the same
 attention to overall consumption volume as other forms of efficiency and
 convenience.
 
-\section*{Pre-registration}
-The original analysis plan was registered on the Open Science Framework before
-any member of the research team analyzed the digital-lifestyle exposures in the
-real linked data on 3 September 2026
-(\href{https://doi.org/10.17605/OSF.IO/RE7BS}{doi:10.17605/OSF.IO/RE7BS}). The team
-had previously analyzed the transaction outcomes and several covariates for a
-separate study, and analysis code for the present study had been developed using
-a partly scrambled extract and synthetic endline data. These forms of prior
-access were disclosed in the registration. The original registration specified
-the net-emissions gradient, category decomposition, leisure mechanism,
-heterogeneity analyses, the 13-item digital index, and its mobile-screen-time
-anchor.
-
-The principal deviation concerns exposure construction. The registered index
-included e-commerce and online selling. We subsequently concluded that this was
-a design mistake because these items directly measure participation in purchase
-channels while the outcomes are transaction-observed consumption. We therefore
-use the 11-item index excluding those two items as the substantively preferred,
-post-registration correction and retain the registered 13-item estimate in all
-index-sensitivity results. The associated response threshold changes from at
-least 10 of 13 to at least eight of 11 items, preserving the registered
-tolerance of three missing responses. We also make the index-SD scale primary,
-rather than the registered anchored-hour scale, because the empirical anchor is
-weak ($R^2=0.018$); both scales are generated by the same linear transformation
-and yield identical statistical inference.
-
-Post-registration analyses include the measured screen-time models, spending
-outcomes, detailed account-coverage checks, flexible age adjustment, and
-diagnostic analyses of the calls item. These analyses are labelled exploratory
-and are used to characterize and probe the observed association, not to
-redefine the registered hypotheses. A table in
-the Supplementary Information will classify every reported analysis as
-originally registered, a post-registration correction, or exploratory and will
-give the corresponding output file and specification. Full survey-item wording,
-response scales, and the screen-time measurement protocol are given in the
-Supplementary Information.
+\section*{Preregistration}
+The analysis plan was registered on 3 September 2026, before the research team
+analysed digital-lifestyle exposures in the linked data
+(\href{https://doi.org/10.17605/OSF.IO/RE7BS}{doi:10.17605/OSF.IO/RE7BS}). The
+preferred index excludes e-commerce and online selling because they directly
+measure purchase channels; the preregistered 13-item result is retained as a
+sensitivity analysis. Spending, measured screen time, account coverage, and
+item-level diagnostics are exploratory. Prior data access, deviations, and the
+status and specification of each analysis are detailed in the Supplementary
+Information.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
