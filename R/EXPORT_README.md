@@ -104,6 +104,18 @@ D5–D1 quintile contrasts), and
 (the pre-registered leisure mechanism, result 3: `mech_diag.csv` validates
 the E1 item-code mapping on the data before the models are interpreted).
 
+Population and representativeness are documented in
+`recruitment_stream_flow.csv` (random-frame and green-area-oversample
+composition), `random_frame_benchmark.csv` (age, gender, and major-city
+benchmarking), `sampling_ipw_cell_balance.csv` and
+`sampling_ipw_weights.csv` (selection from the invited random frame),
+`sampling_ipw_diagnostics.csv` (weight range, trimming, and effective sample
+size), and
+`representativeness_gradients.csv` (pooled, stream-specific, and
+sampling-weighted spending and emissions gradients). These analyses address
+external validity and observed selection; they do not make the pooled sample
+nationally representative or remove selection on unobserved characteristics.
+
 ## Reproducing
 
 `Rscript RUN_TRE.R` from `R/` in the TRE regenerates this whole

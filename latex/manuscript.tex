@@ -20,11 +20,7 @@
 
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
-\title{Digital lifestyles and consumption-based carbon emissions:\\
-individual-level evidence from linked bank-transaction, survey, and register data}
-% Proposed alternative title (leads with the finding):
-% Digitally connected, not dematerialized: communicative digital practices
-% mark consumption-intensive lifestyles
+\title{Beyond screen time: linking digital practices to spending and carbon footprints}
 \author{David Andersson \and Mathias Lehner \and Mikael Eriksson% \and G\"oran Finnveden \and Anna Furberg
 }
 \date{Draft --- \today}
@@ -34,8 +30,24 @@ individual-level evidence from linked bank-transaction, survey, and register dat
 \maketitle
 
 \begin{abstract}
-Digitalization has been portrayed as holding a potential to reduce household carbon footprints by substituting for travel and material consumption, or increase them by facilitating and stimulating additional consumption. Detailed evidence on the net relationship on the individual-level remains scarce. We link survey measures of digital practices among Swedish adults to annual consumption-based greenhouse-gas emissions estimated from bank transactions and to sociodemographic registers. The complete-case analysis includes 4,250 participants. Our revised digital lifestyle index combines 11 device-use and digital-activity frequencies. After adjustment for age, gender, income, education, household composition, and urbanity, a one-standard-deviation higher digital lifestyle index is associated with 204 kg CO\textsubscript{2}e more per year (95\% CI: 141--267), or 4.5\% of mean annual emissions. The gradient is carried by communicative practices---calls and social media---whereas solitary screen practices such as streaming and gaming show null or negative associations. It is distributed across multiple consumption categories, is accompanied by 3.1\% greater observed expenditure, and shows no gradient in emissions per krona spent. Contrary to a digital-substitution account, transport emissions and both at-home and out-of-home leisure are higher among more digitally engaged participants. Device-assisted mobile screen time is only weakly
-correlated with the broader index and has no independent association with emissions. The results identify digital engagement as a marker of consumption volume within socially active lifestyles rather than evidence that additional screen time itself causes emissions.
+Digitalization may substitute for travel and material consumption, but it may
+also facilitate additional consumption. We link survey measures of digital
+practices in a selected Swedish sample to annual spending observed through bank
+transactions, associated consumption-based greenhouse-gas emissions, and
+sociodemographic registers. The complete-case analysis includes 4,250
+participants. Our primary exposure is an 11-item composite of device-use and
+digital-activity frequencies. After adjustment for age, gender, income,
+education, household composition, and urbanity, a one-standard-deviation higher
+composite is associated with SEK 9,690 more observed annual spending (95\% CI:
+6,406--12,975), or 3.1\% of the sample mean, and 204 kg CO\textsubscript{2}e
+more per year (95\% CI: 141--267), or 4.5\%. The gradient is carried by
+communicative practices---calls and social media---whereas streaming and gaming
+show null or negative associations. Transport emissions and both at-home and
+out-of-home leisure are also higher among participants with more frequent
+digital practices. The results do not support the proposition that digitally
+connected lifestyles are less materially consumptive. Communicative digital
+practices may instead mark socially or occupationally active lives in which
+more activities and consumption occur.
 \end{abstract}
 
 
@@ -92,17 +104,38 @@ Financial transactions also observe expenditure more broadly than
 application-specific studies, allowing digital engagement to be studied within
 an observed consumption system \citep{andersson2023}.
 
-We use linked survey, bank-transaction, and register data from Swedish adults to
-ask whether frequent digital practices are associated with total emissions;
-whether any gradient is concentrated in transport, goods commonly purchased
-online, or digital services; and whether digitally engaged participants report
-less out-of-home activity.
-Our primary exposure is a transparent composite of heterogeneous digital practices, not a measure of a single latent trait or of total time online. The analyses estimate conditional cross-sectional associations and cannot identify the causal effect of increasing digital use. Their contribution is instead to test whether digitally engaged lifestyles appear dematerialized when broad consumption is observed at the individual level.
+We use linked survey, bank-transaction, and register data from a selected sample
+of Swedish adults to ask whether frequent digital practices are associated with
+total observed spending and its consumption-based carbon footprint; whether
+any gradient is concentrated in transport, goods commonly purchased online, or
+digital services; and whether digitally engaged participants report less
+out-of-home activity.
+Our primary exposure is a transparent composite of heterogeneous digital
+practices, used as an initial descriptive summary rather than a measure of one
+latent trait or total time online. The analyses estimate conditional
+cross-sectional associations and cannot identify the causal effect of
+increasing digital use. They test whether more frequent digital practices
+coincide with lower material consumption when broad spending is observed.
 
 \section{Data}
 
 \subsection{Sample}
-We use a dataset that links surveys, bank transactions, user-profile information, and Swedish administrative registers at the individual level. Participants connected their bank account(s) to a research application, allowing historical transactions to be observed and categorized into consumption categories. The baseline survey measured device use and digital activities; a subsequent endline survey collected device-assisted mobile screen time and activity frequencies. All analyses of identifiable register-linked data were conducted in University of Gothenburg's Trusted Research Environment.
+We use a dataset that links surveys, bank transactions, user-profile
+information, and Swedish administrative registers. Participants were recruited
+in spring 2024 through Sweden's national digital-mailbox service. The invitation
+frame comprised approximately 80,000 randomly sampled adults in single-adult
+households (children up to age 14 permitted) and a non-random oversample of
+approximately 100,000 adults from electoral districts with high Green Party
+vote shares. Eligibility required a smartphone with electronic identification,
+bank-account linkage, and consent to survey and register linkage. The main
+analysis currently pools both recruitment streams; it is therefore a selected
+Swedish sample, not a nationally representative one.
+
+Participants connected one or more bank accounts to a research application,
+allowing historical transactions to be categorized. The baseline survey
+measured digital practices, and an endline survey measured activity
+frequencies. All analyses of identifiable linked data were conducted in the
+University of Gothenburg's Trusted Research Environment.
 
 Of 12,153 baseline participants, 11,172 satisfy the digital-battery response
 rule. Requiring at least three transaction months with non-excluded spending
@@ -134,7 +167,7 @@ where the total gradient is distributed. Spending outcomes are constructed from
 the corresponding transaction amounts using the same observation window and
 annualization rule.
 
-\subsection{Digital lifestyle intensity}
+\subsection{Digital-practice composite}
 The baseline survey asks how frequently participants used five devices
 (computer, smartphone, television, game console, and tablet) and performed
 eight digital activities (streaming, phone or video calls, social media,
@@ -182,10 +215,10 @@ We estimate cross-sectional ordinary least-squares models of the form
 	Y_i = \alpha + \beta D_i + \boldsymbol{X}_i'\boldsymbol{\gamma} + \varepsilon_i,
 	\label{eq:main}
 \end{equation}
-where $Y_i$ is annual consumption-based CO\textsubscript{2}e, $D_i$ is the
-standardized digital lifestyle index, and $\boldsymbol{X}_i$ is the adjustment
-set. The coefficient $\beta$ is reported as kilograms of annual
-CO\textsubscript{2}e per index standard deviation. We use HC3
+where $Y_i$ is annual observed spending or its consumption-based
+CO\textsubscript{2}e footprint, $D_i$ is the standardized digital-practice
+composite, and $\boldsymbol{X}_i$ is the adjustment set. The coefficient
+$\beta$ is reported per composite standard deviation. We use HC3
 heteroskedasticity-robust standard errors and two-sided tests with 95\%
 confidence intervals.
 
@@ -252,20 +285,18 @@ causation.
 \section{Results}
 
 \subsection{The net gradient}
-In the frozen complete-case sample ($N=4,250$), a one-SD higher revised digital
-lifestyle index was associated with $180$ kg CO\textsubscript{2}e higher annual
-emissions in the bivariate model (95\% CI: $105$--$254$; 4.0\% of the sample
-mean of 4,501 kg). Adjustment for age and gender increased the estimate to
-$274$ kg (6.1\%), while adding income and education reduced it to $198$ kg
-(4.4\%). The fully adjusted estimate was $204$ kg per SD
+In the frozen complete-case sample ($N=4,250$), a one-SD higher
+digital-practice composite was associated with SEK 9,690 more total observed
+annual spending after full adjustment (95\% CI: 6,406--12,975; $p<0.001$), or
+3.1\% of the sample mean.
+
+The corresponding environmental gradient was $180$ kg
+CO\textsubscript{2}e in the bivariate model (95\% CI: $105$--$254$; 4.0\% of
+the sample mean of 4,501 kg). Adjustment for age and gender increased the
+estimate to $274$ kg (6.1\%), while adding income and education reduced it to
+$198$ kg (4.4\%). The fully adjusted estimate was $204$ kg per SD
 (95\% CI: $141$--$267$; $p<0.001$), equivalent to 4.5\% of mean annual
 emissions.
-
-Here, ``fully adjusted'' means that the comparison accounts for age, gender,
-three measures of income, education, household size, children in the household,
-neighbourhood population density, and residence in one of Sweden's three major
-cities. Figure~\ref{fig:stepwise} shows how the estimate changes as these
-variables are introduced.
 
 \begin{figure}[htbp]
 	\centering
@@ -282,14 +313,14 @@ with the index ($r=0.134$) and had no independent association with emissions.
 It appears to capture a different dimension of digital life from the broader
 practice-frequency battery (Supplementary Information).
 
-Digital engagement was also associated with greater observed expenditure:
-SEK 9,690 more total observed annual spending per SD (95\% CI: 6,406--12,975;
-$p<0.001$), or 3.1\% of the sample mean. There was no clear association with
+Because footprints are assigned to the observed expenditures, the carbon
+estimate is an environmental characterization of the spending pattern rather
+than an independent replication of it. There was no clear association with
 emissions per 1,000 SEK spent ($p=0.167$). The results therefore point to
 greater consumption volume, rather than a systematically more carbon-intensive
 spending mix, while remaining cross-sectional associations.
 
-The registered 13-item index gave a somewhat larger estimate ($237$ kg per SD;
+The registered 13-item composite gave a somewhat larger estimate ($237$ kg per SD;
 95\% CI: $173$--$301$). Excluding calls reduced the estimate to $141$ kg
 (95\% CI: $77$--$204$), but the association remained positive. Estimates were
 also positive for the device-use half ($151$ kg), digital-activity half
@@ -429,8 +460,8 @@ life. Digital tools may therefore facilitate consumption while also serving as
 markers of the activities, resources, and relationships through which
 consumption occurs. The cross-sectional data cannot separate these roles.
 
-The results provide little support for substitution at the level of the whole
-lifestyle. Participants with more frequent digital practices did not report
+The results do not support the proposition that digitally connected lifestyles
+are less materially consumptive. Participants with more frequent digital practices did not report
 less out-of-home or social activity, and their transport emissions were higher,
 not lower. Accounting for reported leisure activities explained only a small
 part of the transport and total-emissions gradients. This is consistent with
@@ -445,7 +476,9 @@ The contrasts between individual practices caution against treating
 digitalization as one uniform exposure. Calls and social media predicted higher
 emissions, whereas streaming and gaming showed null or negative gradients.
 This exploratory contrast suggests that communicative digital practices mark
-more consumption-intensive lives. Advertising, social comparison, and
+more consumption-intensive lives. It does not distinguish social connectedness
+from occupational intensity, busyness, or a generally active lifestyle.
+Advertising, social comparison, and
 self-presentation could contribute to the social-media pattern
 \citep{vogel2014,taylor2016,djafarova2021}, but we did not measure these
 mechanisms, and the sociality pattern itself was identified after seeing the
@@ -465,7 +498,7 @@ constrain \citep{lange2020,wiedmann2020}. Linking
 surveyed practices to transaction-derived footprints instead shows the broader
 consumption context in which digital technologies are used. The approach cannot
 identify the footprint caused by a particular technology, but it can test the
-more general expectation that digitally intensive ways of living coincide with
+more general expectation that more frequent digital practices coincide with
 lower material consumption. Here, they did not.
 
 Several limitations qualify both the size and interpretation of the gradient.
@@ -474,13 +507,19 @@ circumstances may affect digital practices and consumption simultaneously. The
 frequency questions do not measure duration, purpose, or whether an activity
 replaced an analogue alternative. Transactions cover the year before the
 baseline survey, while screen time and leisure were measured later. Infrequent
-purchases, especially flights, may be poorly represented by this window. Participants
-were also a selected group willing to connect bank accounts, and their connected
+purchases, especially flights, may be poorly represented by this window. The
+sampling frame covered single-adult households connected to a digital mailbox,
+and the analytical sample pools a random frame with a non-random green-area
+oversample. Participants were also a selected group willing to connect bank
+accounts, and their connected
 accounts may not capture all household spending. Adjustment for account count
 and restrictions based on spending relative to register income reduced but did
 not remove the association; those restrictions can themselves select people by
 real saving, borrowing, or household financial arrangements. None of these
-checks turns the estimate into a causal effect.
+checks turns the estimate into a causal effect or a population-representative
+estimate. We therefore report recruitment-stream-specific and sampling-weighted
+random-frame analyses in the Supplementary Information
+\todo{insert representativeness results after the TRE rerun}.
 
 The policy implication is not that digital services should be discouraged, but
 that their climate benefits should not be assumed from technical substitution
@@ -495,7 +534,7 @@ convenience.
 
 \section*{Preregistration}
 The analysis plan was registered on 3 September 2026, before the research team
-analysed digital-lifestyle exposures in the linked data
+analysed digital-practice exposures in the linked data
 (\href{https://doi.org/10.17605/OSF.IO/RE7BS}{doi:10.17605/OSF.IO/RE7BS}). The
 preferred index excludes e-commerce and online selling because they directly
 measure purchase channels; the preregistered 13-item result is retained as a

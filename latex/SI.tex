@@ -22,6 +22,93 @@ Digital lifestyles and consumption-based carbon emissions}
 \begin{document}
 \maketitle
 
+\section{Sample population and external validity}
+
+\subsection{Recruitment frames and eligibility}
+Participants were recruited in spring 2024 through Sweden's national digital
+mailbox service (\emph{Mina meddelanden}). The sampling frame comprised two
+invitation streams. The random frame contained approximately 80,000 adults in
+single-adult households, with children up to age 14 permitted, drawn from
+Statistics Sweden population registers among people connected to a digital
+mailbox. A separate non-random frame contained approximately 100,000 adults
+from electoral districts in which the Green Party received a substantially
+higher vote share than the national average. Eligibility required a smartphone
+with electronic identification (BankID), bank-account linkage through a secure
+interface, and consent to survey participation and registry linkage.
+
+Unlike analyses designed to estimate population means from the random frame,
+the present associational analysis currently pools participants from both
+streams. This increases precision but means that the unweighted analytical
+sample is not nationally representative. The target population is further
+restricted by design to adults in single-adult households connected to a
+digital mailbox and by participation requirements involving a smartphone and
+bank-account linkage.
+
+\subsection{Sample construction}
+Table~\ref{tab:sample-flow} reports the stages currently available from the
+digital-lifestyles pipeline. A valid transaction month has more than SEK 3,000
+in non-excluded spending, and at least three such months are required within
+the year preceding the baseline survey. The large reduction between the survey
+and transaction stages reflects bank linkage and transaction-coverage
+requirements, not item nonresponse alone.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Sample flow for the pooled recruitment streams.}
+	\label{tab:sample-flow}
+	\begin{tabular}{@{}lr@{}}
+		\toprule
+		Stage & Remaining \\
+		\midrule
+		Invited, random frame & $\approx80,000$ \\
+		Invited, green-area oversample & $\approx100,000$ \\
+		Baseline survey & 12,153 \\
+		At least 8 of 11 composite items answered & 11,172 \\
+		At least three valid transaction months & 4,392 \\
+		Register and profile controls linked & 4,251 \\
+		Complete main analysis sample & 4,250 \\
+		\bottomrule
+	\end{tabular}
+	\begin{flushleft}\footnotesize
+		Note: The invitation counts describe the recruitment frames and should not
+		be interpreted as response denominators until duplicate invitations and the
+		current TRE linkage snapshot have been reconciled by recruitment stream.
+	\end{flushleft}
+\end{table}
+
+\subsection{Representativeness and reliability analyses}
+The next TRE run will report four complementary checks. First, recruitment
+counts will be tabulated separately for the random and green-area streams at
+the invitation, survey, battery, transaction, control-linkage, and analytical
+stages. Second, the analytical subset from the
+random frame will be compared with the invited random frame on age, gender,
+and major-city residence. These comparisons describe observed selection into
+the linked analytical sample; they cannot assess selection on unobserved
+characteristics.
+
+Third, the fully adjusted spending and emissions gradients will be estimated
+separately in the random-frame and green-area samples. Agreement in direction
+and magnitude would show that the pooled result is not generated solely by the
+non-random oversample. Fourth, inverse-probability weights for entering the
+analysis from the random frame will be estimated from age group, gender, and
+major-city residence, trimmed at the 99th percentile, and normalized to mean
+one. Weighted random-frame estimates will be compared with the unweighted
+pooled and random-frame estimates. Weighting addresses selection on these
+observed dimensions only and does not establish national representativeness.
+
+\todo{Insert recruitment-stream flow, random-frame benchmark, sampling-weight
+diagnostics including effective sample size, and pooled/stream-specific/weighted
+spending and emissions gradients from recruitment\_stream\_flow.csv,
+random\_frame\_benchmark.csv, sampling\_ipw\_cell\_balance.csv, and
+sampling\_ipw\_diagnostics.csv, and representativeness\_gradients.csv.}
+
+Observed spending also depends on how many accounts each participant connected.
+The main estimate is therefore compared with models controlling for account
+count, account-count strata, and samples whose observed spending lies within
+25--200\% and 50--150\% of register income. These checks assess transaction
+coverage rather than recruitment representativeness and are not treated as
+validated corrections for missing accounts.
+
 \section{Survey instruments}
 
 \subsection{Baseline digital-practice battery}
@@ -36,7 +123,7 @@ codebooks will be supplied in the study repository.
 
 \begin{table}[htbp]
 	\centering
-	\caption{Baseline items used to construct the digital lifestyle indices.}
+	\caption{Baseline items used to construct the digital-practice composites.}
 	\label{tab:digital-items}
 	\begin{tabular}{@{}p{0.14\textwidth}p{0.66\textwidth}p{0.08\textwidth}@{}}
 		\toprule

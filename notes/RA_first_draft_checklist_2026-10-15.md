@@ -40,9 +40,18 @@ result, telework adjustment, OSF DOI, ethics statement, and an SI document
    classification table (registered / correction / exploratory, with output
    file per analysis) and the robustness section from stepwise_table.csv,
    index_variants.csv, coverage_robustness.csv, deso_fe.csv, age_spline_rq1.csv.
-8. **Representativeness table.** Sample-flow and attrition comparison
-   (12,153 → 4,250) from attrition.csv and sample_flow.csv; one SI table plus
-   one main-text sentence.
+8. **Sample reliability and representativeness.** Run
+   `R/69_sample_representativeness.R` in the TRE and review all six exports.
+   Reconcile invitation and analytical counts by random frame and green-area
+   oversample; do not use the existing `attrition.csv`, which only compares E4
+   screen-time reporters with non-reporters. Benchmark the analytical
+   random-frame subset against the invited random frame on age, gender, and
+   major-city residence. Report pooled, random-frame, green-area, and
+   sampling-IPW random-frame gradients for both spending and emissions, plus
+   the weight distribution and effective sample size. Add the final stream
+   flow, benchmark, and model-comparison tables to the SI and replace the
+   representativeness TODO in the main text. Describe the pooled sample as
+   selected even if the weighted estimate is similar.
 9. **Final results audit.** Check every number in the manuscript against the
    2026-10-13 export (or the rerun that adds items 1–3). No unexplained E4/M5
    labels anywhere.
