@@ -7,8 +7,8 @@
 # README and the column-level data dictionary into the export directory and
 # writes a run manifest (run_info.csv) so the export documents itself
 # (70_run_info.R, the last sourced script).
-# Scripts 20-70, sourced in order.
-cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "R", "cache")
+# Scripts 20-75, sourced in order.
+cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "digital_lifestyles", "cache")
 cache_files = c("monthly_kr.parquet", "monthly_co2e.parquet", "demographics.parquet",
   "survey.parquet", "survey_endline.parquet", "users.parquet", "scb.parquet",
   "bank_income.parquet")

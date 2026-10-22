@@ -147,6 +147,19 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-10-22 — TRE working directory renamed to `digital_lifestyles`.**
+  `chalmers/R/{cache,output}` is now `chalmers/digital_lifestyles/{cache,output}`
+  so the shared `chalmers` area does not collide with the other projects that
+  also use a `R/` folder. Updated in the three places that define the path:
+  `RUN_TRE.R`, `10_load_data.R`, `11_read_cache.R`. `out_dir` (20) is derived
+  as `dirname(cache_dir)/output`, so it follows automatically. In the TRE the
+  existing directory must be moved once before the next run
+  (`mv …/chalmers/R …/chalmers/digital_lifestyles`), otherwise the loader has
+  no cache directory to write to and the run fails at the first
+  `write_parquet`. The mock is unaffected (it uses a tempdir cache). Earlier
+  entries in this log that say `chalmers/R/` describe the layout as it was
+  before this rename and are left as the historical record.
+
 - **2026-10-22 — David's 14 commits fast-forwarded; checklist scripts
   written.** `origin/main` (`bd7c57e`) merged cleanly. New analysis code,
   sourced after `69_sample_representativeness.R`:
