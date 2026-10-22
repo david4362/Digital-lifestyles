@@ -116,6 +116,18 @@ sampling-weighted spending and emissions gradients). These analyses address
 external validity and observed selection; they do not make the pooled sample
 nationally representative or remove selection on unobserved characteristics.
 
+The 2026-10-16 checklist analyses are written and sourced, and populate on
+the next TRE run: `social_cultural_group.csv` (registered restaurants, bars,
+culture and other leisure, in CO2e and SEK), `age_band_interaction.csv`
+(HC3 joint F-test of the index-by-age-band interactions), 
+`calls_social_activity_associations.csv` and
+`calls_social_activity_adjustment.csv` (calls against the endline
+social-activity items, and the calls gradient with that composite partialled
+out), `social_spending_sek.csv` (social media, gaming, and gaming-plus-console
+spending gradients), and `long_window_diag.csv` plus
+`long_window_travel.csv` (aviation and travel on a fixed 24-month window
+among participants with at least 18 valid months).
+
 ## Reproducing
 
 `Rscript RUN_TRE.R` from `R/` in the TRE regenerates this whole

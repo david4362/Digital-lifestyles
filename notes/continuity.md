@@ -147,6 +147,28 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-10-22 — David's 14 commits fast-forwarded; checklist scripts
+  written.** `origin/main` (`bd7c57e`) merged cleanly. New analysis code,
+  sourced after `69_sample_representativeness.R`:
+  - `71_social_cultural.R` — registered restaurants/bars/culture/other-leisure
+    group in CO2e and SEK (`social_co2e` / `social_kr` defined in 20).
+    Leaves absent from an extract are skipped; the mock therefore equates the
+    group with restaurants.
+  - `72_age_interaction.R` — HC3 joint F-test of index × 46's age bands.
+  - `73_calls_sociality.R` — the two files the checklist names
+    (`calls_social_activity_associations.csv`,
+    `calls_social_activity_adjustment.csv`).
+  - `74_social_spending.R` — social media, gaming, and gaming-plus-console
+    SEK gradients. Not a reuse of `social_games.csv`.
+  - `75_long_window.R` — aviation and travel on a fixed 24-calendar-month
+    window, eligible if ≥ 18 valid months. Mock spans 11 months, so it writes
+    the diagnostic and an empty result table rather than a fake estimate.
+  `RUN_MOCK` end-to-end clean. No new `verify_export` checks: the frozen
+  2026-10-13 export does not contain these files yet. No manuscript or SI
+  edits in this pass. Still needs a TRE run: items 1–5 and representativeness
+  (`randomsample`/`greensample` are not in the mock). Do not treat mock
+  output as results.
+
 - **2026-10-13 (later) — full logical-correctness review pass + two bug
   fixes.** Reviewed all 40 R scripts + runners line by line and cross-checked
   every README headline number against `output/2026-10-13/`; mock pipeline

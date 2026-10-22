@@ -12,7 +12,8 @@ variantlab = c(
 
 grouplab = c(total = "Total", transport = "Transport", ecom = "E-commerce intensive",
   digital = "Digital services", rent = "Rent (housing tenure)",
-  placebo_insurance = "Insurance (placebo)", vehicles = "Vehicles")
+  placebo_insurance = "Insurance (placebo)", vehicles = "Vehicles",
+  social_cultural = "Social and cultural (out of home)")
 
 # Leaf stems (without top_ prefix / _co2e|_kr suffix) -> labels
 stemlab = c(fuel = "Fuel", car_maint = "Car maintenance", car_rent = "Car rental",

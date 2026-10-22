@@ -5,6 +5,11 @@ sociality-signature section, volume decomposition, spending-first placebo
 result, telework adjustment, OSF DOI, ethics statement, and an SI document
 (latex/SI.tex). Do not add new exploratory analyses beyond the items below.
 
+Status 2026-10-22: scripts for items 1–5 are written and sourced
+(`71`–`75`; `RUN_MOCK` passes, including the long-window empty path on the
+12-month mock). They have not been run on the TRE extract, so no results
+exist yet. Manuscript and SI are untouched.
+
 ## TRE runs required
 
 1. **Registered social/cultural group model.** Estimate the fully adjusted gradient

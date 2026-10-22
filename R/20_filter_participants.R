@@ -126,6 +126,10 @@ digital_co2e = "internet_tele_co2e"
 # placebo is insurance ("insurance_co2e" in 43/52).
 placebo_co2e = "insurance_co2e"
 vehicles_co2e = "vehicles_co2e"
+# Registered out-of-home social/cultural group (RA checklist 2026-10-16):
+# restaurants, bars, culture/entertainment, and other leisure services.
+# sports_co2e is sports goods and stays in the e-commerce goods group.
+social_co2e = c("restaurant_co2e", "bar_co2e", "culture_co2e", "leisure_other_co2e")
 
 # Short- vs long-distance split of the transport composite (63): daily
 # ground mobility vs intercity/international travel. car_rent and
@@ -140,6 +144,7 @@ transport_kr = sub("_co2e$", "_kr", transport_co2e)
 ecom_kr = sub("_co2e$", "_kr", ecom_co2e)
 digital_kr = "internet_tele_kr"
 vehicles_kr = "vehicles_kr"
+social_kr = sub("_co2e$", "_kr", social_co2e)
 
 # All pipeline outputs go to ONE shared directory, defined once here: a
 # dated folder per run (output/<yyyy-mm-dd>/), so runs never overwrite each
