@@ -1,0 +1,13 @@
+stream,stage,n
+Green-area oversample,Invited frame,96000
+Random frame,Invited frame,80000
+Green-area oversample,Baseline survey,6445
+Random frame,Baseline survey,5474
+Green-area oversample,Battery gate,6000
+Random frame,Battery gate,5074
+Green-area oversample,Valid transaction months,2673
+Random frame,Valid transaction months,1678
+Green-area oversample,Controls linked,2605
+Random frame,Controls linked,1646
+Green-area oversample,Main analysis sample,2605
+Random frame,Main analysis sample,1645

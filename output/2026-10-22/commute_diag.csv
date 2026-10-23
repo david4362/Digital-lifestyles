@@ -1,0 +1,5 @@
+field,n,share,mean
+profile.field_profile_commute_distance,4250,1,10.8385882352941
+profile.field_profile_commute_public,4022,0.946352941176471,1.8262058677275
+profile.field_profile_commute_bike,4022,0.946352941176471,2.63301839880656
+profile.field_profile_commute_car,4022,0.946352941176471,0.710840377921432
