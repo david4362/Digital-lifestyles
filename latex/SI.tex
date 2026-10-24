@@ -1,4 +1,4 @@
-% Supplementary Information — Digital lifestyles and consumption-based carbon emissions
+% Supplementary Information — Beyond screen time
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -15,7 +15,7 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 
 \title{Supplementary Information:\\
-Digital lifestyles and consumption-based carbon emissions}
+Beyond screen time: linking digital practices to spending and carbon footprints}
 \author{David Andersson \and Mathias Lehner \and Mikael Eriksson}
 \date{Draft --- \today}
 
@@ -30,7 +30,7 @@ mailbox service (\emph{Mina meddelanden}). The sampling frame comprised two
 invitation streams. The random frame contained approximately 80,000 adults in
 single-adult households, with children up to age 14 permitted, drawn from
 Statistics Sweden population registers among people connected to a digital
-mailbox. A separate non-random frame contained approximately 100,000 adults
+mailbox. A separate non-random frame contained 96,000 adults
 from electoral districts in which the Green Party received a substantially
 higher vote share than the national average. Eligibility required a smartphone
 with electronic identification (BankID), bank-account linkage through a secure
@@ -61,7 +61,7 @@ requirements, not item nonresponse alone.
 		Stage & Remaining \\
 		\midrule
 		Invited, random frame & $\approx80,000$ \\
-		Invited, green-area oversample & $\approx100,000$ \\
+		Invited, green-area oversample & 96,000 \\
 		Baseline survey & 12,153 \\
 		At least 8 of 11 composite items answered & 11,172 \\
 		At least three valid transaction months & 4,392 \\
@@ -70,37 +70,88 @@ requirements, not item nonresponse alone.
 		\bottomrule
 	\end{tabular}
 	\begin{flushleft}\footnotesize
-		Note: The invitation counts describe the recruitment frames and should not
-		be interpreted as response denominators until duplicate invitations and the
-		current TRE linkage snapshot have been reconciled by recruitment stream.
+		Note: Counts after invitation are from the pooled analysis pipeline.
 	\end{flushleft}
 \end{table}
 
 \subsection{Representativeness and reliability analyses}
-The next TRE run will report four complementary checks. First, recruitment
-counts will be tabulated separately for the random and green-area streams at
-the invitation, survey, battery, transaction, control-linkage, and analytical
-stages. Second, the analytical subset from the
-random frame will be compared with the invited random frame on age, gender,
-and major-city residence. These comparisons describe observed selection into
-the linked analytical sample; they cannot assess selection on unobserved
-characteristics.
+Table~\ref{tab:stream-flow} follows each recruitment stream through the
+analysis gates. The green-area oversample contributes 61\% of the final sample.
 
-Third, the fully adjusted spending and emissions gradients will be estimated
-separately in the random-frame and green-area samples. Agreement in direction
-and magnitude would show that the pooled result is not generated solely by the
-non-random oversample. Fourth, inverse-probability weights for entering the
-analysis from the random frame will be estimated from age group, gender, and
-major-city residence, trimmed at the 99th percentile, and normalized to mean
-one. Weighted random-frame estimates will be compared with the unweighted
-pooled and random-frame estimates. Weighting addresses selection on these
-observed dimensions only and does not establish national representativeness.
+\begin{table}[htbp]
+	\centering
+	\caption{Recruitment and analytical flow by invitation stream.}
+	\label{tab:stream-flow}
+	\begin{tabular}{@{}lrr@{}}
+		\toprule
+		Stage & Random frame & Green-area oversample \\
+		\midrule
+		Invited & 80,000 & 96,000 \\
+		Baseline survey & 5,474 & 6,445 \\
+		Battery gate & 5,074 & 6,000 \\
+		Valid transaction months & 1,678 & 2,673 \\
+		Controls linked & 1,646 & 2,605 \\
+		Complete main analysis & 1,645 & 2,605 \\
+		\bottomrule
+	\end{tabular}
+	\begin{flushleft}\footnotesize
+		Note: Stream-linked counts at early stages are slightly below the pooled
+		pipeline counts because some survey records did not match the invitation-frame
+		metadata. All 4,250 final cases were classified by stream.
+	\end{flushleft}
+\end{table}
 
-\todo{Insert recruitment-stream flow, random-frame benchmark, sampling-weight
-diagnostics including effective sample size, and pooled/stream-specific/weighted
-spending and emissions gradients from recruitment\_stream\_flow.csv,
-random\_frame\_benchmark.csv, sampling\_ipw\_cell\_balance.csv, and
-sampling\_ipw\_diagnostics.csv, and representativeness\_gradients.csv.}
+The analytical random-frame subset was younger, more often female, and more
+urban than the invited random frame (Table~\ref{tab:frame-benchmark}). Pooling
+the green-area oversample accentuated the age and urban differences. These
+comparisons describe observed selection into the linked analytical sample;
+they cannot assess selection on unobserved characteristics.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Invited-frame and analytical-sample benchmark (percent unless noted).}
+	\label{tab:frame-benchmark}
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lrrrrrrrr@{}}
+		\toprule
+		Population & $N$ & Mean age & Female & Major city & 18--29 & 30--44 & 45--64 & 65+ \\
+		\midrule
+		Invited random frame & 80,000 & 40.2 & 47.0 & 16.2 & 27.7 & 34.7 & 35.7 & 1.9 \\
+		Analytical random-frame subset & 1,645 & 37.2 & 54.5 & 21.5 & 34.5 & 37.5 & 26.9 & 1.1 \\
+		Full pooled analytical sample & 4,250 & 31.5 & 55.7 & 34.0 & 51.1 & 38.1 & 10.4 & 0.4 \\
+		\bottomrule
+	\end{tabular}}
+\end{table}
+
+Inverse-probability weights for entering the analysis from the random frame
+were estimated from age group, gender, and major-city residence, trimmed at the
+99th percentile, and normalized to mean one. The normalized weights ranged
+from 0.54 to 1.65 (median 1.00), and the Kish effective sample size was 1,510
+of 1,645. The positive spending and emissions gradients appeared in both
+recruitment streams and remained positive after weighting the random-frame
+subset (Table~\ref{tab:representativeness-gradients}).
+
+\begin{table}[htbp]
+	\centering
+	\caption{Fully adjusted gradients by recruitment stream and sampling weight.}
+	\label{tab:representativeness-gradients}
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lrrr@{}}
+		\toprule
+		Sample & $N$ & Spending, SEK/SD (95\% CI) & CO\textsubscript{2}e, kg/SD (95\% CI) \\
+		\midrule
+		Pooled & 4,250 & 9,690 (6,406--12,975) & 203.9 (140.7--267.2) \\
+		Random-frame subset & 1,645 & 9,085 (3,848--14,322) & 155.8 (50.0--261.5) \\
+		Green-area oversample & 2,605 & 10,058 (5,927--14,188) & 237.7 (162.2--313.1) \\
+		Random frame, sampling weighted & 1,645 & 10,655 (4,883--16,427) & 170.3 (54.3--286.3) \\
+		\bottomrule
+	\end{tabular}}
+	\begin{flushleft}\footnotesize
+		Note: All models use the main digital-practice composite and the full
+		covariate set. Sampling weights address selection on the observed weighting
+		variables only and do not establish national representativeness.
+	\end{flushleft}
+\end{table}
 
 Observed spending also depends on how many accounts each participant connected.
 The main estimate is therefore compared with models controlling for account
@@ -184,14 +235,59 @@ the home.
 
 
 \section{Analysis classification}
-\todo{Table classifying every reported analysis as originally registered
-(doi:10.17605/OSF.IO/RE7BS), post-registration correction, or exploratory,
-with the corresponding output file and specification.}
+Table~\ref{tab:analysis-classification} distinguishes the original registration,
+the post-registration correction to the composite, analyses prospectively
+specified in the addendum, and later exploratory diagnostics. The labels refer
+to analysis status, not evidential quality.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Registration status of reported analyses.}
+	\label{tab:analysis-classification}
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}p{0.19\textwidth}p{0.38\textwidth}p{0.35\textwidth}@{}}
+		\toprule
+		Status & Analysis & Principal output \\
+		\midrule
+		Original registration & 13-item net gradient; grouped consumption decomposition and placebo; leisure mechanism; age, gender, and urbanity heterogeneity & stepwise\_table.csv; decomp\_table.csv; social\_cultural\_group.csv; equivalence\_table.csv; e1\_leisure\_mechanism.csv; het\_margins.csv \\
+		Post-registration correction & Preferred 11-item composite excluding e-commerce and online selling, with the registered 13-item composite retained as a sensitivity analysis & index\_variants.csv \\
+		Prospectively specified addendum & Item-level models; named social-media/gaming contrast; measured screen time; account coverage; telework; flexible age adjustment & item\_level.csv; item\_level\_joint.csv; social\_games.csv; e4\_index\_test.csv; account\_coverage.csv; e1\_transport\_work\_home.csv; age\_spline\_rq1.csv \\
+		Exploratory & Spending and volume--composition analyses; calls--sociality diagnostics; social-media/gaming category spending; longer-window travel; recruitment-stream and sampling-weight analyses & sek\_table.csv; volume\_composition.csv; calls\_social\_activity\_*.csv; social\_spending\_sek.csv; long\_window\_travel.csv; representativeness\_gradients.csv \\
+		\bottomrule
+	\end{tabular}}
+\end{table}
 
 \section{Additional robustness}
-\todo{Account-coverage strata, DeSO fixed effects, nonlinear age adjustment,
-alternative index scalings, and the 13-item and no-calls ladders
-(stepwise\_table.csv, index\_variants.csv, coverage\_robustness.csv).}
+The positive total-emissions gradient persisted across alternative composite
+definitions, stricter transaction coverage, flexible age adjustment, and DeSO
+fixed effects (Table~\ref{tab:robustness}). The DeSO specification excludes
+single-person areas and therefore uses a smaller, selected sample; it is a
+geographic-confounding sensitivity rather than a preferred estimate. Adding
+bank-account count reduced the main estimate from 204 to 182 kg per SD.
+Restrictions to participants whose observed spending was 25--200\% and
+50--150\% of register income yielded 164 and 155 kg, respectively.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Sensitivity of the annual total-emissions gradient.}
+	\label{tab:robustness}
+	\begin{tabular}{@{}lrrr@{}}
+		\toprule
+		Specification & $N$ & kg CO\textsubscript{2}e/SD & 95\% CI \\
+		\midrule
+		Preferred 11-item composite & 4,250 & 203.9 & 140.7--267.2 \\
+		Registered 13-item composite & 4,250 & 237.2 & 173.3--301.2 \\
+		Composite excluding calls & 4,250 & 140.8 & 77.4--204.2 \\
+		Device-use half & 4,250 & 151.4 & 90.3--212.4 \\
+		Digital-activity half & 4,250 & 190.0 & 125.5--254.4 \\
+		First principal component & 4,205 & 207.3 & 142.4--272.2 \\
+		At least 6 valid months & 4,026 & 198.2 & 131.9--264.5 \\
+		At least 12 valid months & 3,795 & 191.6 & 123.9--259.4 \\
+		Natural spline for age & 4,250 & 205.5 & 142.1--268.8 \\
+		DeSO fixed effects & 3,258 & 254.6 & 162.7--346.5 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
 
 \subsection{Mobile screen time}
 Among 2,200 respondents with a usable phone reading, mean mobile screen time was
@@ -223,12 +319,135 @@ time did not ($29$ kg per SD; 95\% CI: $-59$ to $117$).
 	\end{tabular}
 \end{table}
 
+\subsection{Registered social and cultural consumption group}
+The preregistered social/cultural group combined restaurants, bars, culture and
+entertainment, and other leisure services. Its gradient was positive in both
+emissions and spending (Table~\ref{tab:social-cultural}).
+
+\begin{table}[htbp]
+	\centering
+	\caption{Fully adjusted gradients in registered social and cultural consumption.}
+	\label{tab:social-cultural}
+	\begin{tabular}{@{}llrrr@{}}
+		\toprule
+		Metric & Outcome & Per SD & 95\% CI & \% of mean \\
+		\midrule
+		kg CO\textsubscript{2}e/year & Combined group & 26.7 & 18.0--35.4 & 6.7 \\
+		 & Restaurants & 22.4 & 14.9--29.8 & 7.0 \\
+		 & Bars & 2.8 & 1.2--4.4 & 6.7 \\
+		 & Culture & 1.3 & $-0.1$--2.6 & 3.6 \\
+		 & Other leisure services & 0.3 & $-0.2$--0.7 & 7.0 \\
+		SEK/year & Combined group & 2,016 & 1,346--2,686 & 6.4 \\
+		 & Restaurants & 1,602 & 1,073--2,131 & 7.0 \\
+		 & Bars & 200 & 85--315 & 6.7 \\
+		 & Culture & 185 & $-9$--380 & 3.7 \\
+		 & Other leisure services & 29 & $-26$--83 & 7.0 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{Calls and observed social activity}
+Calls were positively associated with the out-of-home/social-activity
+composite and with most of its items (Table~\ref{tab:calls-sociality}). The
+largest gradients were for inviting dinner guests and attending sports events.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Fully adjusted association between calls and reported activities.}
+	\label{tab:calls-sociality}
+	\begin{tabular}{@{}lrrr@{}}
+		\toprule
+		Activity outcome & Points/calls SD & 95\% CI & $p$ \\
+		\midrule
+		Library & 0.057 & $-0.013$--0.127 & 0.113 \\
+		Sports event & 0.227 & 0.161--0.292 & $<0.001$ \\
+		Cultural event & 0.104 & 0.046--0.162 & $<0.001$ \\
+		Dinner guests & 0.331 & 0.269--0.393 & $<0.001$ \\
+		Dancing & 0.153 & 0.079--0.228 & $<0.001$ \\
+		Exercise & 0.061 & $-0.007$--0.128 & 0.077 \\
+		Nature/outdoor recreation & 0.118 & 0.056--0.179 & $<0.001$ \\
+		Out-of-home/social composite & 0.149 & 0.114--0.185 & $<0.001$ \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+On the common sample ($N=2,389$), adding the activity composite reduced the
+calls coefficient for total emissions from 325.1 to 310.2 kg per SD (4.6\%)
+and for restaurant emissions from 27.3 to 24.4 kg (10.7\%). The transport
+coefficient did not attenuate (116.2 without and 116.8 kg with the composite).
+These are descriptive adjustments, not causal mediation estimates.
+
+\subsection{Social-media and gaming spending profiles}
+Table~\ref{tab:social-spending} reports the requested fully adjusted spending
+contrasts. Social-media frequency was positively associated with restaurant,
+transport, and e-commerce-intensive spending. Gaming instead showed lower
+transport spending and higher digital-service spending.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Category spending gradients for social media and gaming.}
+	\label{tab:social-spending}
+	\begin{tabular}{@{}llrrr@{}}
+		\toprule
+		Exposure & Spending outcome & SEK/SD & 95\% CI & \% of mean \\
+		\midrule
+		Social media & Restaurants & 1,295 & 775--1,815 & 5.7 \\
+		 & Transport & 1,134 & 687--1,581 & 5.6 \\
+		 & E-commerce-intensive goods & 841 & 123--1,559 & 2.3 \\
+		 & Digital services & 15 & $-161$--190 & 0.2 \\
+		Gaming & Restaurants & $-23$ & $-571$--526 & $-0.1$ \\
+		 & Transport & $-856$ & $-1,341$--$-372$ & $-4.2$ \\
+		 & E-commerce-intensive goods & 280 & $-437$--997 & 0.8 \\
+		 & Digital services & 485 & 301--669 & 6.7 \\
+		\bottomrule
+	\end{tabular}
+	\begin{flushleft}\footnotesize
+		Note: Each exposure is standardized and fitted separately with the full
+		covariate set. These analyses were exploratory.
+	\end{flushleft}
+\end{table}
+
+\subsection{Longer-window aviation and travel sensitivity}
+The fixed-window analysis retained 1,964 participants with at least 18 valid
+months in the 24 months before baseline (median 24 months). Table~\ref{tab:long-window}
+compares annualized 24-month gradients with 12-month estimates among the same
+people. The 24-month emissions models additionally adjust for the number of
+valid observed months. Aviation remained imprecise, while travel was positive
+but just outside the conventional 5\% threshold in the longer window.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Aviation and travel gradients over fixed observation windows.}
+	\label{tab:long-window}
+	\begin{tabular}{@{}llllr@{}}
+		\toprule
+		Outcome & Metric & Window & Per SD (95\% CI) & $p$ \\
+		\midrule
+		Aviation & kg CO\textsubscript{2}e/year & 24 months & 18.0 ($-21.4$--57.5) & 0.370 \\
+		Aviation & kg CO\textsubscript{2}e/year & 12 months & 14.6 ($-26.3$--55.5) & 0.484 \\
+		Travel & kg CO\textsubscript{2}e/year & 24 months & 15.4 ($-0.1$--30.9) & 0.052 \\
+		Travel & kg CO\textsubscript{2}e/year & 12 months & 15.1 ($-3.2$--33.3) & 0.106 \\
+		Aviation & SEK/year & 24 months & 168 ($-228$--563) & 0.406 \\
+		Aviation & SEK/year & 12 months & 157 ($-266$--579) & 0.467 \\
+		Travel & SEK/year & 24 months & 1,050 ($-23$--2,124) & 0.055 \\
+		Travel & SEK/year & 12 months & 1,058 ($-242$--2,358) & 0.111 \\
+		\bottomrule
+	\end{tabular}
+	\begin{flushleft}\footnotesize
+		Note: All models use the same 1,964 participants and the full covariate set;
+		the 12-month rows are same-sample comparisons. The 24-month emissions rows
+		also adjust for valid-month count; the spending export did not include this
+		additional adjustment.
+	\end{flushleft}
+\end{table}
+
 \subsection{Heterogeneity}
 Adjusted subgroup estimates were $150$, $263$, $232$, and $561$ kg per SD for
 ages 18--29, 30--44, 45--64, and 65+, respectively. The oldest-group estimate
 was imprecise (95\% CI: $-544$ to $1,665$). Interactions were not statistically
 significant for gender ($p=0.134$) or major-city residence ($p=0.323$).
-\todo{Add the formal joint age-group interaction test.}
+The formal joint test of the three composite-by-age-band interaction terms was
+also not statistically significant ($F_{3,4232}=1.07$, $p=0.360$).
 
 \begin{figure}[htbp]
 	\centering

@@ -30,6 +30,7 @@
 \maketitle
 
 \begin{abstract}
+\begin{sloppypar}
 Digitalization may substitute for travel and material consumption, but it may
 also facilitate additional consumption. We link survey measures of digital
 practices in a selected Swedish sample to annual spending observed through bank
@@ -37,7 +38,7 @@ transactions, associated consumption-based greenhouse-gas emissions, and
 sociodemographic registers. The complete-case analysis includes 4,250
 participants. Our primary exposure is an 11-item composite of device-use and
 digital-activity frequencies. After adjustment for age, gender, income,
-education, household composition, and urbanity, a one-standard-deviation higher
+education, household composition, and urbanity, a one-SD higher
 composite is associated with SEK 9,690 more observed annual spending (95\% CI:
 6,406--12,975), or 3.1\% of the sample mean, and 204 kg CO\textsubscript{2}e
 more per year (95\% CI: 141--267), or 4.5\%. The gradient is carried by
@@ -48,6 +49,7 @@ digital practices. The results do not support the proposition that digitally
 connected lifestyles are less materially consumptive. Communicative digital
 practices may instead mark socially or occupationally active lives in which
 more activities and consumption occur.
+\end{sloppypar}
 \end{abstract}
 
 
@@ -110,9 +112,8 @@ total observed spending and its consumption-based carbon footprint; whether
 any gradient is concentrated in transport, goods commonly purchased online, or
 digital services; and whether digitally engaged participants report less
 out-of-home activity.
-Our primary exposure is a transparent composite of heterogeneous digital
-practices, used as an initial descriptive summary rather than a measure of one
-latent trait or total time online. The analyses estimate conditional
+Our primary exposure summarizes 11 heterogeneous digital practices; it is not
+a measure of one latent trait or total time online. The analyses estimate conditional
 cross-sectional associations and cannot identify the causal effect of
 increasing digital use. They test whether more frequent digital practices
 coincide with lower material consumption when broad spending is observed.
@@ -125,7 +126,7 @@ information, and Swedish administrative registers. Participants were recruited
 in spring 2024 through Sweden's national digital-mailbox service. The invitation
 frame comprised approximately 80,000 randomly sampled adults in single-adult
 households (children up to age 14 permitted) and a non-random oversample of
-approximately 100,000 adults from electoral districts with high Green Party
+96,000 adults from electoral districts with high Green Party
 vote shares. Eligibility required a smartphone with electronic identification,
 bank-account linkage, and consent to survey and register linkage. The main
 analysis currently pools both recruitment streams; it is therefore a selected
@@ -327,11 +328,9 @@ also positive for the device-use half ($151$ kg), digital-activity half
 ($190$ kg), and a data-derived summary that gives more weight to practices that
 tend to vary together ($207$ kg).
 
-Adding bank-account count reduced the headline estimate by 10.7\%, to $182$ kg
-per SD. Restrictions to participants whose observed spending was 25--200\% or
-50--150\% of register income yielded estimates of $164$ and $155$ kg,
-respectively; both remained positive and statistically distinguishable from
-zero.
+Account-count adjustment and restrictions based on spending relative to
+register income reduced the estimate to 155--182 kg per SD but did not remove
+the positive association (Supplementary Information).
 
 \subsection{A sociality signature across digital practices}
 The item-level results follow a consistent and unanticipated pattern: the
@@ -345,10 +344,15 @@ associated with emissions ($-80$ kg separately; $-147$ kg conditionally;
 95\% CI: $-211$ to $-83$), and gaming was weakly negative ($-65$ kg; not
 significant after multiplicity adjustment).
 
-\todo{Replace the category-emissions comparison with fully adjusted social-media
-and gaming gradients for spending in restaurants, transport,
-e-commerce-intensive goods, and digital services, reported in SEK and as
-percentages of category means. These TRE results are not in the current export.}
+Social-media frequency was positively associated with restaurant (SEK 1,295;
+5.7\%), transport (SEK 1,134; 5.6\%), and e-commerce-intensive spending
+(SEK 841; 2.3\%) per SD. Gaming instead predicted lower transport
+(SEK $-856$; $-4.2$\%) and higher digital-service spending (SEK 485; 6.7\%).
+These exploratory contrasts do not identify platform effects.
+
+Calls predicted more out-of-home/social activity (0.149 points per SD), but
+adjustment for this composite reduced the calls--emissions gradient by only
+4.6\% and did not reduce its transport gradient (Supplementary Information).
 
 \subsection{Decomposition across consumption categories}
 We expected digital substitution to produce negative gradients for out-of-home
@@ -357,9 +361,9 @@ digital services, and no gradient for insurance. These expectations were
 preregistered. The first two were not supported.
 Transport emissions increased by $46$ kg CO\textsubscript{2}e per index SD
 (95\% CI: $9$--$82$; $p=0.015$), contrary to the predicted demobilization, and
-restaurant emissions---the largest component of the registered social and
-cultural group---increased by $22$ kg ($p<0.001$) \todo{add the registered
-social/cultural group estimate from the next TRE run}. As expected,
+the registered social/cultural group increased by $27$ kg (95\% CI:
+$18$--$35$; 6.7\% of its mean) and SEK 2,016 (95\% CI: 1,346--2,686; 6.4\%).
+Restaurant consumption was its largest component. As expected,
 emissions from the e-commerce-intensive goods group increased by $28$ kg
 (95\% CI: $18$--$39$; $p<0.001$) and internet and telecommunications by
 $1.7$ kg (95\% CI: $0.7$--$2.7$; $p<0.001$).
@@ -378,12 +382,12 @@ means, the gradient is steepest in out-of-home and discretionary consumption:
 aviation (+10.3\% per index SD), travel (+9.0\%), alcohol (+8.1\%),
 restaurants (+7.0\%), and other shopping (+6.5\%), against +4.7\% for clothing
 and +3.5\% for fuel (Figure~\ref{fig:co2-decomposition}). Aviation is an
-infrequent purchase, so its wide interval and large point estimate may be
-especially sensitive to the transaction window. The pattern is nevertheless
-broad rather than confined to digital services or goods commonly bought online.
-\todo{Estimate aviation and travel gradients using a fixed longer observation
-window among participants with sufficient coverage; do not pool unequal numbers
-of months without accounting for coverage.}
+infrequent purchase; otherwise, the pattern is broad rather than confined to
+digital services or goods commonly bought online.
+In a fixed 24-month sensitivity ($N=1,964$), adjusting for observed-month count,
+aviation was imprecise ($18$ kg; 95\% CI: $-21$ to $57$), while travel remained
+positive but uncertain ($15$ kg; 95\% CI: $-0.1$ to $31$). The large one-year aviation estimate was
+therefore not robust to the longer window.
 
 The spending gradients show the same profile
 (Figure~\ref{fig:sek-decomposition}): travel (+8.9\% of the category mean per
@@ -433,9 +437,9 @@ from out-of-home activity. Detailed models are reported in the Supplementary
 Information.
 
 \subsection{Heterogeneity}
-We found no clear evidence that the gradient differed by gender or major-city
-residence. Age estimates were too imprecise in the oldest group to support a
-conclusion about differences by age (Supplementary Information).
+We found no clear evidence that the gradient differed by gender, major-city
+residence, or age band (joint age interaction $p=0.360$; Supplementary
+Information).
 
 \section{Discussion}
 
@@ -476,16 +480,16 @@ The contrasts between individual practices caution against treating
 digitalization as one uniform exposure. Calls and social media predicted higher
 emissions, whereas streaming and gaming showed null or negative gradients.
 This exploratory contrast suggests that communicative digital practices mark
-more consumption-intensive lives. It does not distinguish social connectedness
-from occupational intensity, busyness, or a generally active lifestyle.
+more consumption-intensive lives. Calls were associated with observed social
+activity, but adjustment explained little of their emissions gradient. The
+pattern does not distinguish social connectedness from occupational intensity,
+busyness, or a generally active lifestyle.
 Advertising, social comparison, and
 self-presentation could contribute to the social-media pattern
 \citep{vogel2014,taylor2016,djafarova2021}, but we did not measure these
 mechanisms, and the sociality pattern itself was identified after seeing the
-data. It should be treated as a hypothesis for confirmation---most directly by
-testing whether communication-practice gradients are explained by measured
-social activity---rather than as evidence that particular platforms increase
-or reduce consumption.
+data. It should be treated as an exploratory hypothesis rather than evidence
+that particular platforms increase or reduce consumption.
 
 The study extends environmental assessments that compare a digital service with
 a specific non-digital alternative. Such comparisons are indispensable, but
@@ -518,8 +522,9 @@ not remove the association; those restrictions can themselves select people by
 real saving, borrowing, or household financial arrangements. None of these
 checks turns the estimate into a causal effect or a population-representative
 estimate. We therefore report recruitment-stream-specific and sampling-weighted
-random-frame analyses in the Supplementary Information
-\todo{insert representativeness results after the TRE rerun}.
+random-frame analyses in the Supplementary Information. Spending and emissions
+gradients remained positive in both streams and after weighting the random
+frame for observed selection.
 
 The policy implication is not that digital services should be discouraged, but
 that their climate benefits should not be assumed from technical substitution
