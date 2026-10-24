@@ -35,7 +35,7 @@ for (f in c("20_filter_participants.R", "30_time_estimate.R", "40_control_vars.R
     "67_mechanism.R", "68_volume_composition.R", "69_calls_diagnostics.R",
     "69_sample_representativeness.R", "71_social_cultural.R",
     "72_age_interaction.R", "73_calls_sociality.R", "74_social_spending.R",
-    "75_long_window.R", "70_run_info.R")) {
+    "75_long_window.R", "76_publication_figures.R", "70_run_info.R")) {
   message("--- ", f, " ---")
   source(f)
 }
