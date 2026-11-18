@@ -4,7 +4,7 @@ library(sandwich)
 
 # The recruitment frame contains two invitation streams: a register-based
 # random frame and a non-random green-area oversample. The headline analysis
-# currently pools them. This script documents that composition and tests
+# pools them. This script documents that composition and tests
 # whether the spending and emissions gradients persist in the random stream
 # and after reweighting its respondents to the invited random frame.
 required_frame_vars = c("aid", "age", "gender", "postort", "randomsample", "greensample")

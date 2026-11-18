@@ -1,13 +1,23 @@
 # RUN_MOCK.R — local pipeline test. Run from R/:
 #   Rscript RUN_MOCK.R
 # Builds the mock data in memory (00_mock_data.R), then sources the analysis
-# scripts in the same order as RUN_TRE.R (20-68 plus 70_run_info.R, so the
+# scripts in the same order as RUN_TRE.R (20-75 plus 70_run_info.R, so the
 # local test covers the full run including the export self-documentation).
 # Outputs go to a throwaway tempdir; nothing here touches real data or the
 # TRE cache.
 
 source("00_mock_data.R")
 cache_dir = file.path(tempdir(), "cache")
+# Same metadata resolution as RUN_TRE.R: the study metadata's canonical home
+# is the workspace level (data/metadata/); the repo carries a synced copy at
+# metadata/, which the ../metadata
+# candidate resolves. 70_run_info.R
+# copies the dictionary from metadata_dir into the export, so fail fast here.
+metadata_candidates = file.path(c("../metadata", "../../../data/metadata"), "export_data_dictionary.csv")
+metadata_dir = dirname(metadata_candidates[file.exists(metadata_candidates)][1])
+if (is.na(metadata_dir)) stop(
+  "Study metadata not found: expected ../metadata/ or ../../../data/metadata/.",
+  "The dictionary lives in the workspace checkout at data/metadata/.")
 
 for (f in c("20_filter_participants.R", "30_time_estimate.R", "40_control_vars.R",
     "41_model_check.R", "42_stepwise.R", "43_decomposition.R", "44_presentation_figures.R",

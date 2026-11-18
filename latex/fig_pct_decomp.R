@@ -1,5 +1,5 @@
 # Percentage-change decomposition figures (CO2e and SEK) for the ERL draft.
-# Reads the 2026-10-13 TRE export; writes PDFs next to the PNG originals.
+# Reads the TRE export; writes PDFs next to the PNG originals.
 # Run from the repository root: Rscript latex/fig_pct_decomp.R
 
 co2 <- read.csv("output/2026-10-13/decomp_table.csv")

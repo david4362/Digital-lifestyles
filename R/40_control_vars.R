@@ -8,8 +8,7 @@ users_latest = users[order(aid, date), .SD[.N], by = aid]
 # starts from keep (person x month rows), so every person has one row per
 # valid month with identical per-person values; the unique() at the end
 # collapses them back to one row per person. Each centering mean is
-# computed within its step, i.e. on exactly the rows the earlier
-# one-piece chain used.
+# computed within its step.
 
 # 1. SCB register: density (log, centered) and education level
 control_data = keep[scb, on = "aid", nomatch = 0]
@@ -41,17 +40,14 @@ control_data[, income_q := cut(`income-level`,
   labels = paste0("Q", 1:5), include.lowest = TRUE)]
 control_data[, income_scb := log1p(pmax(DispInk04, 0)) - mean(log1p(pmax(DispInk04, 0)), na.rm = TRUE)]
 
-# 4. Raw battery responses (30; the index built below replaces the role
-# the scaled battery played in the earlier pipeline), then keep only the
-# needed columns (deso for 56's fixed effects, income_q for 50's quintile
-# stratification) and collapse to one row per person. The battery items are
-# NOT carried here: the analysis sample gets the z-scaled items from
-# z_items below, so every downstream use of an item column (54's
+# 4. Keep only the needed columns (deso for 56's fixed effects, income_q for
+# 50's quintile stratification) and collapse to one row per person. The
+# battery items are NOT carried here: the analysis sample gets the z-scaled
+# items from z_items below, so every downstream use of an item column (54's
 # item-level models, 59's 13-item variant, 61's halves/PC1) is in units of
 # item SDs; the raw answers stay in item_battery / answered_survey (45's
 # alpha, 65's item correlations). Everyone here already passed the battery
-# gate in 20 (the spending filter keeps answered_survey members only), so
-# the earlier item_battery join filtered nothing.
+# gate in 20 (the spending filter keeps answered_survey members only).
 control_data = unique(control_data[, c("aid", "age", "age_years", "gender", "income", "income_q", "income_scb",
   "density", "hh_size", "children", "education", "major_city", "deso"), with = FALSE])
 
@@ -141,19 +137,15 @@ z_items[, hours_est := dt_coefs[["(Intercept)"]] + dt_coefs[["index"]] * index]
 # their category models from control_data; 52 uses hours_est for the
 # same-unit E4 comparison). The q11 columns joined into the analysis sample
 # are the z-scaled items from step 1 above, per the pre-registered
-# construction — the fix for the item-scaling bug recorded in
-# notes/continuity.md (2026-10-07): previously the raw answers rode along
-# from item_battery, so 54's item-level slopes and 59's 13-item variant
-# were per raw scale point / raw-item-weighted while their comments (and
-# the export labels) claimed z-scaled.
+# construction, so 54's item-level slopes and 59's 13-item variant operate
+# on z-scaled items.
 analysis_data = z_items[, c("aid", ..q11_cols, "index", "index_nocalls", "index_raw", "hours_est")][
   analysis_data, on = "aid"]
 control_data = z_items[, .(aid, index, hours_est)][control_data, on = "aid"]
 
 # Item-scaling audit table: mean and SD of every item column in the frozen
 # sample. The z-scaled construction gives mean 0 / SD 1 by design (up to
-# floating point); verify_export check 16 asserts it on the export, where it
-# catches a join that reintroduces raw responses (the 2026-10-12 bug).
+# floating point); verify_export check 16 asserts it on the export.
 item_sds_check = unlist(analysis_data[, lapply(.SD, sd, na.rm = TRUE),
   .SDcols = q11_cols])
 item_scaling_check = data.table(

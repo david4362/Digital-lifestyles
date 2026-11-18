@@ -301,3 +301,12 @@ data — leverage 1, HC3 undefined, NaN SEs in the export (fixed 2026-10-13:
 account-group FE, as in 56's singleton-DeSO rule). Both escaped the mock run
 by construction (mock h_per_sd ≈ 1.2 hides the unit mix; mock accounts 1-4
 have no singleton level).
+
+## Addendum 2026-11-08 — item 8's E4 note relocated
+
+Item 8 above recorded that the 20-line platform-split note was moved into
+`metadata.md`. That was the wrong home for prose analysis: the note is now
+`notes/e4_platform_split_2026-10-05.md`, and the living pointers in
+`R/65_e4_diagnostics.R`, `data/common-data.md` §4/§13 and
+`CODING-GUIDELINES.md` §1 rule 4 point there. `data/metadata/metadata.md`
+is back to being a verbatim category/field-list dump.

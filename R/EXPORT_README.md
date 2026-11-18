@@ -39,8 +39,8 @@ M0–M5 ladder in `stepwise_table.csv`); the device-use half (5 items) and the
 digital-activity half (6 items); the first principal component; all 13 items
 incl. e-commerce & online selling (≥ 10 of 13; what the e-commerce items add
 back); items z-scaled on the battery sample instead of the analysis sample
-(the earlier scaling choice — equalizes item SDs on a different population, so the
-effective item weights differ within the analysis sample).
+(equalizes item SDs on the battery population, so the effective item weights
+differ within the analysis sample).
 
 **Cardinal anchor (interpretive only).** E4 (endline `q21`, self-transcribed
 from iOS *Skärmtid* / Android *Digitalt välmående*, h:mm/day, 0–18 h/day
@@ -55,9 +55,7 @@ secondary, because the anchor is weak (bivariate R² ≈ 0.02 on the real data; 
 screen time correlates only weakly with the self-reported battery —
 `e4_diagnostics.csv`, `e4_item_correlations.csv`). All per-SD↔per-hour
 conversion ingredients and their consistency checks are in
-`calibration_check.csv` (the earlier files did not state which anchor model fed
-the conversion — that gap is what made the old per-hour/per-SD ratios look
-inconsistent).
+`calibration_check.csv`.
 
 ## Samples
 
@@ -116,11 +114,10 @@ sampling-weighted spending and emissions gradients). These analyses address
 external validity and observed selection; they do not make the pooled sample
 nationally representative or remove selection on unobserved characteristics.
 
-The 2026-10-16 checklist analyses are written and sourced, and populate on
-the next TRE run: `social_cultural_group.csv` (registered restaurants, bars,
-culture and other leisure, in CO2e and SEK), `age_band_interaction.csv`
-(HC3 joint F-test of the index-by-age-band interactions), 
-`calls_social_activity_associations.csv` and
+Additional decomposition and sensitivity tables: `social_cultural_group.csv`
+(registered restaurants, bars, culture and other leisure, in CO2e and SEK),
+`age_band_interaction.csv` (HC3 joint F-test of the index-by-age-band
+interactions), `calls_social_activity_associations.csv` and
 `calls_social_activity_adjustment.csv` (calls against the endline
 social-activity items, and the calls gradient with that composite partialled
 out), `social_spending_sek.csv` (social media, gaming, and gaming-plus-console

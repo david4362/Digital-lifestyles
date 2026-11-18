@@ -1,6 +1,8 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
+library(patchwork)
 
 # Heterogeneity on the fixed M5 complete-case sample (same principle as the
 # stepwise ladder in 42). Age bands need raw age (analysis_data$age is
@@ -54,20 +56,16 @@ margins[, `:=`(lo = est - 1.96 * se, hi = est + 1.96 * se)]
 fwrite(margins, file.path(out_dir, "het_margins.csv"))
 
 modttl = c(band = "Age group", gender = "Gender", major_city = "Major city")
-png(file.path(out_dir, "het_plot.png"), width = 1200, height = 500, res = 120)
-par(mfrow = c(1, 3), mar = c(5, 8, 4, 1))
-for (v in c("band", "gender", "major_city")) {
+het_panels = lapply(c("band", "gender", "major_city"), function(v) {
   s = margins[mod == v]
   lvl = s$level
   lvl[lvl == "Man"] <- "Men"
   lvl[lvl == "Kvinna"] <- "Women"
   lvl[lvl == "TRUE"] <- "Major city"
   lvl[lvl == "FALSE"] <- "Outside major cities"
-  y = seq_len(nrow(s))
-  plot(s$est, y, xlim = range(c(s$lo, s$hi)), yaxt = "n", pch = 19, col = "#1f4e79",
-    xlab = "kg CO2e per index SD", ylab = "", main = modttl[[v]])
-  axis(2, y, lvl, las = 1)
-  segments(s$lo, y, s$hi, y, lwd = 2, col = "#1f4e79")
-  abline(v = 0, lty = 2)
-}
-dev.off()
+  forest_plot(s[, .(label = lvl, est = est, lo = lo, hi = hi)],
+    "kg CO2e per index SD", modttl[[v]], point_col = "#1f4e79",
+    ci_col = "#1f4e79", ci_lwd = 1.6)
+})
+ggsave(file.path(out_dir, "het_plot.png"), wrap_plots(het_panels, nrow = 1),
+  width = 10, height = 4.17, dpi = 120)

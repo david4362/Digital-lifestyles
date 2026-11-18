@@ -1,6 +1,7 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
 
 # Mechanism analysis (pre-registered result 3): whether lower out-of-home
 # leisure frequency among the digitally intensive accounts for part of the
@@ -106,19 +107,15 @@ e1_leisure_mechanism[ref, pct_gradient_shared :=
 fwrite(e1_leisure_mechanism, file.path(out_dir, "e1_leisure_mechanism.csv"))
 
 # Figure: index slope on each leisure item / composite (out-of-home blue,
-# at-home grey), sorted by estimate.
+# at-home grey), sorted by estimate. The CI is a plain horizontal segment.
 fig = e1_leisure_index[order(per_sd)]
-y = seq_len(nrow(fig))
-fig_colour = ifelse(fig$outcome %in% c(ooh_items, "ooh_leisure"), "steelblue", "grey60")
-png(file.path(out_dir, "mech_forest.png"), width = 900, height = 700, res = 120)
-plot(fig$per_sd, y, pch = 16, xlim = range(c(fig$lo, fig$hi)), yaxt = "n",
-  xlab = "E1 frequency change per index SD (1-7 scale)",
-  ylab = "", main = "Digital index vs E1 leisure frequency (HC3 95% CI)",
-  col = fig_colour)
-arrows(fig$lo, y, fig$hi, y, length = 0.02, angle = 90, code = 2, col = fig_colour)
-abline(v = 0, lty = 2, col = "grey40")
-axis(2, y, fig$outcome, las = 1, cex.axis = 0.8)
-dev.off()
+col = ifelse(fig$outcome %in% c(ooh_items, "ooh_leisure"), "steelblue", "grey60")
+ggsave(file.path(out_dir, "mech_forest.png"),
+  forest_plot(fig[, .(label = outcome, est = per_sd, lo = lo, hi = hi)],
+    "E1 frequency change per index SD (1-7 scale)",
+    "Digital index vs E1 leisure frequency (HC3 95% CI)",
+    point_col = col, ci_col = col),
+  width = 7.5, height = 5.83, dpi = 120)
 
 cat(sprintf(
   "Mechanism: transport %.1f -> %.1f kg/SD with out-of-home leisure (share %.0f%%) | total %.1f -> %.1f\n",

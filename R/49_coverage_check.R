@@ -1,6 +1,7 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
 
 # Observed annual consumption in the valid transaction months
 # (person_coverage from 20: months above the min_spend threshold, window
@@ -55,11 +56,8 @@ fwrite(coverage_results, file.path(out_dir, "coverage_check.csv"))
 
 # Unadjusted visualization of connected accounts against the anchored digital
 # measure. The regression table contains the M5-adjusted estimate.
-png(file.path(out_dir, "coverage_accounts.png"), width = 900, height = 600, res = 120)
-plot(coverage_data$hours_est, coverage_data$bank_accounts,
-  pch = 16, col = rgb(0, 0, 0, 0.25),
-  xlab = "Anchored digital measure (hours/day)",
-  ylab = "Number of connected bank accounts",
-  main = "Connected bank accounts and digital intensity")
-abline(lm(bank_accounts ~ hours_est, data = coverage_data), col = "red", lwd = 2)
-dev.off()
+ggsave(file.path(out_dir, "coverage_accounts.png"),
+  scatter_fit(coverage_data[, .(x = hours_est, y = bank_accounts)],
+    "Anchored digital measure (hours/day)", "Number of connected bank accounts",
+    "Connected bank accounts and digital intensity"),
+  width = 7.5, height = 5, dpi = 120)

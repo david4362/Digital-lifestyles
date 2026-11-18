@@ -1,13 +1,10 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
 
-# Anchor regressions. Which one feeds the pipeline is explicit now: the
-# bivariate model (used_in_pipeline = TRUE) provides dt_coefs and h_per_sd
-# in 40; the controlled rows are diagnostics only. (The earlier pipeline printed three anchor
-# rows without marking the used one, which read as an inconsistency: the
-# +major_city slope 0.94 h per raw index unit does not reproduce the
-# per-hour/per-SD ratios in the tables — the bivariate one does.)
+# Anchor regressions: the bivariate model (used_in_pipeline = TRUE) provides
+# dt_coefs and h_per_sd in 40; the controlled rows are diagnostics only.
 device_city = merge(device_time, control_data[, .(aid, major_city, density)], by = "aid")
 dt_lm_city = lm(time ~ index + age + gender + major_city, data = device_city)
 
@@ -31,8 +28,7 @@ fwrite(anchor_check, file.path(out_dir, "anchor_check.csv"))
 # must reproduce it — hours_per_index_sd multiplies and divides by sd_raw, so
 # it is that identity by construction, listed so the chain is auditable end
 # to end. per_hour_direct fits the M5 on the anchored hours scale;
-# per_hour_derived divides the per-SD slope by h_per_sd — the two must agree,
-# which is exactly the arithmetic that failed to add up across the earlier files.
+# per_hour_derived divides the per-SD slope by h_per_sd — the two must agree.
 m5 = lm(as.formula(lm_formula), data = analysis_data)
 ct5 = coeftest(m5, vcov. = vcovHC(m5, type = "HC3"))["index", ]
 m5_hours = lm(as.formula(sub("index", "hours_est", lm_formula, fixed = TRUE)),
@@ -67,12 +63,22 @@ cat(sprintf("anchor b=%.3f h/index SD (n=%d, R2=%.3f) | M5=%.1f kg/SD, %.1f kg/h
   b_z, nobs(dt_lm), anchor_check[model == "bivariate", r2],
   per_sd, calibration_check$m5_per_hour_derived, calibration_check$m5_per_hour_direct))
 
+# Shared scatter + OLS-line recipe for the large-n anchor checks — first use
+# this script; downstream consumer: 49_coverage_check.R. d carries the
+# display columns (x, y); the red line is the OLS fit refit on those columns.
+scatter_fit = function(d, xlab, ylab, title) {
+  ggplot(d, aes(x = x, y = y)) +
+    geom_point(color = rgb(0, 0, 0, 0.25), size = 1.5) +
+    geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 1) +
+    labs(x = xlab, y = ylab, title = title) +
+    theme_minimal()
+}
+
 # Anchor plot: E4 vs index
-png(file.path(out_dir, "anchor_plot.png"), width = 900, height = 600, res = 120)
-plot(device_time$index, device_time$time, pch = 16, col = rgb(0, 0, 0, 0.25),
-  xlab = "Digital index (z, pre-registered minus e-commerce items)",
-  ylab = "Screen time (hours/day, E4)",
-  main = sprintf("Anchor: E4 vs index (R2=%.2f, b=%.2f h per index SD)",
-    anchor_check$r2[1], b_z))
-abline(dt_lm, col = "red", lwd = 2)
-dev.off()
+ggsave(file.path(out_dir, "anchor_plot.png"),
+  scatter_fit(device_time[, .(x = index, y = time)],
+    "Digital index (z, pre-registered minus e-commerce items)",
+    "Screen time (hours/day, E4)",
+    sprintf("Anchor: E4 vs index (R2=%.2f, b=%.2f h per index SD)",
+      anchor_check$r2[1], b_z)),
+  width = 7.5, height = 5, dpi = 120)

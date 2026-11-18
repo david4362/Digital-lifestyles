@@ -1,6 +1,7 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
 
 # Does bank-account coverage explain the gradient? Digitally intensive
 # participants connect more bank accounts (49: the index slope on the number
@@ -115,13 +116,13 @@ account_coverage = rbind(
 fwrite(account_coverage, file.path(out_dir, "account_coverage.csv"))
 
 # Slope by account group (the strata rows of the table above)
-png(file.path(out_dir, "account_coverage.png"), width = 900, height = 600, res = 120)
 s = account_coverage[analysis == "Account strata"]
-y = seq_len(nrow(s))
-plot(s$per_sd, y, xlim = range(c(s$lo, s$hi)), yaxt = "n", pch = 19, col = "steelblue",
-  xlab = "kg CO2e per index SD (HC3 95% CI)", ylab = "", main = "M5 gradient by number of connected accounts")
-axis(2, y, paste0(s$spec, " (n=", s$n, ")"), las = 1, cex.axis = 0.8)
-segments(s$lo, y, s$hi, y, col = "grey40")
-abline(v = account_coverage[spec == "M5 (reference)", per_sd], lty = 2, col = "grey")
-abline(v = 0, lty = 3, col = "grey")
-dev.off()
+ggsave(file.path(out_dir, "account_coverage.png"),
+  forest_plot(s[, .(label = paste0(spec, " (n=", n, ")"), est = per_sd, lo = lo,
+      hi = hi)],
+    "kg CO2e per index SD (HC3 95% CI)",
+    "M5 gradient by number of connected accounts") +
+    # Dashed line at the total-sample M5 gradient (the reference estimate).
+    geom_vline(xintercept = account_coverage[spec == "M5 (reference)", per_sd],
+      linetype = "dashed", color = "grey"),
+  width = 7.5, height = 5, dpi = 120)

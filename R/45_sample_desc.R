@@ -1,10 +1,11 @@
 library(data.table)
+library(ggplot2)
 
 # Sample flow: report participant IDs and physical rows separately. The
 # regression sample is the fixed M5 complete-case sample from 40, not merely
 # the set of IDs with emissions data. The battery stage is the >= 8 of 11
 # main-items gate from 20 (the pre-registration tolerance of up to 3 missing
-# items; the earlier rule required the complete 13-item battery).
+# items).
 flow = data.table(
   stage = c("survey", "battery_gate", "valid_months", "controls", "with_emissions",
     "m5_complete_case", "e4_reporters"),
@@ -20,11 +21,16 @@ stagelab = c(survey = "Survey respondents",
   valid_months = "Valid spending months", controls = "Controls joined",
   with_emissions = "With emissions data", m5_complete_case = "M5 complete-case sample",
   e4_reporters = "E4 screen-time reporters")
-png(file.path(out_dir, "sample_flow.png"), width = 900, height = 500, res = 120)
-par(mar = c(5, 13, 4, 2))
-barplot(rev(flow$n), names.arg = rev(stagelab[flow$stage]), horiz = TRUE, las = 1,
-  col = "steelblue", xlab = "N", main = "Sample flow")
-dev.off()
+# ggplot places the first factor level at the bottom of the y axis, so the
+# display order is spelled out from the bottom of the funnel up (survey on
+# top) rather than positionally reversing a vector.
+funnel_bottom_to_top = c("e4_reporters", "m5_complete_case", "with_emissions",
+  "controls", "valid_months", "battery_gate", "survey")
+fig = flow[match(funnel_bottom_to_top, stage), .(label = unname(stagelab[stage]),
+  value = n)]
+ggsave(file.path(out_dir, "sample_flow.png"),
+  bar_chart(fig, "N", "Sample flow"),
+  width = 7.5, height = 4.17, dpi = 120)
 
 # Index reliability: Cronbach's alpha per scale (main index + halves), on
 # the battery-gate sample, complete cases within each scale's items (the

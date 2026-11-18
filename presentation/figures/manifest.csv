@@ -1,0 +1,32 @@
+file,source_csvs,local_only,status,deck
+slide_flow.pdf,sample_flow.csv,TRUE,exact CSV replot,TRUE
+slide_headline.pdf,stepwise_table.csv; calibration_check.csv,TRUE,exact CSV replot,TRUE
+slide_calibration.pdf,calibration_check.csv; e4_index_test.csv,TRUE,exact CSV replot,TRUE
+slide_decomp.pdf,decomp_table.csv,TRUE,exact CSV replot,TRUE
+slide_volume.pdf,volume_composition.csv; volume_margins.csv,TRUE,exact CSV replot,TRUE
+slide_quintiles.pdf,quintile_desc.csv; quintile_contrast.csv,TRUE,exact CSV replot,TRUE
+slide_items.pdf,item_level.csv; index_variants.csv; index_alpha.csv,TRUE,exact CSV replot,TRUE
+slide_calls.pdf,calls_stepwise.csv; calls_age_specs.csv; calls_joint_comparison.csv; calls_e1_outcomes.csv,TRUE,exact CSV replot,TRUE
+slide_mechanism.pdf,e1_leisure_index.csv; e1_leisure_mechanism.csv,TRUE,exact CSV replot,TRUE
+slide_robustness.pdf,stepwise_table.csv; index_variants.csv; index_weightings.csv; age_spline_rq1.csv; deso_fe.csv; coverage_robustness.csv; account_coverage.csv; representativeness_gradients.csv,TRUE,exact CSV replot,TRUE
+full/anchor_plot.pdf,e4_index_test.csv,TRUE,aggregate-only replacement: person-level anchor scatter not exported,FALSE
+full/coverage_accounts.pdf,coverage_check.csv,TRUE,aggregate-only replacement: person-level accounts scatter not exported,FALSE
+full/stepwise_coef.pdf,stepwise_table.csv; calibration_check.csv,TRUE,exact CSV replot,FALSE
+full/pres_stepwise.pdf,stepwise_table.csv; calibration_check.csv,TRUE,exact CSV replot,FALSE
+full/decomp_forest.pdf,decomp_table.csv,TRUE,exact CSV replot,FALSE
+full/pres_decomp.pdf,decomp_table.csv,TRUE,exact CSV replot,FALSE
+full/waterfall.pdf,decomp_table.csv,TRUE,exact CSV replot,FALSE
+full/sek_forest.pdf,sek_table.csv,TRUE,exact CSV replot,FALSE
+full/sample_flow.pdf,sample_flow.csv,TRUE,exact CSV replot,FALSE
+full/equivalence_plot.pdf,equivalence_table.csv,TRUE,exact CSV replot,FALSE
+full/ecommerce_levels.pdf,ecommerce_check.csv,TRUE,exact CSV replot,FALSE
+full/ecommerce_quintile.pdf,ecommerce_quintile.csv,TRUE,exact CSV replot,FALSE
+full/ecommerce_desc.pdf,ecommerce_desc.csv,TRUE,exact CSV replot,FALSE
+full/het_plot.pdf,het_margins.csv,TRUE,exact CSV replot,FALSE
+full/item_level_forest.pdf,item_level.csv,TRUE,exact CSV replot,FALSE
+full/account_coverage.pdf,account_coverage.csv,TRUE,exact CSV replot,FALSE
+full/mech_forest.pdf,e1_leisure_index.csv,TRUE,exact CSV replot,FALSE
+full/volume_composition.pdf,volume_composition.csv; budget_shares.csv,TRUE,exact CSV replot,FALSE
+full/quintile_gradient.pdf,quintile_desc.csv,TRUE,exact CSV replot,FALSE
+full/decomp_pct_co2e.pdf,decomp_table.csv,TRUE,CSV-derived redraw from latest export,FALSE
+full/decomp_pct_sek.pdf,sek_table.csv,TRUE,CSV-derived redraw from latest export,FALSE

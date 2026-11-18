@@ -1,98 +1,50 @@
-library(data.table)
-library(readxl)
 library(arrow)
-library(haven)
 
-## Directories to load data from
-data_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "data_raw")
+## The shared raw-read core (paths, renames, register join, aviation
+## override) lives in load_common_data.R — a synced identical copy in every
+## project repo; the canonical master is <workspace>/scripts/load_common_data.R.
+## This file adds only THIS project's views (monthly aggregates, the endline
+## survey, person-level bank income) and its parquet cache.
+source("load_common_data.R")
+
 cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "digital_lifestyles", "cache")
-scb_dir = file.path(data_dir, 'register_data', 'scb', 'Forskningsstudie om konsumtion och attityder')
 
-## Loading and summarising transactions
-transactions = read_dta(file.path(data_dir, "konsumtionskollen", "full_data_norecats_filters_260121.dta"))
-setDT(transactions)
-names(transactions) <- gsub("kr_pr2$", "_kr", names(transactions))
-names(transactions) <- gsub("co2e_pr2$", "_co2e", names(transactions))
+## Monthly aggregates from the harmonized long core built once in
+## load_common_data.R (full melt, one row per aid x date x category).
+## Category names keep the _kr/_co2e suffix the downstream scripts filter on.
+monthly_kr = transactions_long[,
+  .(kr = sum(kr, na.rm = TRUE)),
+  by = .(aid, month, category = paste0(category, "_kr"))]
+monthly_co2e = transactions_long[category != "da_credit",
+  .(co2e = sum(co2e, na.rm = TRUE)),
+  by = .(aid, month, category = paste0(category, "_co2e"))]
 
-transactions[, month := trunc.Date(date, "months")]
-
-kr_cols = grep("_kr", names(transactions))
-co2e_cols = grep("_co2e", names(transactions))
-monthly_kr = melt(transactions,
-                   id = c("aid", "month"),
-                   measure.vars = kr_cols,
-                   variable.name = "category",
-                   variable.factor = FALSE,
-                   value.name = "kr")
-monthly_kr = monthly_kr[, .(kr = sum(kr, na.rm = TRUE)), by = .(aid, month, category)]
-
-monthly_co2e = melt(transactions,
-             id = c("aid", "month"),
-             measure.vars = co2e_cols,
-             variable.name = "category",
-             variable.factor = FALSE,
-             value.name = "co2e")
-monthly_co2e = monthly_co2e[, .(co2e = sum(co2e, na.rm = TRUE)), by = .(aid, month, category)]
-
+## The transactions cache carries the canonical aviation emission-intensity
+## override from load_common_data.R; run_info.csv records aviation_override.
 write_parquet(monthly_kr, file.path(cache_dir, "monthly_kr.parquet"))
 write_parquet(monthly_co2e, file.path(cache_dir, "monthly_co2e.parquet"))
 write_parquet(transactions, file.path(cache_dir, "transactions.parquet"))
-
-## Load user data
-users = fread(file.path(data_dir, "konsumtionskollen", "kk-handels-data-dynamic-2024-09-16.csv"))
-names(users) <- gsub(":", ".", names(users))
-names(users) <- gsub("kr$", "_kr", names(users))
-names(users) <- gsub("co2e$", "_co2e", names(users))
+write_parquet(transactions_long, file.path(cache_dir, "transactions_long.parquet"))
 write_parquet(users, file.path(cache_dir, "users.parquet"))
-
-## Load survey data
-survey = read_excel(file.path(data_dir, "survey_pre_treatment", "1648_Svalna_Data.xlsx"))
-setDT(survey)
-names(survey) <- sub("ef_id", "aid", names(survey))
 write_parquet(survey, file.path(cache_dir, "survey.parquet"))
-
-## Load survey endline data
-survey_endline = read_excel(file.path(data_dir, "survey_endline", "1648_data_250115.xlsx"))
-setDT(survey_endline)
-names(survey_endline) <- sub("ef_id", "aid", names(survey_endline))
-write_parquet(survey_endline, file.path(cache_dir, "survey_endline.parquet"))
-
-## Load demographics data
-demographics = read_dta(file.path(data_dir, "misc", "efid_demographics.dta"))
-setDT(demographics)
-names(demographics) <- sub("efid", "aid", names(demographics))
-demographics[, gender := fcase(
-  gender == "Kvinna", "Kvinna",
-  gender == "K", "Kvinna",
-  gender == "Man", "Man",
-  gender == "M", "Man"
-)]
 write_parquet(demographics, file.path(cache_dir, "demographics.parquet"))
-
-## Load SCB data
-scb = fread(file.path(scb_dir, 'JE_Lev_KopplingLopNr.txt'))
-names(scb) <- c("LopNr", "aid")
-deso = fread(file.path(scb_dir, "JE_Lev_Valdelt_EU_2024.txt"))[, .(LopNr, DeSO)]
-names(deso)[2] <- "deso"
-deso_density = fread(file.path(scb_dir, "deso_2018_density.csv"))
-edu_level = fread(file.path(scb_dir, 'JE_Lev_LISA_2024.txt'))
-inc_2023 = fread(file.path(scb_dir, 'JE_Lev_LISA_2023.txt'), select = c("LopNr", "DispInk04",
-  "HuvInkKallaAlt", "StudDelt", "StudDeltTyp", "BostBidrFam", "ArbSokNov", "ArbLos", "ALosDag"))
-scb = scb[deso, on = "LopNr"][deso_density, on = "deso"][edu_level, on = "LopNr"][inc_2023, on = "LopNr"]
-# The register joins above keep every register row, so records for people
-# outside the study linkage get aid = NA; drop them so the cached table is
-# participants only (downstream joins are on aid, so this changes nothing
-# analytically).
-scb = scb[!is.na(aid)]
 write_parquet(scb, file.path(cache_dir, "scb.parquet"))
 
-## Load bank-registered income (raw incoming transactions -> general income level,
-## no month-matching with expenses: mean monthly inflow per aid)
-kk_income = fread(file.path(data_dir, "konsumtionskollen", "handels-export-2025-01-13",
-  "handels-export-2025-01-13", "kk-handels-income-data-2025-01-10.csv"))
-kk_income[, month := trunc.Date(as.Date(date), "months")]
-monthly_bank = kk_income[, .(income = sum(income, na.rm = TRUE)), by = .(aid, month)]
+## Endline survey (this project's input; the other pipelines do not use it).
+survey_endline = read_excel(file.path(data_dir, "survey_endline", "1648_data_250115.xlsx"))
+setDT(survey_endline)
+names(survey_endline) = sub("ef_id", "aid", names(survey_endline))
+write_parquet(survey_endline, file.path(cache_dir, "survey_endline.parquet"))
+
+## Bank-registered income (raw incoming transactions -> general income
+## level, no month-matching with expenses: mean monthly inflow per aid).
+monthly_bank = daily_income[, .(income = sum(income, na.rm = TRUE)), by = .(aid, month)]
 person_bank = monthly_bank[, .(income_bank_raw = mean(income, na.rm = TRUE), n_bank_months = .N), by = aid]
 write_parquet(person_bank, file.path(cache_dir, "bank_income.parquet"))
 
-rm(data_dir, kr_cols, scb_dir, co2e_cols, deso, deso_density, edu_level, inc_2023, kk_income, monthly_bank)
+rm(data_dir, scb_dir, monthly_bank)
+# transactions/users/survey/demographics/scb/survey_endline/person_bank and
+# the monthly aggregates stay in memory: when RUN_TRE.R builds the cache
+# (incomplete at start), the analysis scripts run in this same session and
+# consume them; the shared module's remaining objects (sampling_frame,
+# linkage, daily_income) are unused here and harmless.

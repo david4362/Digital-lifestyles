@@ -1,0 +1,287 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+\usetheme[progressbar=frametitle,numbering=fraction]{metropolis}
+\usepackage{fontspec}
+\setsansfont[Scale=0.9]{Fira Sans}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{url}
+
+\ifdefined\shownotes
+  \setbeameroption{show notes}
+\fi
+
+\definecolor{dlblue}{HTML}{1F4E79}
+\definecolor{dlteal}{HTML}{007C83}
+\definecolor{dlcoral}{HTML}{C44E52}
+\definecolor{dlgrey}{HTML}{5B6570}
+\definecolor{dllight}{HTML}{EEF3F7}
+\definecolor{dlink}{HTML}{22313F}
+
+\setbeamercolor{normal text}{fg=dlink,bg=white}
+\setbeamercolor{alerted text}{fg=dlcoral}
+\setbeamercolor{frametitle}{fg=dlblue,bg=white}
+\setbeamercolor{structure}{fg=dlblue}
+\setbeamercolor{progress bar}{fg=dlteal,bg=dllight}
+\setbeamercolor{item}{fg=dlblue}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=8mm,text margin right=8mm}
+\setlength{\parskip}{0.15em}
+\setlength{\itemsep}{0.15em}
+\AtBeginEnvironment{itemize}{\small}
+
+\graphicspath{{figures/}}
+\input{figures/numbers}
+
+% Metropolis sizes its title page to \paperheight; the 16:9 frame margins
+% make that box slightly overfull. Use a frame-safe height instead.
+\setbeamertemplate{title page}{%
+  \begin{minipage}[c][\dimexpr\paperheight-15pt\relax]{\textwidth}%
+    \vfill%
+    \usebeamertemplate*{title}%
+    \usebeamertemplate*{title separator}%
+    \vfill%
+  \end{minipage}%
+}
+
+\newcommand{\good}[1]{\textcolor{dlteal}{#1}}
+\newcommand{\caution}[1]{\textcolor{dlcoral}{#1}}
+\newcommand{\fname}[1]{\path{#1}}
+\newcommand{\sourcenote}[2]{%
+  \note{Source: \path{#1}\par #2}%
+}
+\newcommand{\resultfig}[1]{%
+  \begin{column}{0.62\textwidth}%
+    \begin{center}%
+      \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{figures/#1}%
+    \end{center}%
+  \end{column}%
+}
+
+\title{Digital lifestyles \& consumption-based emissions}
+\author{}
+\date{}
+
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+  \sourcenote{run_info.csv;EXPORT_README.md}{%
+    This is a frozen real-data export from 2026-10-22. All figures were rebuilt locally from its CSV tables; no new TRE run and no mock results were used. Speaker notes on every slide carry the source tables and context.}%
+\end{frame}
+
+\begin{frame}[t]{Why ask this?}
+  \begin{itemize}
+    \item Digital life could \emph{reduce} emissions by replacing travel, shops and physical media.
+    \item It could also \emph{raise} emissions by making consumption easier, more frequent and more delivery-intensive.
+    \item We lack individual-level evidence linking everyday digital behaviour to what people actually buy.
+    \item Here we link a survey, bank transactions and population registers for one Swedish sample.
+  \end{itemize}
+  \sourcenote{README.md;EXPORT_README.md;run_info.csv}{%
+    Frame the talk as a descriptive association study, not a policy evaluation. The project is called Digital-lifestyles internally; the data come from the Konsumtionskollen study in an SCB trusted research environment.}%
+\end{frame}
+
+\begin{frame}[t]{What is the digital index?}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+      \begin{itemize}
+        \item A score from \IndexItems{} survey questions about how often people use devices and online activities.
+        \item Each answer is put on a common scale, then averaged into one number.
+        \item The final score is standardized to mean \IndexMean{} and SD \IndexSd{}; a \good{1-SD step} is a noticeably more digital lifestyle.
+      \end{itemize}
+    \column{0.48\textwidth}
+      \begin{itemize}
+        \item It is a broad summary of self-reported habits, not a single behaviour.
+        \item The outcome is the estimated annual carbon footprint of purchases, in kg CO\textsubscript{2}e per year.
+        \item The registered 13-question version is retained as a sensitivity check.
+      \end{itemize}
+  \end{columns}
+  \sourcenote{run_info.csv;descriptives.csv;EXPORT_README.md;index_alpha.csv}{%
+    The main score uses 11 questions. Each item is standardised, averaged and standardised again; the analysis-sample mean is \IndexMean{} and the SD is \IndexSd{}. The originally registered 13-question version is retained as a sensitivity check.}%
+\end{frame}
+
+\begin{frame}[t]{Who is in the analysis?}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item \SurveyN{} people answered the survey; \IndexQuestionsN{} completed enough index questions.
+        \item \ValidMonthsN{} had enough bank-transaction months; \MfiveN{} form the full analysis sample.
+        \item \ScreenTimeN{} also reported device-measured screen time; that smaller group is used only for the screen-time check.
+        \item We require at least 3 months of spending in the 12 months before the survey.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_flow.pdf}
+  \end{columns}
+  \sourcenote{sample_flow.csv;EXPORT_README.md}{%
+    The figure counts people, not transaction rows. The spending requirement is at least 3 valid months in the 12 months before the survey. The internal project name for the middle step is the battery gate (at least 8 of 11 questions); the main adjusted model is called M5. Keep those names out of the spoken talk unless someone asks.}%
+\end{frame}
+
+\begin{frame}[t]{Headline: a higher footprint}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item \good{+\MainEstimate{} kg CO\textsubscript{2}e per year per 1-SD step} (95\% CI \MainCI{}, \MainP{}).
+        \item That is about \MainPct{} of the average annual footprint in this sample.
+        \item The estimate stays positive as age, gender, income, education, household, density and city are added.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_headline.pdf}
+  \end{columns}
+  \sourcenote{stepwise_table.csv;calibration_check.csv}{%
+    One standard-deviation step is the exposure scale. The full adjusted model is called M5 internally; the figure shows the same 4,250 people at every step, so changes are from added background variables, not from changing the sample.}%
+\end{frame}
+
+\begin{frame}[t]{Why we report the index, not screen-time hours}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item Device-reported screen time is a rough check on the index, not the exposure itself.
+        \item One 1-SD step corresponds to only \AnchorB{} hours per day, and the screen-time model fit is weak (\AnchorRtwo{}).
+        \item Converting to hours gives \PerHour{} kg CO\textsubscript{2}e per extra hour, but that scale is secondary.
+        \item In a joint model, the index still predicts the footprint; screen time adds no independent signal.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_calibration.pdf}
+  \end{columns}
+  \sourcenote{anchor_check.csv;calibration_check.csv;e4_index_test.csv;e4_diagnostics.csv}{%
+    The screen-time measure is called E4 internally because it is an endline survey question. Avoid the phrase cardinal anchor with outsiders. Per-hour confidence intervals treat the screen-time relationship as fixed.}%
+\end{frame}
+
+\begin{frame}[t]{Where does the extra footprint come from?}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item Broad increases: transport +\TransportEst{}, e-commerce-intensive +\EcomEst{}, digital services +\DigitalEst{} kg/year.
+        \item Insurance, vehicles and public transport are near zero.
+        \item Bars show change as \% of each category's own average.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_decomp.pdf}
+  \end{columns}
+  \sourcenote{decomp_table.csv}{%
+    These are adjusted differences per 1-SD step. Broad groups overlap the largest individual categories, so do not sum the rows. Insurance is the pre-specified placebo: a category where no association was expected.}%
+\end{frame}
+
+\begin{frame}[t]{Most of the extra footprint is simply more spending}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item \good{\VolumeShare{} of the total association} comes from higher spending (+\VolumeKg{} kg CO\textsubscript{2}e).
+        \item The basket changes little: +\CompositionKg{} kg, \CompositionP{}. Footprint and spending rise by nearly the same share (\FootprintPct{} vs \SpendPct{}), a \Premium{} percentage-point gap.
+        \item The accounting remainder just makes the parts add up; it is not a separate channel. E-commerce and digital-service channels are carbon-trivial.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_volume.pdf}
+  \end{columns}
+  \sourcenote{volume_composition.csv;volume_margins.csv;budget_shares.csv}{%
+    The accounting split is: higher spending times the average basket, plus a different basket times average spending, plus an accounting remainder that makes the identity exact. Budget-share shifts are descriptive, not alternative headline models.}%
+\end{frame}
+
+\begin{frame}[t]{Highest vs lowest digital-index groups}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item Adjusted gap between the highest and lowest fifth: \good{+\QuintileGap{} kg CO\textsubscript{2}e per year} (\QuintilePct{} of the mean).
+        \item Spending is +\QuintileSpend{} SEK per year (\QuintileSpendPct{}); carbon per 1,000 SEK is nearly flat.
+        \item The raw income gap between those groups is +\QuintileIncomeRawPct{}.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_quintiles.pdf}
+  \end{columns}
+  \sourcenote{quintile_desc.csv;quintile_contrast.csv}{%
+    D1 and D5 are internal labels for the lowest and highest index groups. The 7.6\% income number compares raw group means; the 12.4\% spending number is an adjusted contrast as a share of the mean, so do not present them as the same estimand.}%
+\end{frame}
+
+\begin{frame}[t]{Which digital activities track the footprint?}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item Phone/video calls stand out: +\CallsEst{} kg CO\textsubscript{2}e per 1-SD step in that question.
+        \item Streaming is negative and gaming also points downward; most other activities are positive or small.
+        \item Dropping calls lowers the index estimate to \NocallsEst{}; the registered 13-question version gives \ThirteenEst{}.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_items.pdf}
+  \end{columns}
+  \sourcenote{item_level.csv;index_variants.csv;index_alpha.csv}{%
+    These are per-question, not per-index, steps. Blue points survive a multiple-testing correction. Two online-shopping questions are excluded from the main index because they partly measure the purchase channel itself; their item-level results are still shown.}%
+\end{frame}
+
+\begin{frame}[t]{Phone/video calls: one question tracks it best}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item Calls alone give +\CallsEst{} kg CO\textsubscript{2}e per 1-SD step and model fit \CallsRtwo{} vs \IndexRtwo{} for the full index.
+        \item \good{About \CallsUniquePct{}} of that association remains after accounting for the other activities.
+        \item Age-adjustment choices barely change it.
+        \item Calls also track working from home and overtime, not a phone-carbon channel --- likely a connected, active lifestyle marker.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_calls.pdf}
+  \end{columns}
+  \sourcenote{calls_stepwise.csv;calls_age_specs.csv;calls_joint_comparison.csv;calls_e1_outcomes.csv;calls_category.csv;item_level_joint.csv}{%
+    The calls diagnostics are exploratory. Work-from-home and overtime are endline frequency questions on a 1-7 scale, so the figure reports points per 1-SD step, not days. Internet and telecom emissions are essentially flat.}%
+\end{frame}
+
+\begin{frame}[t]{The predicted stay-at-home mechanism fails}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item The pre-registered prediction was that more digital life means fewer out-of-home activities, which would lower transport emissions.
+        \item Instead, out-of-home activity is +\OohEst{} and at-home activity +\HomeEst{} points per 1-SD step.
+        \item Those activity measures explain at most \MediationMax{} of the transport association; report this as a registered negative result, not a post-hoc story.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_mechanism.pdf}
+  \end{columns}
+  \sourcenote{e1_leisure_index.csv;e1_leisure_mechanism.csv;mech_diag.csv}{%
+    The activity questions are called E1 internally and were asked at endline; the spending window is pre-survey. At-home items have ceiling effects. The right-hand figure deliberately shows only transport mediation rows to avoid mixing outcomes.}%
+\end{frame}
+
+\begin{frame}[t]{The positive association survives checks}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \begin{itemize}
+        \item Neighbourhood fixed effects +\DesoEst{}; flexible age adjustment +\SplineEst{}; alternate index versions all remain positive.
+        \item Adjusting for linked accounts attenuates the headline by only \AccountAtt{}; sampling-weighted and random-frame subgroups are positive but smaller, and interactions are not significant.
+      \end{itemize}
+    \end{column}
+    \resultfig{slide_robustness.pdf}
+  \end{columns}
+  \sourcenote{figures/manifest.csv}{%
+    Internal names in the figure have been translated: DeSO fixed effects means small-neighbourhood fixed effects, IPW means sampling-weighted, and the main result is the full adjusted model. A plausible spending-to-income range gives +\SpendingPlausible{}. Long-window travel estimates are weak and are not shown as headline evidence.}%
+\end{frame}
+
+\begin{frame}[t]{What this does and does not say}
+  \begin{itemize}
+    \item \caution{Association, not causation}: cross-sectional design; unobserved lifestyle and selection remain.
+    \item Screen time and activity questions are endline; the spending window is pre-survey. Per-hour intervals treat the screen-time link as fixed.
+    \item \alert{Post-registration correction}: the main index drops two purchase-channel questions; the 13-question version is retained.
+    \item \alert{Weak screen-time check}: model fit is \AnchorRtwo{}; the 1-SD index step is the headline scale.
+    \item \alert{Frozen export}: \RunDate{} predates later loader and aviation-intensity changes; a new TRE run would refresh those numbers.
+    \item Broad categories overlap (do not sum); budget shares and the raw income gap are descriptive; calls diagnostics are exploratory.
+    \item At-home activity items have ceiling effects; the pooled sample is not nationally representative.
+  \end{itemize}
+  \sourcenote{EXPORT_README.md;notes/continuity.md;e4_diagnostics.csv;mech_diag.csv}{%
+    If asked about currentness: the 2026-11-05 aviation override and the 2026-11-07 plotting-code migration postdate this export. The numbers here are a frozen real-data snapshot, not the output of the current code.}%
+\end{frame}
+
+\begin{frame}[t]{Takeaways and practical notes}
+  \small
+  \begin{itemize}
+    \item \good{1.} Self-reported digital intensity marks a higher-spending, higher-footprint, sociable lifestyle.
+    \item \good{2.} The extra footprint is mostly proportional spending volume, not a dirtier basket or a digital channel.
+    \item \good{3.} The pre-registered demobilization mechanism fails; report the negative result.
+    \item Sources and speaker context are in the Beamer notes; a separate notes-enabled PDF is available.
+    \item All figures were regenerated locally from \SourceRun{} CSVs; \fname{verify_local_figures.R} checks provenance.
+    \item Two original diagnostic scatterplots are not exactly reproducible from the export; both aggregate-only replacements are in \fname{full/}. No TRE rerun is needed.
+    \item \fname{verify_export.R} passes 20/20 on the export; no mock results are shown.
+  \end{itemize}
+  \sourcenote{presentation/figures/manifest.csv;R/verify_export.R}{%
+    The clean presentation PDF is \fname{build/slides.pdf}. The notes-enabled PDF is \fname{slides_notes.pdf}, with one notes page after each slide. The generator is \fname{make_figures.R}; the second aggregate-only replacement is in \fname{full/}. The frozen export passes all 20 invariant checks; local figure verification regenerates 31 figures from CSVs only.}%
+\end{frame}
+
+\end{document}

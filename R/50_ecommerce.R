@@ -1,6 +1,8 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
+library(patchwork)
 
 # Person x category annual tables: canonical recipe from 20
 ca = annualise(monthly_co2e, "co2e")
@@ -40,21 +42,39 @@ outlab = c(ecom_co2e = "E-commerce (CO2e)", rest_co2e = "Rest of consumption (CO
   rest_kr = "Rest of consumption (SEK)", sh_kr = "E-commerce share (SEK)")
 speclab = c(M5 = "Full controls", "M5+rest_co2e" = "+ Rest of consumption",
   "M5+rest_kr" = "+ Rest of consumption")
-panel = function(s, unit, ttl) {
-  y = seq_len(nrow(s))
-  plot(s$per_sd, y, xlim = range(c(s$lo, s$hi)),
-    yaxt = "n", pch = 16, col = ifelse(s$p < 0.05, "steelblue", "grey50"),
-    xlab = paste(unit, "per index SD (HC3 95% CI)"), ylab = "", main = ttl)
-  axis(2, y, paste0(outlab[s$outcome], " [", speclab[s$spec], "]"), las = 1, cex.axis = 0.7)
-  segments(s$lo, y, s$hi, y, col = "grey40")
-  abline(v = 0, lty = 2, col = "grey")
+
+# Vertical column-chart panel recipe — first use this script; downstream
+# consumer: 68_volume_composition. d carries the display columns
+# (label, value).
+column_chart = function(d, xlab, ylab, title) {
+  d = copy(d)
+  d$label = factor(d$label, levels = d$label)
+  ggplot(d, aes(x = label, y = value)) +
+    geom_col(fill = "steelblue") +
+    labs(x = xlab, y = ylab, title = title) +
+    theme_minimal()
 }
-png(file.path(out_dir, "ecommerce_levels.png"), width = 1800, height = 500, res = 120)
-par(mfrow = c(1, 3), mar = c(5, 15, 4, 2))
-panel(chk[outcome %in% c("ecom_co2e", "rest_co2e")], "kg CO2e", "Levels, CO2e")
-panel(chk[outcome %in% c("ecom_kr", "rest_kr")], "SEK", "Levels, SEK")
-panel(chk[grepl("^sh_", outcome)], "share", "E-com share of total")
-dev.off()
+
+fig_kg = chk[outcome %in% c("ecom_co2e", "rest_co2e"), .(
+  label = unname(paste0(outlab[outcome], " [", speclab[spec], "]")),
+  est = per_sd, lo = lo, hi = hi, sig = p < 0.05)]
+fig_kr = chk[outcome %in% c("ecom_kr", "rest_kr"), .(
+  label = unname(paste0(outlab[outcome], " [", speclab[spec], "]")),
+  est = per_sd, lo = lo, hi = hi, sig = p < 0.05)]
+fig_sh = chk[grepl("^sh_", outcome), .(
+  label = unname(paste0(outlab[outcome], " [", speclab[spec], "]")),
+  est = per_sd, lo = lo, hi = hi, sig = p < 0.05)]
+ggsave(file.path(out_dir, "ecommerce_levels.png"),
+  wrap_plots(list(
+    forest_plot(fig_kg, "kg CO2e per index SD (HC3 95% CI)", "Levels, CO2e",
+      point_col = ifelse(fig_kg$sig, "steelblue", "grey50")),
+    forest_plot(fig_kr, "SEK per index SD (HC3 95% CI)", "Levels, SEK",
+      point_col = ifelse(fig_kr$sig, "steelblue", "grey50")),
+    forest_plot(fig_sh, "share per index SD (HC3 95% CI)",
+      "E-com share of total",
+      point_col = ifelse(fig_sh$sig, "steelblue", "grey50"))),
+    nrow = 1),
+  width = 15, height = 4.17, dpi = 120)
 
 # Within income quintile (stratified, M5 minus income): survives if not just income
 f_noinc = update(form0, . ~ . - income - income_scb - income_bank)
@@ -73,22 +93,18 @@ qr = rbindlist(lapply(levels(d$income_q), function(q) {
 qr[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se)]
 fwrite(qr, file.path(out_dir, "ecommerce_quintile.csv"))
 
-png(file.path(out_dir, "ecommerce_quintile.png"), width = 1400, height = 500, res = 120)
-par(mfrow = c(1, 2), mar = c(5, 9, 4, 2))
-for (yc in c("ecom_co2e", "ecom_kr")) {
+q_panels = lapply(c("ecom_co2e", "ecom_kr"), function(yc) {
   s = qr[outcome == yc]
-  yy = seq_len(nrow(s))
+  fig = s[, .(label = paste("Income quintile", sub("^Q", "", income_q)),
+    est = per_sd, lo = lo, hi = hi)]
   unit = ifelse(yc == "ecom_co2e", "kg CO2e", "SEK")
-  ttl = ifelse(yc == "ecom_co2e", "E-commerce CO2e by income", "E-commerce SEK by income")
-  plot(s$per_sd, yy, xlim = range(c(s$lo, s$hi)),
-    yaxt = "n", pch = 16, col = ifelse(s$p < 0.05, "steelblue", "grey50"),
-    xlab = paste(unit, "per index SD (HC3 95% CI)"), ylab = "",
-    main = ttl)
-  axis(2, yy, paste("Income quintile", sub("^Q", "", s$income_q)), las = 1)
-  segments(s$lo, yy, s$hi, yy, col = "grey40")
-  abline(v = 0, lty = 2, col = "grey")
-}
-dev.off()
+  ttl = ifelse(yc == "ecom_co2e", "E-commerce CO2e by income",
+    "E-commerce SEK by income")
+  forest_plot(fig, paste(unit, "per index SD (HC3 95% CI)"), ttl,
+    point_col = ifelse(s$p < 0.05, "steelblue", "grey50"))
+})
+ggsave(file.path(out_dir, "ecommerce_quintile.png"), wrap_plots(q_panels, nrow = 1),
+  width = 11.67, height = 4.17, dpi = 120)
 
 # Descriptives: do high-digital households just earn and spend more?
 d[, dig_q := cut(index, quantile(index, probs = seq(0, 1, 0.2), na.rm = TRUE),
@@ -101,13 +117,14 @@ desc = d[inc0, on = "aid", nomatch = 0][, .(n = .N, income = mean(`income-level`
 setorder(desc, dig_q)
 fwrite(desc, file.path(out_dir, "ecommerce_desc.csv"))
 
-png(file.path(out_dir, "ecommerce_desc.png"), width = 1000, height = 500, res = 120)
-par(mfrow = c(1, 2), mar = c(5, 5, 4, 2))
 dignm = paste("Quintile", sub("^D", "", desc$dig_q))
-barplot(setNames(desc$income, dignm), col = "steelblue",
-  xlab = "Digital quintile (index)", ylab = "mean disposable income",
-  main = "Income by digital quintile")
-barplot(setNames(desc$tot_kr, dignm), col = "steelblue",
-  xlab = "Digital quintile (index)", ylab = "mean total spending (SEK/yr)",
-  main = "Consumption by digital quintile")
-dev.off()
+ggsave(file.path(out_dir, "ecommerce_desc.png"),
+  wrap_plots(list(
+    column_chart(desc[, .(label = dignm, value = income)],
+      "Digital quintile (index)", "mean disposable income",
+      "Income by digital quintile"),
+    column_chart(desc[, .(label = dignm, value = tot_kr)],
+      "Digital quintile (index)", "mean total spending (SEK/yr)",
+      "Consumption by digital quintile")),
+    nrow = 1),
+  width = 8.33, height = 4.17, dpi = 120)

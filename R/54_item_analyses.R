@@ -1,6 +1,7 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
 
 # Person x category annual emissions, canonical recipe from 20
 cat_annual = annualise(monthly_co2e, "co2e")
@@ -91,21 +92,12 @@ fwrite(item_level, file.path(out_dir, "item_level.csv"))
 # Forest figure, built directly from the final table: one row per item in
 # reversed battery order (Computer at the top of the plot), with the axis
 # labels taken from those same rows, so a label cannot sit on another
-# item's estimate. (An earlier version plotted labels and points from
-# different orderings — e.g. "Social media" showed Streaming's negative
-# value while the CSV said +206 kg.)
-fig = item_level[match(rev(item_names), item)]
-y = seq_len(nrow(fig))
-
-png(file.path(out_dir, "item_level_forest.png"), width = 1000, height = 700, res = 120)
-par(mar = c(5, 12, 4, 2))
-plot(fig$estimate, y,
-  xlim = range(c(fig$lo, fig$hi)),
-  yaxt = "n", pch = 19,
-  col = ifelse(fig$significant_bh, "steelblue", "grey50"),
-  xlab = "kg CO2e per one-SD item increase (HC3 95% CI)", ylab = "",
-  main = "Item-level digital gradients")
-axis(2, y, item_labels[fig$item], las = 1, cex.axis = 0.8)
-segments(fig$lo, y, fig$hi, y, col = "grey40")
-abline(v = 0, lty = 2, col = "grey")
-dev.off()
+# item's estimate.
+fig = item_level[match(rev(item_names), item), .(
+  label = unname(item_labels[item]), est = estimate, lo = lo, hi = hi,
+  sig = significant_bh)]
+ggsave(file.path(out_dir, "item_level_forest.png"),
+  forest_plot(fig, "kg CO2e per one-SD item increase (HC3 95% CI)",
+    "Item-level digital gradients",
+    point_col = ifelse(fig$sig, "steelblue", "grey50")),
+  width = 8.33, height = 5.83, dpi = 120)

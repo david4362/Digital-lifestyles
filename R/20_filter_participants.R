@@ -30,9 +30,8 @@ battery_tol = 3
 battery_min_main = length(index_main_items) - battery_tol
 battery_min_nocalls = length(index_nocalls_items) - battery_tol
 
-# Battery gate: answered at least battery_min_main of the main index items.
-# Replaces the earlier complete-13-item rule (the pre-registration allows up
-# to 3 missing).
+# Battery gate: answered at least battery_min_main of the main index items
+# (the pre-registration allows up to 3 missing).
 n_answered_main = rowSums(!is.na(survey_latest[, ..index_main_items]))
 answered_survey = survey_latest[n_answered_main >= battery_min_main]
 
@@ -111,7 +110,8 @@ decomp_targets = function(annual, groups) {
 # Headline outcome: total annual CO2e (sum of winsorized categories)
 emissions = annualise(monthly_co2e, "co2e")[, .(co2e = sum(y, na.rm = TRUE)), by = aid]
 
-# Category groups (leaf names from metadata/metadata.md), shared by the decomposition
+# Category groups (leaf names from the study metadata: metadata.md in the
+# workspace data/metadata/ folder), shared by the decomposition
 # scripts so the grouping cannot drift between them.
 transport_co2e = c("fuel_co2e", "car_maint_co2e", "car_rent_co2e", "public_trans_co2e",
   "bus_co2e", "taxi_co2e", "train_bus_co2e", "aviation_co2e", "ferry_co2e",
@@ -126,7 +126,7 @@ digital_co2e = "internet_tele_co2e"
 # placebo is insurance ("insurance_co2e" in 43/52).
 placebo_co2e = "insurance_co2e"
 vehicles_co2e = "vehicles_co2e"
-# Registered out-of-home social/cultural group (RA checklist 2026-10-16):
+# Registered out-of-home social/cultural group:
 # restaurants, bars, culture/entertainment, and other leisure services.
 # sports_co2e is sports goods and stays in the e-commerce goods group.
 social_co2e = c("restaurant_co2e", "bar_co2e", "culture_co2e", "leisure_other_co2e")

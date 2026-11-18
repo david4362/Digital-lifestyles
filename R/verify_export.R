@@ -10,13 +10,6 @@
 # so a violation means the copy-out or the run is broken, not just "unexpected":
 # what landed in the repo must be what the pipeline wrote and must be
 # internally consistent across files.
-#
-# Checks 14-15 (volume-vs-composition) require an export from a run that
-# includes 68_volume_composition.R; checks 16-20 (item scaling, calls
-# diagnostics) require 69_calls_diagnostics.R. The frozen 2026-10-07 export
-# predates both 69 and the item-scaling fix, so those checks need the next
-# TRE rerun; against the 2026-10-07 export this script will fail on the
-# missing calls_* files and the old index-variant labels.
 
 library(data.table)
 # modellab (the M0-M5 step names) comes from the label script
@@ -99,7 +92,7 @@ ok_register_identity = all(abs(register$per_hour - register$per_sd / h_per_sd) <
 
 # 11. The anchor feeding the pipeline is the bivariate one: it is the only row
 #     marked used_in_pipeline, and its b equals h_per_sd and the anchor slope
-#     recorded in e4_diagnostics. (Earlier gap: three anchor rows, none marked.)
+#     recorded in e4_diagnostics.
 used = anchor[used_in_pipeline == TRUE, model]
 ok_anchor = length(used) == 1L && used == "bivariate" &&
   abs(anchor[model == "bivariate", b_index] - h_per_sd) < 1e-10 &&
@@ -116,8 +109,7 @@ ok_run_info = !grepl("q11b_7", run_info$index_items) && !grepl("q11b_8", run_inf
   grepl("q11_1", run_info$index_items) && !grepl("q11b_2", run_info$index_nocalls_items)
 
 # 14. volume_margins' M5 CO2e row is the headline M5: 68 decomposes exactly
-#     the published gradient (the run-time assertion was removed in the
-#     2026-10-12 de-defensing pass; this check carries the guarantee).
+#     the published gradient.
 ok_volume_headline = abs(volmarg[outcome == "co2e" & spec == "M5", per_sd] -
   main_m5$per_sd) < 1e-6
 
@@ -135,12 +127,11 @@ ok_volume_accounting = abs(
       volcomp[component == "headline_gradient", estimate]) < 1e-6
 
 # 16. Item-level and weighting analyses consume z-standardized item columns.
-#     This catches the earlier join bug that left raw 1-6 values in analysis_data.
 ok_item_scaling = nrow(item_scaling) == 13L &&
   all(abs(item_scaling$mean) < 1e-10) &&
   all(abs(item_scaling$sd - 1) < 1e-10)
 
-# 17-20. Calls diagnostics (David's branch): age specifications share one
+# 17-20. Calls diagnostics: age specifications share one
 #     sample and export all three functional forms; the separate/joint item
 #     comparison shares one sample; the calls M0-M5 ladder shares one sample;
 #     the category output has both specifications and an exactly additive

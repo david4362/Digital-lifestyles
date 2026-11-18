@@ -14,18 +14,13 @@ Three headline results structure the paper:
 
 Pre-specified heterogeneity: age, gender, urbanity.
 
-## Headline results — real-data run (2026-10-13, `output/2026-10-13/`)
+## Headline results — real-data run
 
 Frozen M5 complete-case sample N = 4,250 (survey 12,153 → battery gate 11,172 →
 ≥ 3 valid spending months (> 3,000 SEK) in the 12-month pre-survey window &
 filters 4,392 → controls 4,251 → M5 complete case 4,250;
 E4 anchor sample 2,082). Headline scale: kg CO2e per index SD; per-hour values
-are derived (per-SD ÷ 0.338 h/SD) and secondary. The 2026-10-13 run
-reproduces the frozen 2026-10-07 spec exactly (all shared tables numerically
-bit-identical; three files also changed label text or schema — stepwise's
-variant label, descriptives' sample label, equivalence_table gaining
-pct_of_mean) except where the 2026-10-12 item-scaling fix corrected
-item-level numbers — noted inline below.
+are derived (per-SD ÷ 0.338 h/SD) and secondary.
 
 - **Main index (11 items), M5: +203.9 kg CO2e per index SD** (95% CI 140.7–267.2,
   p = 2.9e-10, R² = 0.366). Ladder: M0 +179.7 → M1 +274.2 → M2 +197.8 →
@@ -33,8 +28,7 @@ item-level numbers — noted inline below.
 - **No-calls variant (10 items), M5: +140.8** (CI 77.4–204.2, p = 1.4e-05).
 - **The e-commerce items do not drive the relation**: the 13-item variant
   (q11b_7/q11b_8 back in) gives **+237.2** — 33.3 kg/SD (~16%) more than
-  the main index (corrected 2026-10-13; the 2026-10-07 value +214.3 was a
-  raw-item-weighted composite). The item that matters is **calls**
+  the main index. The item that matters is **calls**
   (+345.9 kg/item-SD, the largest of all 13; dropping it: 203.9 → 140.8).
 - **Calibration audited**: bivariate anchor b = 0.3384 h per index SD
   (n = 2,082, R² = 0.018, r = 0.134); derived per-hour M5 = 602.6 kg/h,
@@ -44,15 +38,14 @@ item-level numbers — noted inline below.
   (p = .148); index-vs-E4 difference in the joint model +204.3 (p = .0039) —
   and this holds in every decomposition category (`e4_rq1_robustness.csv`,
   `e4_rq2_robustness.csv`, `e4_index_test.csv`).
-- **Item level** (per item SD, BH-adjusted; corrected 2026-10-13):
+- **Item level** (per item SD, BH-adjusted):
   calls +345.9***, social media +190.7***, online selling +189.2***
   (excluded), information search +140.9***, smartphone +136.4***,
   TV +126.5***, e-commerce +108.7** (excluded), computer +69.9*,
   console +39.4 ns, digital reading +24.5 ns, tablet +23.0 ns;
   gaming −64.8 (BH p = .061); streaming −80.2* (BH p = .020).
-  `item_scaling_check.csv` confirms all items z-scaled on the analysis
-  sample (the 2026-10-07 export's slopes were per raw scale point,
-  mislabelled per item SD; p-values identical under the rescaling).
+  `item_scaling_check.csv` confirms all items are z-scaled on the analysis
+  sample.
 - **Calls diagnostics (`calls_*.csv`, `item_level_joint.csv`)**: one item
   carries more than the composite — calls alone at M5 **+345.9 kg per item
   SD** (p = 2.5e-27, n = 4,243), **R² = 0.378 vs 0.366 for the full
@@ -77,10 +70,7 @@ item-level numbers — noted inline below.
   long-distance +25.3, p = .058; short +20.1, p = .116); digital services +1.7;
   public transport −0.9 and vehicles +0.03 ns; placebo insurance +0.14 ns.
 - **Bank-account coverage**: M5 + accounts (linear) −10.7% (p ≈ 1e-08);
-  + account FE −10.8% (point estimate only in the 2026-10-13 export: a
-  singleton account count gives leverage 1, so HC3 SEs are undefined and
-  that row's SE/p/CI are empty — code now fits account-group FE (1/2/3/4+);
-  numbers refresh on the next TRE rerun). By stratum: 1 account +113.2 (p = .032),
+  + account-group FE (1/2/3/4+) −10.8%. By stratum: 1 account +113.2 (p = .032),
   2 +104.8 (p = .062), 3 +234.2 (p = .0004), 4+ +298.9 (p = .00014) — the
   gradient concentrates among the better-covered (3+ accounts). Spending-
   plausible sample (50–150% of register income): +154.7 (−24.1%). Index →
@@ -114,37 +104,39 @@ item-level numbers — noted inline below.
 `R/verify_export.R` re-checks the copied export after any TRE run (newest folder under `output/`)
 (20 invariants: ladder-N constancy, decomposition ≡ headline, variants ≡
 ladder, per-hour identities, anchor consistency, volume-vs-composition ≡
-headline, item z-scaling, calls sample identities). **All 20 pass on the
-2026-10-13 `output/2026-10-13/` copy-out** (the first export with the
-item-scaling fix and the calls diagnostics) and on the mock pipeline.
-
-Two post-run corrections to `output/2026-10-13/` (2026-10-13 review pass):
-the derived columns of `equivalence_table.csv` (t1/t2, p_tost, lo90/hi90,
-pass, feasible, mde80*) were backfilled — the TOST divides by `se_hour` as
-the data dictionary specifies; the run-time code mixed the per-hour bounds
-with the per-SD SE (pass/feasible flags unchanged) — and the copy of
-`export_data_dictionary.csv` was refreshed to the current
-`R/metadata/export_data_dictionary.csv` (the run-time copy predated the
-metadata consolidation: it documented the removed `item_figure_check.csv`
-and lacked the `item_scaling_check` / `calls_*` entries). The account-FE
-row of `account_coverage.csv` keeps its frozen numbers (see the coverage
-bullet above).
+headline, item z-scaling, calls sample identities). All 20 pass on the
+real export and on the mock pipeline.
 
 ## Data
 
 This project **reuses the Konsumtionskollen data** (bank transactions categorized to COICOP and converted to CO2e, baseline survey, register linkage). No data lives in this repo.
 
-- **Local mock data** (realistic structure, partly scrambled real values — treat as non-substantive): `../Konsumtionskollen/default_filter.RData` (5.2 GB, git-ignored there). Contains `survey` (4,353 × 114 — full questionnaire incl. the `q15_*` time-use battery), `users` (225 cols incl. age, sex, education, pop density), `transactions` (3.5M × 166), `monthly_emissions`, `monthly_spending`, `monthly_incomes`.
-- **Real data**: in the SCB TRE (Trusted Research Environment). Scripts must run unchanged there; follow the loader pattern from `Konsumtionskollen/10_load_data.R`.
+**Delivered grain:** the transactions `.dta` has **one row per `aid × date`**.
+All sub-day transactions of a category are summed into that day's wide `_kr` /
+`_co2e` cell before delivery, so a row typically has several populated columns
+and no single-transaction detail survives. `R/10_load_data.R` therefore melts
+the wide columns and sums per `aid × month × category`; no analysis script
+treats a dta row as one transaction.
 
-The 5.2 GB local mock RData was only used by the old exploratory scripts (removed in the 2026-10-12 cleanup — see git history). The analysis pipeline reads the parquet cache built from the raw TRE data by `R/10_load_data.R`; for local pipeline testing without real data, use `R/RUN_MOCK.R` (synthetic data from `R/00_mock_data.R`).
+- **Real data**: in the SCB TRE (Trusted Research Environment). Scripts must run unchanged there. The raw-read core is shared with the other projects: `R/load_common_data.R` (a byte-identical synced copy in all three project repos; canonical master at the workspace `scripts/load_common_data.R` — copy it alongside the scripts when syncing into the TRE) owns the TRE paths, the raw reads, the renames, the SCB join and the **canonical aviation emission-intensity override** (≈ 0.166 kg CO2e/SEK on `aviation_co2e`; see `data/common-data.md` §6). `run_info.csv` records `aviation_override`.
+- **Mock data**: for local pipeline testing without real data, use `R/RUN_MOCK.R`, which builds synthetic data from the **shared generator** — committed in this repo as the synced copy `R/generate_mock_data.R`, identical to the canonical master `scripts/generate_mock_data.R` at the workspace level; the single synthetic study population for all projects, sourced via the thin adapter `R/00_mock_data.R` (plants and faults documented in the generator header and `data/common-data.md`).
+- **Study metadata**: the survey
+  codebooks + questionnaires, SNES codebook, SCB Variabellista, category/field
+  lists (`metadata.md`) and the export data dictionary live at the workspace
+  level in `data/metadata/`; the cross-projects data knowledge document is
+  `data/common-data.md`. This repo carries a **synced copy at `metadata/`**
+  (next to `R/`) so it runs and publishes stand-alone — the runners'
+  `../metadata` candidate resolves it; sync it from the workspace
+  `data/metadata/` when that changes (same rule as `load_common_data.R` and
+  `.lintr`). In the TRE keep a copy next to the pipeline at
+  `chalmers/digital_lifestyles/metadata/` — `RUN_TRE.R`/`RUN_MOCK.R` fail
+  fast if it is missing (70 copies the dictionary into every export).
 
 ### Key variables (survey)
 
-**Screen-time anchor = item E4 in the *endline* survey** (confirmed by DA 2026-07-18): device-assisted average *daily* screen time in hours:minutes for the previous week, read from iOS "Skärmtid" / Android "Digitalt välmående". **The endline survey is not in the local mock RData** (baseline only); it exists in the TRE. No endline codebook located yet.
+**Screen-time anchor = item E4 in the *endline* survey**: device-assisted average *daily* screen time in hours:minutes for the previous week, read from iOS "Skärmtid" / Android "Digitalt välmående". The endline survey exists in the TRE (read by `10_load_data.R`) and is synthesized by `scripts/generate_mock_data.R` for local mock runs. Endline questionnaire and codebook live in `data/metadata/`.
 
-Baseline survey blocks (CONFIRMED against the official codebook, 2026-08-21 — see
-`docs/Pre-treatment_survey_codebook.csv` and `notes/continuity.md`):
+Baseline survey blocks (see `data/metadata/Pre-treatment Survey Codebook.csv`):
 
 | Block | Content (codebook) | Role |
 |---|---|---|
@@ -160,8 +152,6 @@ z-standardized on the analysis sample, unweighted mean of answered items
 anchor regression and every per-SD↔per-hour conversion ingredient are
 audited in `calibration_check.csv`.
 
-Until the endline data/codebook is available locally, development proceeds with a synthetic endline E4 (see `notes/continuity.md`). The real endline (E4 anchor, E1 mechanisms) is read in the TRE by `10_load_data.R`; the numbers above are from the real run.
-
 ## Pipeline
 
 The analysis pipeline lives in **`R/`** (real data in the SCB TRE;
@@ -170,11 +160,12 @@ sourced in order:
 
 | Script | Purpose |
 |---|---|
-| `RUN_TRE.R` | Entry point: reads the parquet cache (or builds it via `10_load_data.R`), sources 20–70 in order, then copies the export README + data dictionary into the export and writes a run manifest |
-| `RUN_MOCK.R` | Local end-to-end pipeline test on `00_mock_data.R` (no real data, throwaway output dir) |
+| `RUN_TRE.R` | Entry point: reads the parquet cache (or builds it via `10_load_data.R`), sources 20–75 and `70_run_info.R` in order, then copies the export README + data dictionary into the export and writes a run manifest |
+| `RUN_MOCK.R` | Local end-to-end pipeline test on the shared generator (no real data, throwaway output dir) |
 | `verify_export.R` | Post-run invariant checks on a copied export, 20 checks (ladder-N constancy, decomposition ≡ headline, variants ≡ ladder, per-hour identities, anchor consistency, volume-split identity, item z-scaling, calls sample identities) |
-| `00_mock_data.R` | Synthetic dataset for local pipeline testing |
-| `10_load_data.R` / `11_read_cache.R` | Raw TRE data → parquet cache / cache reader |
+| `00_mock_data.R` | Thin adapter: sources the repo-local synced copy `R/generate_mock_data.R` of the shared generator (canonical master at the workspace `scripts/generate_mock_data.R`; committed in every project repo so this one runs stand-alone) — the single synthetic population for all projects, aviation override included (DL plants: battery/E4/E1/mediation/gradients; faults: duplicates, partial batteries, opt-outs, rent faults, low-spend, no-bank-income) |
+| `load_common_data.R` / `generate_mock_data.R` | Synced identical copies of the shared raw-read core and the shared mock generator (canonical masters at the workspace `scripts/`; sync rule in the file headers) |
+| `10_load_data.R` / `11_read_cache.R` | Project views + parquet cache on top of the shared core (monthly aggregates, endline survey, bank income) / cache reader |
 | `20_filter_participants.R` | Sample filters; **the index item sets (main = prereg minus e-commerce/online selling)**, the battery gate (≥ 8 of 11 answered, the prereg tolerance of ≤ 3 missing), the shared `annualise()` outcome recipe, category groups, person-level coverage table, and the versioned export dir |
 | `30_time_estimate.R` | E4 screen-time parse (raw + 18 h/day rule) and the raw item battery |
 | `40_control_vars.R` | Controls; the frozen M5 complete-case sample; **the pre-registered index construction** (items z-scaled on the analysis sample, mean of answered items, re-standardized) + no-calls variant; the cardinal anchor (bivariate, `h_per_sd` = hours per index SD); the M5 formula on `index` |
@@ -182,26 +173,29 @@ sourced in order:
 | `67_mechanism.R` | **Pre-registered leisure mechanism (result 3)**: E1 out-of-home / at-home leisure composites, index-vs-leisure gradients, transport & total gradient without/with the mediators (`mech_diag.csv` validates the E1 item codes on the data first) |
 | `68_volume_composition.R` | **Volume vs. composition of the headline gradient** ("buys more" vs. "buys dirtier"): M5 margins in CO2e, emission-relevant spending (kr minus rent) and basket intensity (kg CO2e per 1,000 SEK), the accounting split at sample means (volume component + composition component + covariance residual = headline), budget-share (Engel) gradients per category, and the adjusted D5–D1 index-quintile contrasts (`volume_margins.csv`, `volume_composition.csv`, `budget_shares.csv`, `quintile_desc.csv`, `quintile_contrast.csv`) |
 | `69_calls_diagnostics.R` | **Calls (q11b_2) deep-dive**: calls M0–M5 ladder, separate-vs-conditional item comparison + joint item model (`item_level_joint.csv`), category decomposition (groups + leaves, separate and conditional), age descriptives/specifications, and E1 work outcomes (`calls_*.csv`) |
-| `70_run_info.R` | Run manifest (`run_info.csv`) + copies the export data dictionary (`metadata/export_data_dictionary.csv`) into the export |
+| `69_sample_representativeness.R` | Recruitment-stream composition, random-frame benchmark, inverse-probability sampling weights, and stream-specific / IPW gradients |
+| `71`–`75` | Registered out-of-home social/cultural group (`71`), joint age-band interaction test (`72`), calls-sociality diagnostics (`73`), social-media and gaming SEK spending (`74`), and 24-month window travel sensitivity (`75`) |
+| `70_run_info.R` | Run manifest (`run_info.csv`) + copies the export data dictionary (from the central study metadata resolved by the runners into `metadata_dir`) into the export |
 
 Outputs go to a dated folder `output/<run date>/` next to the TRE cache
 (defined once in 20; runs never overwrite each other — `run_info.csv`
 records the run date and spec). After copying an export out of the TRE,
 run `verify_export.R` from `R/` — it checks the newest folder under
 `output/` automatically (20 invariant checks). See `R/EXPORT_README.md`
-(copied into every export). Real exports are versioned in the repo as
-dated folders under `output/`: `output/2026-10-13/` (latest — item-scaling
-fix + calls diagnostics), `output/2026-10-07/` (superseded; predates the
-item-scaling fix) and `output/2026-09-25/` (superseded first pass, 13-item
-pipeline index, complete-battery rule).
-
-The old exploratory scripts (pre-codebook screen-time search against the local
-mock RData) were removed in the 2026-10-12 cleanup — retrievable from git
-history.
+(copied into every export). Real exports are stored in the repo as
+dated folders under `output/`.
 
 ## Conventions
 
-Inherited from Konsumtionskollen: numbered scripts sourced in order; `output/` for all generated artifacts; person-level aggregation with P99 winsorization for outliers; HC3 robust SEs for cross-sectional models. See `../Konsumtionskollen/01_utils.R` before re-implementing helpers.
+Canonical coding guidelines: [`CODING-GUIDELINES.md`](../../CODING-GUIDELINES.md)
+at the workspace root (clarity for non-programmer reviewers; no defensive
+programming; data.table + native R; `=` assignments; HC3 robust SEs; frozen
+samples; dated outputs; mock-first verification). The specifics below are
+this project's application of it.
+
+Inherited from Konsumtionskollen (now `../low-carbon-lifestyles/`): numbered
+scripts sourced in order; `output/` for all generated artifacts; person-level
+aggregation with P99 winsorization for outliers.
 
 ## Continuity
 

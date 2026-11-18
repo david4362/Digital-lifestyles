@@ -9,11 +9,24 @@
 # (70_run_info.R, the last sourced script).
 # Scripts 20-75, sourced in order.
 cache_dir = file.path("/safe", "data", "studie_konsumtion_och_attityder", "chalmers", "digital_lifestyles", "cache")
-cache_files = c("monthly_kr.parquet", "monthly_co2e.parquet", "demographics.parquet",
-  "survey.parquet", "survey_endline.parquet", "users.parquet", "scb.parquet",
-  "bank_income.parquet")
-# transactions.parquet stays in the cache but is neither required for the
-# pipeline to run nor loaded by 11_read_cache (no analysis script uses it).
+cache_files = c("monthly_kr.parquet", "monthly_co2e.parquet", "transactions_long.parquet",
+  "demographics.parquet", "survey.parquet", "survey_endline.parquet", "users.parquet",
+  "scb.parquet", "bank_income.parquet")
+# transactions.parquet and transactions_long.parquet stay in the cache; the
+# long core is consumed by 10_load_data.R, not by any analysis script, so
+# 11_read_cache deliberately loads neither (both are large).
+# The study metadata (codebooks, Variabellista, category lists, the export
+# data dictionary) has its canonical home at the workspace level in
+# data/metadata/; the repo carries a synced copy at metadata/, which the
+# ../metadata candidate below resolves; in the TRE keep a copy next to the
+# pipeline at chalmers/digital_lifestyles/metadata/ — copy it over when
+# syncing the scripts. Fail fast: 70 copies the dictionary into the export,
+# so a missing metadata copy must stop the run here, not after the models.
+metadata_candidates = file.path(c("../metadata", "../../../data/metadata"), "export_data_dictionary.csv")
+metadata_dir = dirname(metadata_candidates[file.exists(metadata_candidates)][1])
+if (is.na(metadata_dir)) stop(
+  "Study metadata not found: expected a copy next to the pipeline (../metadata/) or the workspace original (../../../data/metadata/). ",
+  "Copy <workspace>/data/metadata/ to chalmers/digital_lifestyles/metadata/ in the TRE before running.")
 
 if (all(file.exists(file.path(cache_dir, cache_files)))) {
   message("Cache complete — reading parquet")

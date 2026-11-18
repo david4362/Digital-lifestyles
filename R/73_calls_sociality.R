@@ -2,7 +2,7 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-# Calls-sociality diagnostics (RA checklist item 3). Calls carries the item
+# Calls-sociality diagnostics. Calls carries the item
 # gradient, and the sociality reading says that is because calls marks a
 # socially active life. Two exports test that directly. Associations: the
 # calls item against each endline social-activity item and the out-of-home

@@ -1,6 +1,8 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
+library(patchwork)
 
 source("05_labels.R")
 
@@ -181,35 +183,35 @@ fwrite(qc, file.path(out_dir, "quintile_contrast.csv"))
 
 # Figures: (1) the accounting split next to the spending-share forest,
 # (2) the quintile means of the two margins and their ratio.
-png(file.path(out_dir, "volume_composition.png"), width = 1500, height = 650, res = 120)
-par(mfrow = c(1, 2), mar = c(5, 12, 4, 2))
-comp = vol_comp[component %in% c("headline_gradient", "volume_component",
-  "composition_component", "covariance_residual")]
-barplot(setNames(comp$estimate, c("Headline gradient", "Volume (spending)",
-  "Composition (intensity)", "Covariance residual")),
-  horiz = TRUE, las = 1, col = "steelblue",
-  xlab = "kg CO2e per index SD", main = "Volume vs. composition (M5)")
-abline(v = 0, col = "black")
+# Component labels come from the semantic names in vol_comp (named lookup,
+# not positional mapping).
+complab = c(headline_gradient = "Headline gradient",
+  volume_component = "Volume (spending)",
+  composition_component = "Composition (intensity)",
+  covariance_residual = "Covariance residual")
+comp = vol_comp[component %in% names(complab)]
 sh = share_res[basis == "share of spending"][order(per_sd_pp)]
-y = seq_len(nrow(sh))
-plot(sh$per_sd_pp, y, xlim = range(c(sh$lo, sh$hi)),
-  yaxt = "n", pch = 16, col = ifelse(sh$p < 0.05, "steelblue", "grey50"),
-  xlab = "share of emission-relevant spending, pp per index SD (HC3 95% CI)",
-  ylab = "", main = "Budget-share gradients (M5)")
-axis(2, y, fulllab(sh$cat), las = 1, cex.axis = 0.8)
-segments(sh$lo, y, sh$hi, y, col = "grey40")
-abline(v = 0, lty = 2, col = "grey")
-dev.off()
+ggsave(file.path(out_dir, "volume_composition.png"),
+  wrap_plots(list(
+    bar_chart(comp[, .(label = complab[component], value = estimate)],
+        "kg CO2e per index SD", "Volume vs. composition (M5)") +
+      geom_vline(xintercept = 0, color = "black"),
+    forest_plot(sh[, .(label = fulllab(cat), est = per_sd_pp, lo = lo, hi = hi)],
+      "share of emission-relevant spending, pp per index SD (HC3 95% CI)",
+      "Budget-share gradients (M5)",
+      point_col = ifelse(sh$p < 0.05, "steelblue", "grey50"))),
+    nrow = 1),
+  width = 12.5, height = 5.42, dpi = 120)
 
-png(file.path(out_dir, "quintile_gradient.png"), width = 1500, height = 500, res = 120)
-par(mfrow = c(1, 3), mar = c(5, 5, 4, 2))
-qnm = paste("D", 1:5, sep = "")
-barplot(setNames(quintile_desc$mean_co2e, qnm), col = "steelblue",
-  xlab = "Digital quintile (index)", ylab = "kg CO2e/yr", main = "Footprint by quintile")
-barplot(setNames(quintile_desc$mean_spend_goods, qnm), col = "steelblue",
-  xlab = "Digital quintile (index)", ylab = "SEK/yr",
-  main = "Emission-relevant spending by quintile")
-barplot(setNames(quintile_desc$mean_intensity, qnm), col = "steelblue",
-  xlab = "Digital quintile (index)", ylab = "kg CO2e per 1,000 SEK",
-  main = "Basket intensity by quintile")
-dev.off()
+ggsave(file.path(out_dir, "quintile_gradient.png"),
+  wrap_plots(list(
+    column_chart(quintile_desc[, .(label = dig_q, value = mean_co2e)],
+      "Digital quintile (index)", "kg CO2e/yr", "Footprint by quintile"),
+    column_chart(quintile_desc[, .(label = dig_q, value = mean_spend_goods)],
+      "Digital quintile (index)", "SEK/yr",
+      "Emission-relevant spending by quintile"),
+    column_chart(quintile_desc[, .(label = dig_q, value = mean_intensity)],
+      "Digital quintile (index)", "kg CO2e per 1,000 SEK",
+      "Basket intensity by quintile")),
+    nrow = 1),
+  width = 12.5, height = 4.17, dpi = 120)

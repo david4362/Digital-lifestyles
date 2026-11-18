@@ -1,6 +1,7 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
 
 source("05_labels.R")
 
@@ -35,23 +36,29 @@ setorder(res, per_sd)
 fwrite(res, file.path(out_dir, "decomp_table.csv"))
 
 # Forest: sorted, hypothesis groups on top
-png(file.path(out_dir, "decomp_forest.png"), width = 1000, height = 700, res = 120)
-par(mar = c(5, 12, 4, 2))
-y = seq_len(nrow(res))
-plot(res$per_sd, y, xlim = range(c(res$lo, res$hi)),
-  yaxt = "n", pch = 16, col = ifelse(res$p < 0.05, "steelblue", "grey50"),
-  xlab = "kg CO2e per index SD (HC3 95% CI, M5 controls)", ylab = "",
-  main = "Decomposition: groups + top-10 (annual CO2e)")
-axis(2, y, fulllab(res$cat), las = 1, cex.axis = 0.8)
-segments(res$lo, y, res$hi, y, col = "grey40")
-abline(v = 0, lty = 2, col = "grey")
-dev.off()
+ggsave(file.path(out_dir, "decomp_forest.png"),
+  forest_plot(res[, .(label = fulllab(cat), est = per_sd, lo = lo, hi = hi)],
+    "kg CO2e per index SD (HC3 95% CI, M5 controls)",
+    "Decomposition: groups + top-10 (annual CO2e)",
+    point_col = ifelse(res$p < 0.05, "steelblue", "grey50")),
+  width = 8.33, height = 5.83, dpi = 120)
 
 # Waterfall: group contributions vs total (not exact sum, top-10 overlap)
+# Horizontal bar-chart recipe — first use this script; downstream consumers:
+# 45_sample_desc, 68_volume_composition. d carries the display columns
+# (label, value).
+bar_chart = function(d, xlab, title) {
+  d = copy(d)
+  d$label = factor(d$label, levels = d$label)
+  ggplot(d, aes(x = value, y = label)) +
+    geom_col(fill = "steelblue") +
+    labs(x = xlab, y = NULL, title = title) +
+    theme_minimal()
+}
+
 wf = res[cat %in% c("transport", "ecom", "digital", "placebo_insurance", "vehicles")]
-png(file.path(out_dir, "waterfall.png"), width = 900, height = 600, res = 120)
-par(mar = c(5, 10, 4, 2))
-barplot(setNames(wf$per_sd, fulllab(wf$cat)), horiz = TRUE, las = 1, col = "steelblue",
-  xlab = "kg CO2e per index SD", main = "Contribution per group (M5)")
-abline(v = 0, col = "black")
-dev.off()
+ggsave(file.path(out_dir, "waterfall.png"),
+  bar_chart(wf[, .(label = fulllab(cat), value = per_sd)],
+      "kg CO2e per index SD", "Contribution per group (M5)") +
+    geom_vline(xintercept = 0, color = "black"),
+  width = 7.5, height = 5, dpi = 120)

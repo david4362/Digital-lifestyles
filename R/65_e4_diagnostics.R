@@ -7,8 +7,9 @@ library(lmtest)
 # an emissions gradient of its own?
 #
 # A platform split (iOS vs Android) is not possible with the current data:
-# no cached table records the respondent's device/OS (details in
-# metadata/metadata.md, "E4 platform split"). There is also no second, purely
+# no cached table records the respondent's device/OS (see data/common-data.md
+# §5 and metadata.md).
+# There is also no second, purely
 # self-estimated screen-time item: E4 (q21) is the only screen-time
 # question in either survey wave, so the "self-report" side of the
 # validity check is the q11/q11b frequency battery — the anchor regression

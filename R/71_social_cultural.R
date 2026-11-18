@@ -2,7 +2,7 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-# Registered out-of-home social/cultural group (RA checklist item 1): the
+# Registered out-of-home social/cultural group: the
 # fully adjusted gradient for restaurants, bars, culture/entertainment and
 # other leisure services, in CO2e and SEK. This is the decomposition group
 # named in the pre-registration and missing from 43/47, which report the

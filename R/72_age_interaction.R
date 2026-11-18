@@ -2,7 +2,7 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-# Joint test of the pre-specified age-group interactions (RA checklist item 2).
+# Joint test of the pre-specified age-group interactions.
 # 46 reports the four level slopes and 58 tests gender, city and income
 # quintile, but not the age bands jointly. The bands are 46's cuts, so this
 # test matches het_margins.csv rather than the finer calls-diagnostic bands.

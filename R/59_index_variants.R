@@ -9,12 +9,10 @@ source("05_labels.R")
 # sample itself. The main row reproduces the M5 per-SD estimate of the
 # stepwise table by construction (the variant is z-scored in the same
 # sample). Axes:
-# - scaling sample: the earlier pipeline z-scaled the items on the whole
-#   battery sample, so
-#   within the analysis sample the items' SDs differed and the effective
-#   item weights were unequal; the main construction scales on the analysis
-#   sample, where every item has SD 1. The battery-sample row isolates that
-#   choice.
+# - scaling sample: scaling items on the whole battery sample instead of the
+#   analysis sample gives items unequal SDs and effective weights within the
+#   analysis sample; the main construction scales on the analysis sample,
+#   where every item has SD 1. The battery-sample row isolates that choice.
 # - item content: the 13-item row puts the two e-commerce items
 #   (q11b_7/q11b_8, excluded from the main index because they measure the
 #   purchase channel) back in, with the pre-registered >= 10 of 13 rule.
@@ -36,7 +34,7 @@ run_variant = function(d, index_variant, label) {
 base_row = run_variant(analysis_data, analysis_data$index, variantlab[["main"]])
 
 # Items z-scaled on the battery (gate) sample instead of the analysis
-# sample: the earlier scaling choice, applied to the main item set.
+# sample, applied to the main item set.
 mu_gate = unlist(answered_survey[, lapply(.SD, mean, na.rm = TRUE), .SDcols = index_main_items])
 sd_gate = unlist(answered_survey[, lapply(.SD, sd, na.rm = TRUE), .SDcols = index_main_items])
 batt = item_battery[aid %in% analysis_data$aid]
@@ -50,7 +48,7 @@ b_row = run_variant(d_b, d_b$index_b,
 
 # All 13 items incl. e-commerce & online selling, pre-registered >= 10 of 13
 # rule, analysis-sample scaling (the q11 columns of analysis_data are the
-# z-scaled items from 40) — the full pre-registration index as originally run.
+# z-scaled items from 40) — the full 13-item pre-registration index.
 n13 = rowSums(!is.na(analysis_data[, ..q11_cols]))
 d13 = copy(analysis_data)
 d13[, index_13 := fifelse(n13 >= length(q11_cols) - battery_tol,

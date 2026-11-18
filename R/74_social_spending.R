@@ -2,11 +2,11 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-# Social-media and gaming spending gradients (RA checklist item 4). The
+# Social-media and gaming spending gradients. The
 # sociality comparison in social_games.csv is CO2e, and the manuscript must
 # not reuse those models as spending results. Each exposure is entered
-# separately, fully adjusted, for the four spending categories named in the
-# checklist. Social media and gaming are the analysis-sample item z-scores.
+# separately, fully adjusted, for the four focal spending categories.
+# Social media and gaming are the analysis-sample item z-scores.
 # gaming_plus_console is the sum of the gaming and console z-scores,
 # re-standardized, so that row is per SD of the sum rather than the
 # unstandardized sum used in social_games.csv.

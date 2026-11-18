@@ -1,182 +1,25 @@
-library(data.table)
-
-# Mock data for pipeline test. Planted gradients (kg/yr per h/day):
-# transport negative, ecom/digital positive, placebos zero; the SEK-per-kg
-# ratio falls with hours (planted basket-composition margin for 68).
-set.seed(42)
-n = 800
-aid = 1:n
-age = sample(18:80, n, replace = TRUE)
-gender = sample(c("Man", "Kvinna"), n, replace = TRUE, prob = c(0.49, 0.51))
-postort = sample(c("Stockholm", "Göteborg", "Malmö", "Uppsala", "Umeå", "Växjö"),
-  n, replace = TRUE, prob = c(0.2, 0.1, 0.1, 0.2, 0.2, 0.2))
-major = postort %in% c("Stockholm", "Göteborg", "Malmö")
-
-z = -0.03 * (age - 40) + 0.5 * major + rnorm(n)
-z = as.vector(scale(z))
-
-# q11 battery (1-6) correlated with z
-q11_names = c(paste0("q11_", 1:5), paste0("q11b_", 1:8))
-q = lapply(q11_names, function(nm) pmin(6, pmax(1, round(3.5 + 0.8 * z + rnorm(n)))))
-names(q) = q11_names
-survey = data.table(aid = aid, submitdate = "2024-06-15")
-survey[, (q11_names) := q]
-
-# Partial battery: 20 people answer 12 of 13 items. The pipeline's battery
-# gate (>= 8 of 11 main items, 20) keeps them in; 59's 13-item variant
-# applies the pre-registration's >= 10 of 13 rule to them.
-survey[sample(aid, 20), (q11_names[1]) := NA]
-
-# E4 screen time from z (b ~ 1.2 h per index unit), with opt-out reasons
-time = 2.5 + 1.2 * z - 0.02 * (age - 45) + 0.15 * (gender == "Kvinna") + rnorm(n, sd = 0.7)
-time = pmin(15, pmax(0.2, time))
-h = floor(time)
-mnt = round((time %% 1) * 60)
-ov = mnt == 60
-h[ov] = h[ov] + 1
-mnt[ov] = 0
-p = runif(n)
-status = fcase(p < 0.72, "reporter", p < 0.82, "not_activated", p < 0.88, "skip", default = "nocontact")
-# E1 leisure battery (67): the pre-registered mechanism — out-of-home items
-# (F88_4/5/6/7/8/18/21) decline with digital intensity, at-home items
-# (F88_11/12/13/14/16) rise slightly, and transport CO2e below carries a
-# matching planted out-of-home effect, so 67 has mediation to find.
-ooh_plant = pmax(1, pmin(7, round(4.2 - 0.45 * z + rnorm(n, 0, 0.9))))
-home_plant = pmax(1, pmin(7, round(4.2 + 0.3 * z + rnorm(n, 0, 0.9))))
-survey_endline = data.table(aid = aid, status = status,
-  submitdate = as.Date("2024-06-20"),
-  q21_1comment = fifelse(status == "reporter", h, NA_integer_),
-  q21_2comment = fifelse(status == "reporter", mnt, NA_integer_),
-  q21_3 = as.integer(status == "not_activated"),
-  q21_4 = as.integer(status == "skip"),
-  F88_2 = sample(1:7, n, replace = TRUE),
-  F88_3 = sample(1:7, n, replace = TRUE),
-  F88_10 = sample(1:7, n, replace = TRUE),
-  F88_19 = sample(1:7, n, replace = TRUE),
-  F88_4 = ooh_plant, F88_5 = ooh_plant, F88_6 = ooh_plant,
-  F88_7 = ooh_plant, F88_8 = ooh_plant, F88_18 = ooh_plant, F88_21 = ooh_plant,
-  F88_11 = home_plant, F88_12 = home_plant, F88_13 = home_plant,
-  F88_14 = home_plant, F88_16 = home_plant)
-survey_endline = survey_endline[status != "nocontact"][, status := NULL][]
-
-demographics = data.table(aid = aid, order = 1L, age = age, gender = gender, postort = postort)
-# Duplicate demographics rows for a few aids (as flagged by aid_dup in the
-# real data), with a conflicting value on the second record.
-dup_aid = sample(aid, 20)
-demographics = rbind(demographics,
-  data.table(aid = dup_aid, order = 2L, age = age[match(dup_aid, aid)] + 1L,
-    gender = gender[match(dup_aid, aid)], postort = postort[match(dup_aid, aid)]))
-# Income mildly correlated with digital intensity (confounding like real data)
-income_level = round(exp(rnorm(n, 12.6 + 0.15 * z, 0.5)))
-# DispInk04 is in 100-SEK units in the real SCB register (see 49): planted
-# on the same scale so register_income = DispInk04 * 100 lands in SEK/yr.
-scb = data.table(aid = aid, density = rlnorm(n, 7),
-  deso = paste0("d", sample(1:100, n, replace = TRUE)),
-  Sun2020Niva = sample(c(100, 200, 310, 410, 520, 620), n, replace = TRUE),
-  DispInk04 = round(income_level / 100 * exp(rnorm(n, 0, 0.2))),
-  FoDelt = as.integer(runif(n) < 0.06),
-  HSDelt = as.integer(runif(n) < 0.10 + 0.25 * (age < 30)),
-  StudDelt = as.integer(runif(n) < 0.08 + 0.20 * (age < 30)),
-  BostBidrFam = rbinom(n, 1, 0.10) * round(rlnorm(n, 10, 0.5)),
-  ArbSokNov = rbinom(n, 1, 0.05),
-  Civil = sample(c("Single", "Married", "Divorced"), n, replace = TRUE),
-  FamTypF = sample(c("Single", "Cohab_no_kids", "Cohab_kids", "Single_parent"), n, replace = TRUE))
-# Mock labels for Civil/FamTypF/hometype are arbitrary — the real register
-# and profile codes differ; 64 treats all three generically (shares by
-# observed level, factor controls), so the mock only exercises the code.
-users = data.table(aid = aid, date = as.Date("2024-06-15"),
-  `income-level` = income_level,
-  `nr-of-bank-accounts` = sample(1:4, n, replace = TRUE),
-  profile.hometype = {u = runif(n); fifelse(u < 0.3 + 0.3 * major, "Lägenhet",
-    fifelse(u < 0.8 + 0.05 * major, "Villa", "Radhus"))},
-  profile.ncars = {v = runif(n); fifelse(v < 0.25 + 0.2 * major, 0L,
-    fifelse(v < 0.70 + 0.2 * major, 1L, 2L))},
-  profile.field_profile_household_adults = sample(1:2, n, replace = TRUE),
-  profile.field_profile_household_children = sample(0:3, n, replace = TRUE, prob = c(0.5, 0.25, 0.15, 0.1)),
-  profile.field_profile_commute_distance = {cd = round(rlnorm(n, 2.4 - 0.5 * major, 0.7), 1); cd[sample(n, 40)] = NA; cd},
-  profile.field_profile_commute_public = as.integer(runif(n) < 0.25 + 0.25 * major),
-  profile.field_profile_commute_bike = as.integer(runif(n) < 0.15),
-  profile.field_profile_commute_car = as.integer(runif(n) < 0.55 - 0.25 * major))
-
-# Annual CO2e per category: base + gradient*hours + income effect + noise
-base = c(fuel_co2e = 600, car_maint_co2e = 150, public_trans_co2e = 100, taxi_co2e = 30,
-  ferry_co2e = 40, aviation_co2e = 500, clothing_co2e = 150, electronics_co2e = 80,
-  books_co2e = 20, toys_co2e = 15, sports_co2e = 20, shopping_other_co2e = 120,
-  home_garden_other_co2e = 60, internet_tele_co2e = 30, rent_co2e = 700, insurance_co2e = 20,
-  vehicles_co2e = 300, groceries_co2e = 800, restaurant_co2e = 200, electricity_co2e = 400,
-  train_bus_co2e = 60, bus_co2e = 40, car_rent_co2e = 50, transport_other_co2e = 40, escooter_co2e = 5)
-grad = c(fuel_co2e = -15, car_maint_co2e = -8, public_trans_co2e = -7, taxi_co2e = -2,
-  ferry_co2e = 2, aviation_co2e = 10, clothing_co2e = 5, electronics_co2e = 4,
-  books_co2e = 1, toys_co2e = 1, sports_co2e = 1, shopping_other_co2e = 3,
-  home_garden_other_co2e = 1, internet_tele_co2e = 5, rent_co2e = 0, insurance_co2e = 0,
-  vehicles_co2e = 0, groceries_co2e = -5, restaurant_co2e = -8, electricity_co2e = 0,
-  train_bus_co2e = -3, bus_co2e = -2, car_rent_co2e = -1, transport_other_co2e = -1, escooter_co2e = 0)
-
-# Planted mediation (67): out-of-home leisure carries a transport effect
-# (90 kg/yr per SD of leisure, spread over the transport categories), so
-# partialling out ooh_leisure must move the transport gradient; at-home
-# leisure gets no planted effect. The mock uses a literal transport-category
-# vector (20's vector is not in scope here).
-transport_cats = c("fuel_co2e", "car_maint_co2e", "car_rent_co2e", "public_trans_co2e",
-  "bus_co2e", "taxi_co2e", "train_bus_co2e", "aviation_co2e", "ferry_co2e",
-  "escooter_co2e", "transport_other_co2e")
-ooh_effect = (90 * (ooh_plant - mean(ooh_plant)) + rnorm(n, 0, 40)) /
-  length(transport_cats)
-
-months = seq(as.Date("2023-07-01"), by = "month", length.out = 12)
-inc_eff = (log1p(income_level) - mean(log1p(income_level))) * 150
-grid = CJ(aid = aid, month = months, category = names(base))
-grid[, h := time[aid]]
-grid[, y := base[category] + grad[category] * h +
-  inc_eff[aid] * (category != "rent_co2e") * 0.3 +
-  fifelse(category %in% transport_cats, ooh_effect[aid], 0)]
-grid[, y := pmax(1, y + rnorm(.N, sd = 15))]
-grid[, monthly := y / 12 * (1 + rnorm(.N, sd = 0.1))]
-monthly_co2e = grid[, .(aid, month, category, co2e = pmax(0, monthly))]
-# SEK at ~40-45 SEK per kg CO2e (real sample: ~333k SEK observed spending
-# against ~8t CO2e), so observed spending and register income land on the
-# same scale and the spending/income ratio bands in 66 are exercised.
-# Planted composition margin (68): the SEK-per-kg ratio falls with screen
-# time, so at equal spending the high-digital basket is slightly dirtier and
-# 68's intensity model must recover a positive composition component.
-monthly_kr = grid[, .(aid, month, category = sub("_co2e$", "_kr", category),
-  kr = pmax(50, monthly * 75 * (1 - 0.006 * (h - 4)) + rnorm(.N, sd = 50)))]
-
-# Bank-registered income (mirrors kk-handels-income CSV: aid, date, category, income)
-bank_cat = c("salary", "benefits", "other")
-kk_income = CJ(aid = aid, month = months, category = bank_cat)
-kk_income[, income := income_level[aid]/12/length(bank_cat) * exp(rnorm(.N, 0, 0.3))]
-monthly_bank = kk_income[, .(income = sum(income)), by = .(aid, month)]
-person_bank = monthly_bank[, .(income_bank_raw = mean(income), n_bank_months = .N), by = aid]
-# A few participants have no bank-income record, and the file contains
-# records for aids outside the study, as in the real data.
-person_bank = person_bank[!aid %in% sample(aid, 15)]
-person_bank = rbind(person_bank, data.table(aid = max(aid) + 1:10,
-  income_bank_raw = 20000, n_bank_months = 12))
-
-# Low-spend subgroup (5%) fails the spending filter, exercises keep
-low = sample(aid, 40)
-monthly_co2e[aid %in% low, co2e := co2e * 0.1]
-monthly_kr[aid %in% low, kr := kr * 0.1]
-
-# Rent carries no CO2e factor in the real data (rent_co2e is all zeros), so
-# zero it in the mock too.
-monthly_co2e[category == "rent_co2e", co2e := 0]
-# ~92% of real participants pay auto-categorized rent (rent_kr > 0); plant
-# non-payers (no rent at all, n_rent = 0) so 62's stability filter has
-# the two fault kinds to catch.
-monthly_kr[category == "rent_kr" & aid %in% sample(aid, 64), kr := 0]
-# Rent appearing only in some months (data fault per the stability rule in
-# 62): 10 people with positive rent in only the first half of the year —
-# an interior miss, still a fault under the relaxed rule.
-monthly_kr[category == "rent_kr" & aid %in% sample(aid, 10) &
-  month %in% months[7:12], kr := 0]
-# The real-data window-edge pattern: rent missing only in the FIRST and
-# LAST valid month (rent paid in advance straddles the window edges).
-# These are stable renters under 62's interior rule.
-monthly_kr[category == "rent_kr" & aid %in% sample(aid, 10) &
-  month %in% months[c(1, 12)], kr := 0]
-
-rm(grid, q, base, grad, inc_eff, major, p, status, h, mnt, ov, low, time, z, income_level,
-  age, gender, postort, months, n, aid, q11_names, bank_cat, kk_income, monthly_bank,
-  dup_aid, cd, u, v, ooh_plant, home_plant, transport_cats, ooh_effect)
+# 00_mock_data.R — thin adapter for the SHARED synthetic study data.
+#
+# The generator is the synced in-repo copy `generate_mock_data.R`
+# (byte-identical to the canonical master <workspace>/scripts/
+# generate_mock_data.R; the same copy is committed in every project repo so
+# each repo's RUN_MOCK works from a stand-alone checkout). It is the single
+# source of mock data for every project (see data/common-data.md and
+# CODING-GUIDELINES.md §6). This file only locates and sources it — it adds
+# nothing. The objects it leaves in memory (survey, survey_endline,
+# demographics, users, scb, monthly_kr, monthly_co2e, person_bank,
+# transactions_long, plus the tax-side tables this pipeline ignores) match
+# the cache shapes the real loaders produce — including the harmonized long
+# core built by the same full melt as load_common_data.R and the canonical
+# aviation emission-intensity override, which the generator itself applies
+# (matching load_common_data.R, so this pipeline's mock and real runs treat
+# aviation identically).
+mock_candidates = c(
+  if (exists("mock_generator_path")) mock_generator_path,
+  "generate_mock_data.R")
+mock_src = mock_candidates[file.exists(mock_candidates)][1]
+if (is.na(mock_src)) stop(
+  "Shared mock generator not found: expected generate_mock_data.R next to ",
+  "this file (synced in-repo copy; canonical master at the workspace ",
+  "scripts/generate_mock_data.R).")
+source(mock_src)

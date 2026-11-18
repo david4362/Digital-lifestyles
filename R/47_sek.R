@@ -1,6 +1,7 @@
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(ggplot2)
 
 source("05_labels.R")
 
@@ -34,14 +35,9 @@ res[, `:=`(lo = per_sd - 1.96 * se, hi = per_sd + 1.96 * se,
 setorder(res, per_sd)
 fwrite(res, file.path(out_dir, "sek_table.csv"))
 
-png(file.path(out_dir, "sek_forest.png"), width = 1000, height = 700, res = 120)
-par(mar = c(5, 12, 4, 2))
-y = seq_len(nrow(res))
-plot(res$per_sd, y, xlim = range(c(res$lo, res$hi)),
-  yaxt = "n", pch = 16, col = ifelse(res$p < 0.05, "steelblue", "grey50"),
-  xlab = "SEK per index SD (HC3 95% CI, M5 controls)", ylab = "",
-  main = "Decomposition in SEK: groups + top-10 (annual spending)")
-axis(2, y, fulllab(res$cat), las = 1, cex.axis = 0.8)
-segments(res$lo, y, res$hi, y, col = "grey40")
-abline(v = 0, lty = 2, col = "grey")
-dev.off()
+ggsave(file.path(out_dir, "sek_forest.png"),
+  forest_plot(res[, .(label = fulllab(cat), est = per_sd, lo = lo, hi = hi)],
+    "SEK per index SD (HC3 95% CI, M5 controls)",
+    "Decomposition in SEK: groups + top-10 (annual spending)",
+    point_col = ifelse(res$p < 0.05, "steelblue", "grey50")),
+  width = 8.33, height = 5.83, dpi = 120)

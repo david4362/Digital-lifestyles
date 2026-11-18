@@ -1,32 +1,24 @@
 library(data.table)
+library(ggplot2)
 source("05_labels.R")
 
 stepwise = fread(file.path(out_dir, "stepwise_table.csv"))
 res = fread(file.path(out_dir, "decomp_table.csv"))
 main = stepwise[index_variant == variantlab[["main"]]]
-png(file.path(out_dir, "pres_stepwise.png"), width = 1200, height = 700, res = 150)
-par(mar = c(5, 14, 4, 2), cex.axis = 1.1, cex.lab = 1.2)
-y = seq_len(nrow(main))
-plot(main$per_sd, y, xlim = range(c(main$lo_sd, main$hi_sd)),
-  yaxt = "n", pch = 19, cex = 1.4, col = "#1f4e79",
-  xlab = "kg CO2e per index SD", ylab = "",
-  main = "How does the digital measure respond to covariates?")
-axis(2, y, modellab[main$model], las = 1)
-segments(main$lo_sd, y, main$hi_sd, y, lwd = 2, col = "#1f4e79")
-abline(v = 0, lty = 2)
-dev.off()
+ggsave(file.path(out_dir, "pres_stepwise.png"),
+  forest_plot(main[, .(label = unname(modellab[model]), est = per_sd, lo = lo_sd,
+      hi = hi_sd)],
+    "kg CO2e per index SD", "How does the digital measure respond to covariates?",
+    point_col = "#1f4e79", ci_col = "#1f4e79", ci_lwd = 1.6, point_size = 3,
+    base_size = 14),
+  width = 8, height = 4.67, dpi = 150)
 
 # Pres 2: decomp, groups + total only
 show = c("total", "transport", "ecom", "digital", "placebo_insurance", "vehicles")
 d = res[cat %in% show]
-png(file.path(out_dir, "pres_decomp.png"), width = 1200, height = 700, res = 150)
-par(mar = c(5, 14, 4, 2), cex.axis = 1.1, cex.lab = 1.2)
-y = seq_len(nrow(d))
-plot(d$per_sd, y, xlim = range(c(d$lo, d$hi)),
-  yaxt = "n", pch = 19, cex = 1.4, col = ifelse(d$p < 0.05, "#1f4e79", "grey60"),
-  xlab = "kg CO2e per index SD", ylab = "",
-  main = "Decomposition: where is the gradient?")
-axis(2, y, grouplab[d$cat], las = 1)
-segments(d$lo, y, d$hi, y, lwd = 2, col = "grey40")
-abline(v = 0, lty = 2)
-dev.off()
+ggsave(file.path(out_dir, "pres_decomp.png"),
+  forest_plot(d[, .(label = unname(grouplab[cat]), est = per_sd, lo = lo, hi = hi)],
+    "kg CO2e per index SD", "Decomposition: where is the gradient?",
+    point_col = ifelse(d$p < 0.05, "#1f4e79", "grey60"), ci_col = "grey40",
+    ci_lwd = 1.6, point_size = 3, base_size = 14),
+  width = 8, height = 4.67, dpi = 150)

@@ -2,7 +2,7 @@ library(data.table)
 library(sandwich)
 library(lmtest)
 
-# Longer-window sensitivity for aviation and travel (RA checklist item 5).
+# Longer-window sensitivity for aviation and travel.
 # The headline window is the 12 months before the survey, and an infrequent
 # purchase can be annualized from a handful of months. This re-estimates the
 # two outcomes on one fixed 24-calendar-month window, among M5 participants

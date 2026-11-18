@@ -5,6 +5,70 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Status
 
+- **2026-11-17 — figures moved beside text on every results slide.** `presentation/slides.tex` now uses a shared `\resultfig{}` macro and a 0.36/0.62 text/figure column split on slides 4-13; the figure is top-aligned in its own column rather than squeezed below the bullets. No bullets were dropped. Both `build/slides.pdf` and `build/slides_notes.pdf` were rebuilt cleanly (15 and 30 pages); figure and export verification remain unchanged.
+- **2026-11-17 — slides 4-10 and figure typography tightened after further feedback.** Slide 4 now states the requirement of at least 3 spending months in the 12 months before the survey and drops the unexplained word `cross-sectional`; slide 5 drops the standalone association/causation bullet; slide 6 replaces the one-point screen-time panel with the four-row separate-versus-joint comparison; slide 7 puts the text and figure side by side; slide 8 explains the small percentage-point gap between footprint and spending growth and renames `Small overlap term` to `Accounting remainder`; slide 9 drops the raw-versus-adjusted caveat from the visible bullet; slide 10 adds gaming alongside streaming and removes the formative-index bullet. All generated figures now omit plot titles and subtitles. `make_figures.R` generates `\FootprintPct{}`/`\SpendPct{}` from `volume_margins.csv` and `verify_local_figures.R` re-checks them. The manifest now records 27 exact CSV replots, 2 CSV-derived redraws and 2 aggregate-only replacements; no slide uses an aggregate-only replacement. Both PDFs were rebuilt and all figure/export checks still pass.
+- **2026-11-17 — slide 3 tightened after feedback.** The visible slide now states that the digital index is standardized to mean 0 and SD 1, generated as `\IndexMean{}/\IndexSd{}` from `output/2026-10-22/descriptives.csv`. The screen-time contrast and the CO2e definition were removed from the visible slide; only the kg CO2e/year unit remains. `verify_local_figures.R` now re-checks both new macros against `descriptives.csv`. The user wrote "mean 1"; the export gives mean approximately 0 and SD 1, so the statistical standardization wording (mean 0, SD 1) is used.
+- **2026-11-17 — title slide simplified after user feedback.** Removed the subtitle and the `Local figures from ...` author line from `presentation/slides.tex`; the custom title page template no longer renders subtitle or author templates. Both `build/slides.pdf` and `build/slides_notes.pdf` were rebuilt from the unchanged 15-slide deck.
+- **2026-11-17 — slide revisions after outside-audience feedback.** `presentation/slides.tex` is now a 15-slide plain-language deck: two added background slides explain why the question matters and what the digital index, CO2e and a 1-SD step mean; internal names (M5, E4, E1, RQ2/RQ3, DeSO, IPW, HC3, BH, TOST, "battery gate", "cardinal anchor") are translated in figures and slides; sample-flow counts are integer-formatted and the "battery gate" label is gone. `presentation/slides_notes.tex` turns on Beamer notes; `build/slides.pdf` is the clean 15-page deck and `build/slides_notes.pdf` is the 30-page notes-enabled build. Visible `Source:` footers were replaced by per-slide `\sourcenote{}` notes containing sources, speaker context and internal-name translations. `presentation/make_figures.R` now generates `\SurveyN`, `\IndexQuestionsN`, `\ValidMonthsN`, `\ScreenTimeN` and `\IndexItems` macros; `verify_local_figures.R` re-checks `\SurveyN` and `\IndexItems` against the CSVs. Figure labels were rewritten in plain language and sample-flow bars no longer show decimal `.0` counts. Verification still passes 31/31 figures and `verify_export.R` 20/20; the clean LuaLaTeX build exits 0 with no overfull warnings and the notes-enabled build exits 0 with only benign underfull-box warnings.
+- **2026-11-17 — local-only presentation pack added (user request).** `presentation/make_figures.R` regenerates 31 polished vector figures from `output/2026-10-22/*.csv` and `R/05_labels.R` only: 10 deck figures, 17 exact numeric recreations of the 19 output PNGs, 2 aggregate-only replacements for those PNG point clouds, and 2 CSV-derived redraws of the manuscript percentage-decomposition PDFs from the latest export. `presentation/verify_local_figures.R` regenerates all 31 into a clean temp directory and checks an independent expected-file list, source-CSV presence, byte-identical `numbers.tex`/`manifest.csv`, committed-PDF text via `pdftotext`, recomputed key numeric macros, and no TRE/raw/mock dependencies in the generator or sourced labels; `presentation/figures/manifest.csv` records each figure's sources and status. `presentation/slides.tex` is a 15-slide Beamer deck compiled with LuaLaTeX/Metropolis/Fira Sans; `presentation/figures/numbers.tex` generates the key numeric macros from the CSVs (static model labels remain in the TeX). `R/verify_export.R` passes 20/20 on the frozen export. No analysis code, export CSV or output PNG was changed; no TRE run or mock output is used. Style decision: presentation figures use Fira Sans, a `#1F4E79`/`#007C83`/`#C44E52` palette and one shared minimal ggplot2 theme; the deck uses the same palette and font. The 2026-10-22 export predates the 2026-11-05 aviation override and the 2026-11-07 ggplot2 migration, so the deck labels its numbers as a frozen export rather than code-current results.
+- **2026-11-10 — shared mock extended for tax DiD coverage; DL plants
+  unchanged.** `scripts/generate_mock_data.R` (and `R/generate_mock_data.R`)
+  now plants April tax deposits and near-zero (`|refund| < 100` SEK)
+  settlements for the tax-return-spending DiD control group, spread across
+  all tax years and invitation groups. The extension relabels existing
+  `tax_iot` rows with deterministic arithmetic only — no new RNG draws, no
+  change to any downstream `.N` — so DL's planted gradients, faults and
+  monthly views keep their original stream; only a few `daily_income`
+  deposit rows move from June to April or disappear. `RUN_MOCK.R` verified
+  end-to-end. Workspace `data/common-data.md` and `CODING-GUIDELINES.md` §6
+  updated. No DL analysis code changed.
+- **2026-11-08 — shared mock now emits the full metadata leaf set; DL sample
+  shrinks by the low-spend subgroup.** `scripts/generate_mock_data.R` (synced
+  into `R/generate_mock_data.R`) now plants every leaf in
+  `data/metadata/metadata.md` — 66 `_kr` / 65 `_co2e`, `da_credit_kr` kr-only —
+  instead of 28. Two consequences for this project's mock: the category groups
+  in `20` (`transport_co2e`, `ecom_co2e`, `digital_co2e`, ...) and every
+  grep-based selection now see their full membership instead of a subset, and
+  the `excluded_kr` list (`da_credit_kr`, `savings_kr`, `transaction_kr`,
+  `exclude_kr`) has something to exclude for the first time. Pre-existing bug
+  fixed in the same change: the low-spend subgroup scaled co2e and rent but
+  not kr, so it never failed the > 3000 SEK valid-month gate it is planted for;
+  those respondents now drop out of the mock sample as designed. `RUN_MOCK.R`
+  verified end-to-end.
+- **2026-11-08 — E4 platform-split note relocated out of the study
+  metadata (user request).** The prose feasibility note that the
+  2026-10-12 code review moved from the `65_e4_diagnostics.R` header into
+  `metadata.md` now lives at `notes/e4_platform_split_2026-10-05.md`.
+  Removed from both the workspace master `data/metadata/metadata.md` and
+  this repo's synced `metadata/metadata.md` (kept byte-identical). Living
+  pointers updated: 65's header comment, `data/common-data.md` §4 and the
+  §13 source map, `CODING-GUIDELINES.md` §1 rule 4 (no longer names
+  `metadata.md` as the home for research notes), and an addendum to
+  `notes/code_review_2026-10-12.md`. No analysis code changed — only a
+  comment — so no outputs need regenerating.
+- **2026-11-07 — Figures migrated base graphics → ggplot2 (19 outputs, 14
+  scripts).** All PNG figure blocks rewritten to ggplot2/ggsave, same file
+  names, canvas sizes, titles, axis labels, colors and conditional-point and
+  reference-line logic (per-SD = steelblue or #1f4e79 by font scale,
+  not-significant grey). Shared figure recipes became small named helpers,
+  each defined at its first consumer per the guidelines and naming its
+  consumers: `scatter_fit` (41; consumer 49), `bar_chart` (43; consumers 45,
+  68), `forest_plot` (42; consumers 43, 44, 46, 47, 48, 50, 54, 66, 67, 68),
+  `column_chart` (50; consumer 68). Multi-panel `mfrow` figures now use
+  `patchwork::wrap_plots` (46, 50, 68). Specifics 67's one-sided arrow-head
+  CIs became plain segments; 48 draws the ± delta bounds as dashed segments
+  at row height (no offset hack) with a solid zero line; 45 spells the
+  sample funnel bottom-to-top explicitly instead of the positional
+  `rev()` (guideline §4); 68's volume/composition bar labels are a named
+  lookup on `vol_comp$component` instead of a positional `setNames`.
+  Verification: full `RUN_MOCK` before vs after — 75 CSVs byte-identical
+  except `run_info.csv`'s per-run `out_dir` tempdir column; all 19 PNGs
+  regenerate at the original canvas sizes (three 700-px-tall forests land
+  at 699 px — rounding of the inch/dpi math). User decision: the guideline
+  mandate is now ggplot2 in ALL projects (CODING-GUIDELINES §1 rule 3
+  updated, replacing the base-graphics rule). FOLLOW-UP OUT OF SCOPE HERE:
+  tax-return-spending still has base-graphics loops in `40_refund_matrix.R`
+  — the new mandate makes it the next conversion candidate.
 - **2026-08-21 — MAJOR UNBLOCK.** David supplied the questionnaires + baseline
   codebook (now in `docs/`): `Pre-treatment_survey.pdf` + `_codebook.csv`
   (baseline), `Endline_survey.pdf`, `WP1_digital_lifestyles_plan_abstract_OSF.docx`
@@ -147,6 +211,155 @@ Read this first each session. Keep it updated: decisions, open questions, next s
 
 ## Session log
 
+- **2026-11-17 — slides 4-10 and figure typography tightened after further feedback.** Implemented all remaining slide comments: explicit 3-month spending requirement, no unexplained cross-sectional phrase, no standalone association bullet on the headline slide, a no-single-point screen-time figure, side-by-side layout on the category slide, clearer volume/composition language, shorter quintile bullet, gaming added to the negative-item bullet, and removal of the formative-index bullet. Removed all generated-figure plot titles/subtitles by dropping them from the ggplot helpers and regenerating the 31 figure PDFs. Updated `presentation/README.md` and the provenance manifest/source lists. Verification: `verify_local_figures.R` regenerates 31/31 figures and matches text/numbers; `verify_export.R` passes 20/20; both LuaLaTeX builds exit 0 (15-page clean deck, 30-page notes deck). No analysis code, frozen export, output PNG or TRE run was touched; no mock results appear.
+- **2026-11-17 — slide revisions after outside-audience feedback.** Added two background slides, Beamer notes on every frame, a notes-enabled wrapper `presentation/slides_notes.tex`, and separate clean/notes PDFs. Moved visible `Source:` footers into notes, replaced jargon in visible slides and figure labels, added integer sample-flow counts, generated extra numeric macros for the background slides, and updated `presentation/README.md`. No analysis pipeline code, frozen export, output PNG or TRE run was touched; `RUN_MOCK` was not needed. No mock results appear in the deck, notes or README.
+- **2026-11-17 — presentation pack (user request: informal 15-minute results talk).** Added `presentation/` with a local-only ggplot2 figure generator, a 13-slide Beamer deck, a generated numeric-macro file, a figure provenance manifest, a clean-room verification script and a README. Added `presentation/build/` to `.gitignore`. Verification: `verify_local_figures.R` regenerates 31/31 figures from `output/2026-10-22` and matches committed PDF text, numbers and manifest (27 exact CSV replots, 2 CSV-derived redraws, 2 aggregate-only replacements); `verify_export.R` passes 20/20; `slides.tex` compiles clean with LuaLaTeX to 15 pages. The two original diagnostic scatterplots cannot be reproduced exactly without person-level data, so the pack uses explicitly flagged aggregate-only replacements; the two older manuscript percentage figures are flagged as CSV-derived redraws from the latest export. A fresh review pass caught and fixed a heterogeneity panel filter, the mechanism figure's outcome scope, calls E1 units, and provenance-status inconsistencies. No analysis pipeline code, frozen export or TRE run was touched; `RUN_MOCK` was not needed. No mock results appear in the deck or README.
+- **2026-11-05 — loader harmonization across the three projects + the
+  aviation override made canonical (user request; design answers on
+  record).** Each project is a stand-alone publishable repo, so every
+  runtime dependency now lives inside the repo:
+  - **`load_common_data.R`** (new): the shared raw-read core — TRE paths,
+    raw file reads, the `kr_pr2`/`co2e_pr2` → `_kr`/`_co2e`, `:` → `.`,
+    `ef_id`/`efid` → `aid` renames, gender normalization, the canonical
+    SCB join (linkage + DeSO + density + LISA 2024 full + LISA 2023
+    selected), `sampling_frame` construction, the raw `daily_income` read,
+    and the **aviation emission-intensity override** (0.08 kg CO2/pkm ×
+    1.5 uplift + 20 % upstream ÷ 0.82 SEK/pkm ≈ 0.166 kg CO2e/SEK on
+    `aviation_co2e` — formerly low-carbon-only, the crosswalk mismatch in
+    common-data §6/trap 11/open question 8, now resolved). Canonical
+    master at the workspace `scripts/`; byte-identical synced copies
+    committed in all three project repos (sync rule in the header, same
+    as `.lintr`). `R/10_load_data.R` rewritten to source it; this
+    project's views (month column, monthly melts, endline survey,
+    `person_bank`) and the cache writes stay here; `11_read_cache.R`,
+    `RUN_TRE.R` and the cache file names are unchanged.
+  - **`run_info.csv` gains an `aviation_override` field** (`70_run_info.R`)
+    so every export shows which aviation treatment produced it.
+  - **`generate_mock_data.R` is now an in-repo synced copy**
+    (`R/generate_mock_data.R`, identical to the canonical workspace
+    master) — the adapters no longer probe `../../../scripts/`, which
+    broke stand-alone checkouts. `00_mock_data.R` sources the repo-local
+    copy. The aviation override moved INTO the generator (deterministic,
+    no RNG draws; factor computed in the same two-step form as the loader
+    so digits are reproducible), so this pipeline's mock now tests the
+    same aviation treatment its real runs use — previously the mock used
+    the planted aviation co2e while the real runs (from now) use the
+    override.
+  - **Verification:** baseline vs post-change `RUN_MOCK`: 43 of 95 output
+    files byte-identical (every kr/SEK, sample, survey, rent,
+    representativeness output); the 52 differing files are exactly the
+    co2e-dependent ones (aviation decomposition mean 451 → 802 kg;
+    mock headline M5 −26.6 → −19.8 kg/SD; frozen sample n = 388
+    unchanged). Tax and low-carbon mock runs verified in the same pass
+    (tax byte-identical; low-carbon numerically identical — see their
+    records).
+  - **Stand-alone metadata copy (user decision, same day):** the repo now
+    carries a synced copy of the study metadata at `metadata/` (next to
+    `R/`) — canonical master stays at the workspace `data/metadata/`, the
+    copy is synced like `load_common_data.R`, and the runners' existing
+    `../metadata` candidate resolves it with no code change. This closes
+    the last out-of-repo runtime dependency (`RUN_TRE.R`/`RUN_MOCK.R` fail
+    fast without `export_data_dictionary.csv`); the TRE convention
+    (`chalmers/digital_lifestyles/metadata/`) is unchanged.
+  - **TRE checklist for the next run:** copy `load_common_data.R`
+    alongside the scripts when syncing; **delete
+    `chalmers/digital_lifestyles/cache` first** (user decision: manual
+    deletion — the old `monthly_co2e.parquet`/`transactions.parquet`
+    predate the override and would silently keep the old aviation
+    numbers); expect all aviation-containing and total-CO2e numbers to
+    refresh (headline M5, decomposition, volume/composition, coverage) —
+    the frozen 2026-10-13 export stays as the historical record, and the
+    README headline section needs a refresh after the rerun.
+    `verify_export.R` needs no changes (its checks are internal-consistency
+    identities).
+- **2026-10-29 (later) — per-project mock generators replaced by ONE shared
+  generator (user request).** `scripts/generate_mock_data.R` (workspace
+  level) now builds the single synthetic study population — DL's and the
+  tax project's former `00_mock_data.R` bodies are retired; both files are
+  thin adapters that locate and source the generator (workspace path
+  `../../../scripts/…` or a copy at `../scripts/…`, fail-fast). Both
+  RUN_MOCKs run end-to-end clean against it.
+  - **What the audit of the OLD tax mock found first:** its salary/tx-row
+    amounts collided with planted refunds in the suspected tier — 10 false
+    "suspected" matches on planted no_match person-years (salary ~18k vs
+    refunds ~7.5k±5.5k). The shared generator fixes this BY CONSTRUCTION
+    ("de-collision rule", documented load-bearing in its header):
+    refunds ∈ [3000, 15000], salaries ≥ 23k, ordinary tx rows ≤ 1200 → the
+    only credits inside any refund band are the planted deposits. Final
+    audit: 0 false matches; primary match_rate 0.442 vs best variant 0.204.
+  - **Generator design:** one population (n=800: four invitation groups —
+    2024/2023/nosent/no_invite — crossed with observation windows
+    2022-2024), tax scenarios rotated over person×year, DL's full plant set
+    (battery, E4 anchor ~1.2 h/SD, E1 leisure, category gradients,
+    mediation, composition margin, income confound) + low-carbon plants
+    (ESI items, no_car/no_flying/no_meat suppressing focal categories,
+    ncars=0) + the fault inventory (demographics duplicates, partial
+    batteries, opt-outs, rent faults, low-spend, no-bank-income,
+    out-of-study aids, no-bank frame members, year-varying IoT columns,
+    DispInk04 ×100, Sun 999, uncategorized share straddling the 10% gate).
+    monthly_kr/co2e derived by the loader's own melt from row-level
+    transactions (identity by construction).
+  - **Two bugs the first RUN_MOCKs caught (both generator-side, both
+    fixed):** (1) chance seed correlation r = −0.09 between `no_car` and
+    the digital latent z leaked ~+28 kg/SD into transport (lifestyles
+    suppress large-base categories, so the plants are now redrawn until
+    |cor(z, plant)| < 0.01 — low_spend too); (2) `travel` was never planted
+    — harmless while 75's long-window branch wrote the empty table, but
+    the new ≥ 18-month-eligible sample made 75's first real mock fit crash
+    on the absent outcome; travel (base 300, grad +8) is now in the grid.
+  - **First-time mock coverage unlocked:** 69_sample_representativeness
+    now RUNS in the mock (randomsample/greensample planted on demographics
+    — it always skipped before) and 75 writes real long-window estimates
+    (people with 24 observed months exist now). Mock M5 n = 391; headline
+    M5 −33.8 kg/SD, anchor 1.163 h/SD, transport −40.3 with the mediation
+    share > 100% (mediation dominates the diluted direct transport part —
+    consistent with the plants); placebo insurance 0.0.
+  - **Later same-day additions for low-carbon coverage (generator-side
+    only; that repo untouched):** `profile.field_food_diet` planted on
+    users (aligned with no_meat — KK derives no_meat as diet != "mixed"),
+    aviation multiplier 0.02 → EXACTLY 0 for no_flying (KK derives it as
+    aviation co2e summing to zero — a residue would break the derivation),
+    `sampling_frame` emitted (invited participants + non-linked frame
+    members), a pre-COVID era 2019-01..2020-02 with a hole over the COVID
+    window so KK's consecutive-window-gap and COVID-exclusion logic has
+    real structure, and household adults tilted 75/25 single/two (KK's
+    adults<=1 gate otherwise halves the sample). Verified by running KK's
+    20_filter + 30_stat_vars derivations VERBATIM in a sandbox against the
+    mock: no_car / no_meat / no_flying derivations all at 100% agreement
+    with the planted truths; ESI fa() loadings 0.93/0.83/0.83 (alpha 0.89);
+    the COVID gap splits 600/800 month series; 438/800 pass their gates.
+    Also fixed two generator issues this surfaced: the final rm() now
+    preserves objects defined by the caller before `source()` (it wiped
+    them — inherited per-project-mock behavior), and mock_plants gained
+    its three missing object labels. Final mock numbers after all of this
+    (seed stream otherwise unchanged): M5 −29.4 kg/SD, transport −44.2
+    (mediation share 107%), anchor 1.163 (n=428), M5 n ≈ 390.
+  - **Low-carbon-lifestyles wired to the shared generator:** following its
+    `data.table` + base R rewrite and direct TRE loader (`10_load_data.R`),
+    `projects/low-carbon-lifestyles` now uses `00_mock_data.R` (dot-suffix
+    renames, aviation override, frame/register joins, category lookup restricted
+    to planted leaves) and `RUN_MOCK.R` (throwaway sandbox installing
+    `00_mock_data.R` as `10_load_data.R`); its per-project
+    `generate_synthetic_data.R` and `default_filter.RData` are retired.
+    `diet` in `scripts/generate_mock_data.R` now plants all three non-mixed
+    diet labels (`vegetarian`, `vegfish`, `vegan` — same RNG draw count, so
+    this pipeline's seed stream and mock numbers are unchanged).
+- **2026-10-29 — study metadata relocated to the workspace level (user
+  request: the unified data must not be tied to a single project).**
+  `R/metadata/` is gone: metadata.md, export_data_dictionary.csv, the
+  three survey codebooks and the SCB Variabellista now live at
+  `data/metadata/` next to the new cross-project knowledge doc
+  `data/common-data.md`; the two survey questionnaires (Pre-treatment +
+  Endline PDFs) moved there too, and `docs/Pre-treatment_survey_codebook.csv`
+  was deleted (content-identical CRLF duplicate of the canonical one).
+  The WP1 OSF docx stays in `docs/` (project-specific). Pipeline impact:
+  70_run_info.R's dictionary copy now reads `file.path(metadata_dir, ...)`;
+  RUN_TRE.R/RUN_MOCK.R resolve `metadata_dir` before the analysis scripts
+  (fail-fast): TRE copy `../metadata/` (i.e.
+  `chalmers/digital_lifestyles/metadata/` — copy`<workspace>/data/metadata`
+  over when syncing scripts) or the workspace original `../../data/metadata/`
+  for repo runs. Comments in 20/65 and the README updated; historical
+  entries above keep their old paths as the record of what was.
 - **2026-10-22 — TRE working directory renamed to `digital_lifestyles`.**
   `chalmers/R/{cache,output}` is now `chalmers/digital_lifestyles/{cache,output}`
   so the shared `chalmers` area does not collide with the other projects that

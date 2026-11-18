@@ -7,6 +7,7 @@ run_info.csv,index_nocalls_items,"Space-separated items of the no-calls index va
 run_info.csv,battery_rule,"Index battery gate: at least N of M main items answered (at most 3 missing, the pre-registration tolerance of >= 10 of 13)"
 run_info.csv,anchor,"Cardinal anchor specification: bivariate lm(time ~ index) on valid E4 reporters with a valid index; its slope is h_per_sd (hours per index SD)"
 run_info.csv,headline_scale,"Scale of headline results: kg CO2e per index SD; per-hour columns are derived via h_per_sd (see calibration_check.csv)"
+run_info.csv,aviation_override,"Canonical aviation emission-intensity override applied in load_common_data.R"
 run_info.csv,min_months,"Minimum valid months per category for a person-category outcome to be annualised (20)"
 run_info.csv,x_months,"Transaction window: the X months before the survey submit date (20)"
 run_info.csv,min_spend,"Minimum non-excluded spending (SEK) for a month to count as observed (20)"
